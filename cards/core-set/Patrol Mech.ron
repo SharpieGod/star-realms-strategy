@@ -4,7 +4,7 @@
     card_type: Ship,
     cost: 4,
     effect: Sequence([
-        Or(Base(Resource(Trade, 3)), Base(Resource(Combat, 5))),
-        If(HasAlly(MachineCult), May(Base(Scrap(HandOrDiscardPile, 1)))),
+        Or(Resource(Trade, 3), Resource(Combat, 5)),
+        If(HasAlly(MachineCult), May(Scrap(HandOrDiscardPile, 1))),
     ]),
 )

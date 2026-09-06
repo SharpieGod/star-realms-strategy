@@ -4,8 +4,8 @@
     card_type: Ship,
     cost: 6,
     effect: Sequence([
-        Base(Resource(Combat, 8)),
+        Resource(Combat, 8),
         If(HasAlly(Blob), Draw(Number(1))),
-        On(Scrap, Base(Resource(Combat, 4))),
+        On(Scrap, Resource(Combat, 4)),
     ]),
 )

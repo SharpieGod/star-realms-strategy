@@ -4,8 +4,8 @@
     card_type: Ship,
     cost: 3,
     effect: Sequence([
-        Base(Resource(Combat, 5)),
-        If(HasAlly(Blob), Base(Resource(Combat, 2))),
-        On(Scrap, Base(Resource(Trade, 3))),
+        Resource(Combat, 5),
+        If(HasAlly(Blob), Resource(Combat, 2)),
+        On(Scrap, Resource(Trade, 3)),
     ]),
 )

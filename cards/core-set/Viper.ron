@@ -3,5 +3,5 @@
     faction: Unaligned,
     card_type: Ship,
     cost: 0,
-    effect: Base(Resource(Combat, 1)),
+    effect: Resource(Combat, 1),
 )

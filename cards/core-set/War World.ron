@@ -4,7 +4,7 @@
     card_type: Base(defense: 4, it_outpost: true),
     cost: 5,
     effect: Sequence([
-        Base(Resource(Combat, 3)),
-        If(HasAlly(StarEmpire), Base(Resource(Combat, 4))),
+        Resource(Combat, 3),
+        If(HasAlly(StarEmpire), Resource(Combat, 4)),
     ]),
 )

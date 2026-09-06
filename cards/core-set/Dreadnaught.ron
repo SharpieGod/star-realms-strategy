@@ -4,8 +4,8 @@
     card_type: Ship,
     cost: 7,
     effect: Sequence([
-        Base(Resource(Combat, 7)),
+        Resource(Combat, 7),
         Draw(Number(1)),
-        On(Scrap, Base(Resource(Combat, 5))),
+        On(Scrap, Resource(Combat, 5)),
     ]),
 )

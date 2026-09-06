@@ -4,12 +4,12 @@
     card_type: Ship,
     cost: 6,
     effect: Sequence([
-        Base(Resource(Combat, 5)),
+        Resource(Combat, 5),
         Draw(Number(1)),
-        If(HasAlly(StarEmpire), Base(OpponentDiscards)),
+        If(HasAlly(StarEmpire), OpponentDiscards),
         On(Scrap, Sequence([
             Draw(Number(1)),
-            May(Base(DestroyTargetBase)),
+            May(DestroyTargetBase),
         ])),
     ]),
 )

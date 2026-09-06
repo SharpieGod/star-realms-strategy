@@ -4,8 +4,8 @@
     card_type: Ship,
     cost: 6,
     effect: Sequence([
-        Base(Resource(Combat, 6)),
-        May(Base(DestroyTargetBase)),
+        Resource(Combat, 6),
+        May(DestroyTargetBase),
         If(HasAlly(MachineCult), Draw(Number(1))),
     ]),
 )

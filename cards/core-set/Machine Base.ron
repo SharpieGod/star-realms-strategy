@@ -5,6 +5,6 @@
     cost: 7,
     effect: Sequence([
         Draw(Number(1)),
-        Base(Scrap(Hand, 1)),
+        Scrap(Hand, 1),
     ]),
 )

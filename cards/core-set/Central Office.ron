@@ -4,7 +4,7 @@
     card_type: Base(defense: 6, it_outpost: false),
     cost: 7,
     effect: Sequence([
-        Base(Resource(Trade, 2)),
+        Resource(Trade, 2),
         May(NextAcquiredShipToTopOfDeck),
         If(HasAlly(TradeFederation), Draw(Number(1))),
     ]),

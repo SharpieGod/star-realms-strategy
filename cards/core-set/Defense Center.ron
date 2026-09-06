@@ -4,7 +4,7 @@
     card_type: Base(defense: 5, it_outpost: true),
     cost: 5,
     effect: Sequence([
-        Or(Base(Resource(Authority, 3)), Base(Resource(Combat, 2))),
-        If(HasAlly(TradeFederation), Base(Resource(Combat, 2))),
+        Or(Resource(Authority, 3), Resource(Combat, 2)),
+        If(HasAlly(TradeFederation), Resource(Combat, 2)),
     ]),
 )

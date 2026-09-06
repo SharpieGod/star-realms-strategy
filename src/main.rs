@@ -109,26 +109,16 @@ enum Event {
 
 #[derive(Serialize, Deserialize, Clone)]
 enum Effect {
+    // Logical Statements and conditions
     If(Condition, Box<Effect>),
     Or(Box<Effect>, Box<Effect>),
     AndOr(Box<Effect>, Box<Effect>),
     Sequence(Vec<Effect>),
     On(Event, Box<Effect>),
     Draw(Amount),
-    Base(BaseEffect),
     May(Box<Effect>),
-    /// Copy another ship played this turn; for ally checks the copy counts under
-    /// both its own faction and the copied ship's faction.
-    CopyPlayedShip,
-    /// Sets a one-shot flag consumed when this player next acquires a ship this turn.
-    NextAcquiredShipToTopOfDeck,
-}
 
-#[derive(Serialize, Deserialize, Clone)]
-enum BaseEffect {
-    DestroyTargetBase,
-    ScrapCardInRow,
-    OpponentDiscards,
+    // Actual Actions
     AquireShipForFree {
         to_top_of_deck: bool,
         max_cost: Option<u32>,
@@ -136,6 +126,14 @@ enum BaseEffect {
     Resource(ResourceType, u32),
     Scrap(ScrapType, u32),
     Discard(u32),
+    DestroyTargetBase,
+    ScrapCardInRow,
+    OpponentDiscards,
+    /// Copy another ship played this turn; for ally checks the copy counts under
+    /// both its own faction and the copied ship's faction.
+    CopyPlayedShip,
+    /// Sets a one-shot flag consumed when this player next acquires a ship this turn.
+    NextAcquiredShipToTopOfDeck,
 }
 
 #[derive(Serialize, Deserialize)]

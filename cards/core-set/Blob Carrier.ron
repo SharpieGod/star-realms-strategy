@@ -4,7 +4,7 @@
     card_type: Ship,
     cost: 6,
     effect: Sequence([
-        Base(Resource(Combat, 7)),
-        If(HasAlly(Blob), Base(AquireShipForFree(to_top_of_deck: true, max_cost: None))),
+        Resource(Combat, 7),
+        If(HasAlly(Blob), AquireShipForFree(to_top_of_deck: true, max_cost: None)),
     ]),
 )

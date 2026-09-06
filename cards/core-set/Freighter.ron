@@ -4,7 +4,7 @@
     card_type: Ship,
     cost: 4,
     effect: Sequence([
-        Base(Resource(Trade, 4)),
+        Resource(Trade, 4),
         If(HasAlly(TradeFederation), May(NextAcquiredShipToTopOfDeck)),
     ]),
 )

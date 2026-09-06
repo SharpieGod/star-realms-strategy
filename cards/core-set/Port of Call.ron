@@ -4,10 +4,10 @@
     card_type: Base(defense: 6, it_outpost: true),
     cost: 6,
     effect: Sequence([
-        Base(Resource(Trade, 3)),
+        Resource(Trade, 3),
         On(Scrap, Sequence([
             Draw(Number(1)),
-            May(Base(DestroyTargetBase)),
+            May(DestroyTargetBase),
         ])),
     ]),
 )

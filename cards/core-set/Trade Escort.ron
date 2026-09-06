@@ -4,8 +4,8 @@
     card_type: Ship,
     cost: 5,
     effect: Sequence([
-        Base(Resource(Authority, 4)),
-        Base(Resource(Combat, 4)),
+        Resource(Authority, 4),
+        Resource(Combat, 4),
         If(HasAlly(TradeFederation), Draw(Number(1))),
     ]),
 )

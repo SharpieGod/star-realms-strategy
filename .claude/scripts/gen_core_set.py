@@ -111,11 +111,11 @@ def Base(defense, outpost):
 
 
 def Res(rtype, n):
-    return V("Base", V("Resource", rtype, n))
+    return V("Resource", rtype, n)
 
 
 def TE(inner):
-    return V("Base", inner)
+    return inner
 
 
 def If(cond, eff):
@@ -167,8 +167,8 @@ ON_SCRAP = "Scrap"
 CARDS = []
 
 
-def add(*args, **kwargs):
-    CARDS.append(card(*args, **kwargs))
+def add(name, *args, **kwargs):
+    CARDS.append((name, card(name, *args, **kwargs)))
 
 
 # ---------------------------------------------------------------- Blob ----
@@ -436,12 +436,9 @@ add("Viper", "Unaligned", Ship(), 0, Res("Combat", 1))
 
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    names = set()
-    for text in CARDS:
-        name = text.splitlines()[1].split('"')[1]
-        names.add(name)
+    for name, text in CARDS:
         (OUT_DIR / f"{name}.ron").write_text(text, encoding="utf-8")
-    print(f"wrote {len(names)} cards")
+    print(f"wrote {len(CARDS)} cards")
 
 
 if __name__ == "__main__":
