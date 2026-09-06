@@ -1,10 +1,10 @@
 (
-    name: "Blob Destroyer",
+    name: BlobDestroyer,
     faction: Blob,
     card_type: Ship,
     cost: 4,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 6)),
-        If(HasAlly(Blob), May(AndOr(TargetedEffect(DestroyTargetBase), TargetedEffect(ScrapCardInRow)))),
+        Base(Resource(Combat, 6)),
+        If(HasAlly(Blob), May(AndOr(Base(DestroyTargetBase), Base(ScrapCardInRow)))),
     ]),
 )

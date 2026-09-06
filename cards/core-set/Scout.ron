@@ -1,7 +1,7 @@
 (
-    name: "Scout",
+    name: Scout,
     faction: Unaligned,
     card_type: Ship,
     cost: 0,
-    effect: TargetedEffect(Resource(Trade, 1)),
+    effect: Base(Resource(Trade, 1)),
 )

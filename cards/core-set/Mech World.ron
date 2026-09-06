@@ -1,5 +1,5 @@
 (
-    name: "Mech World",
+    name: MechWorld,
     faction: MachineCult,
     card_type: Base(defense: 6, it_outpost: true),
     cost: 5,

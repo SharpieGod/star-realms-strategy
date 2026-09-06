@@ -1,10 +1,10 @@
 (
-    name: "Blob Fighter",
+    name: BlobFighter,
     faction: Blob,
     card_type: Ship,
     cost: 1,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 3)),
+        Base(Resource(Combat, 3)),
         If(HasAlly(Blob), Draw(Number(1))),
     ]),
 )

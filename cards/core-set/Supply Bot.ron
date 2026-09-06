@@ -1,11 +1,11 @@
 (
-    name: "Supply Bot",
+    name: SupplyBot,
     faction: MachineCult,
     card_type: Ship,
     cost: 3,
     effect: Sequence([
-        TargetedEffect(Resource(Trade, 2)),
-        May(TargetedEffect(Scrap(HandOrDiscardPile, 1))),
-        If(HasAlly(MachineCult), TargetedEffect(Resource(Attack, 2))),
+        Base(Resource(Trade, 2)),
+        May(Base(Scrap(HandOrDiscardPile, 1))),
+        If(HasAlly(MachineCult), Base(Resource(Combat, 2))),
     ]),
 )

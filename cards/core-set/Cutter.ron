@@ -1,11 +1,11 @@
 (
-    name: "Cutter",
+    name: Cutter,
     faction: TradeFederation,
     card_type: Ship,
     cost: 2,
     effect: Sequence([
-        TargetedEffect(Resource(Authority, 4)),
-        TargetedEffect(Resource(Trade, 2)),
-        If(HasAlly(TradeFederation), TargetedEffect(Resource(Attack, 4))),
+        Base(Resource(Authority, 4)),
+        Base(Resource(Trade, 2)),
+        If(HasAlly(TradeFederation), Base(Resource(Combat, 4))),
     ]),
 )

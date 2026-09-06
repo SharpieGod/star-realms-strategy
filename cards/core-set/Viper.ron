@@ -1,7 +1,7 @@
 (
-    name: "Viper",
+    name: Viper,
     faction: Unaligned,
     card_type: Ship,
     cost: 0,
-    effect: TargetedEffect(Resource(Attack, 1)),
+    effect: Base(Resource(Combat, 1)),
 )

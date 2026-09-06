@@ -1,10 +1,10 @@
 (
-    name: "War World",
+    name: WarWorld,
     faction: StarEmpire,
     card_type: Base(defense: 4, it_outpost: true),
     cost: 5,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 3)),
-        If(HasAlly(StarEmpire), TargetedEffect(Resource(Attack, 4))),
+        Base(Resource(Combat, 3)),
+        If(HasAlly(StarEmpire), Base(Resource(Combat, 4))),
     ]),
 )

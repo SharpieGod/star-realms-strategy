@@ -1,11 +1,11 @@
 (
-    name: "Trade Escort",
+    name: TradeEscort,
     faction: TradeFederation,
     card_type: Ship,
     cost: 5,
     effect: Sequence([
-        TargetedEffect(Resource(Authority, 4)),
-        TargetedEffect(Resource(Attack, 4)),
+        Base(Resource(Authority, 4)),
+        Base(Resource(Combat, 4)),
         If(HasAlly(TradeFederation), Draw(Number(1))),
     ]),
 )

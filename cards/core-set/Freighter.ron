@@ -1,10 +1,10 @@
 (
-    name: "Freighter",
+    name: Freighter,
     faction: TradeFederation,
     card_type: Ship,
     cost: 4,
     effect: Sequence([
-        TargetedEffect(Resource(Trade, 4)),
+        Base(Resource(Trade, 4)),
         If(HasAlly(TradeFederation), May(NextAcquiredShipToTopOfDeck)),
     ]),
 )

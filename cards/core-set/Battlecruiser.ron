@@ -1,15 +1,15 @@
 (
-    name: "Battlecruiser",
+    name: Battlecruiser,
     faction: StarEmpire,
     card_type: Ship,
     cost: 6,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 5)),
+        Base(Resource(Combat, 5)),
         Draw(Number(1)),
-        If(HasAlly(StarEmpire), TargetedEffect(OpponentDiscards)),
+        If(HasAlly(StarEmpire), Base(OpponentDiscards)),
         On(Scrap, Sequence([
             Draw(Number(1)),
-            May(TargetedEffect(DestroyTargetBase)),
+            May(Base(DestroyTargetBase)),
         ])),
     ]),
 )

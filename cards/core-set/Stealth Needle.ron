@@ -1,5 +1,5 @@
 (
-    name: "Stealth Needle",
+    name: StealthNeedle,
     faction: MachineCult,
     card_type: Ship,
     cost: 4,

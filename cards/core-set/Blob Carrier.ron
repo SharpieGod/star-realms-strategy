@@ -1,10 +1,10 @@
 (
-    name: "Blob Carrier",
+    name: BlobCarrier,
     faction: Blob,
     card_type: Ship,
     cost: 6,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 7)),
-        If(HasAlly(Blob), TargetedEffect(AquireShipForFree(to_top_of_deck: true, max_cost: None))),
+        Base(Resource(Combat, 7)),
+        If(HasAlly(Blob), Base(AquireShipForFree(to_top_of_deck: true, max_cost: None))),
     ]),
 )

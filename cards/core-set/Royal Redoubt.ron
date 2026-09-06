@@ -1,10 +1,10 @@
 (
-    name: "Royal Redoubt",
+    name: RoyalRedoubt,
     faction: StarEmpire,
     card_type: Base(defense: 6, it_outpost: true),
     cost: 6,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 3)),
-        If(HasAlly(StarEmpire), TargetedEffect(OpponentDiscards)),
+        Base(Resource(Combat, 3)),
+        If(HasAlly(StarEmpire), Base(OpponentDiscards)),
     ]),
 )

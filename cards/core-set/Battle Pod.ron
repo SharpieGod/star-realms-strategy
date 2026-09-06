@@ -1,11 +1,11 @@
 (
-    name: "Battle Pod",
+    name: BattlePod,
     faction: Blob,
     card_type: Ship,
     cost: 2,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 4)),
-        May(TargetedEffect(ScrapCardInRow)),
-        If(HasAlly(Blob), TargetedEffect(Resource(Attack, 2))),
+        Base(Resource(Combat, 4)),
+        May(Base(ScrapCardInRow)),
+        If(HasAlly(Blob), Base(Resource(Combat, 2))),
     ]),
 )

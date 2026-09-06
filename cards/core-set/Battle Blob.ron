@@ -1,11 +1,11 @@
 (
-    name: "Battle Blob",
+    name: BattleBlob,
     faction: Blob,
     card_type: Ship,
     cost: 6,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 8)),
+        Base(Resource(Combat, 8)),
         If(HasAlly(Blob), Draw(Number(1))),
-        On(Scrap, TargetedEffect(Resource(Attack, 4))),
+        On(Scrap, Base(Resource(Combat, 4))),
     ]),
 )

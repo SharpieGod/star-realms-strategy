@@ -1,11 +1,11 @@
 (
-    name: "Ram",
+    name: Ram,
     faction: Blob,
     card_type: Ship,
     cost: 3,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 5)),
-        If(HasAlly(Blob), TargetedEffect(Resource(Attack, 2))),
-        On(Scrap, TargetedEffect(Resource(Trade, 3))),
+        Base(Resource(Combat, 5)),
+        If(HasAlly(Blob), Base(Resource(Combat, 2))),
+        On(Scrap, Base(Resource(Trade, 3))),
     ]),
 )

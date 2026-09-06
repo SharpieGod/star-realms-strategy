@@ -1,11 +1,11 @@
 (
-    name: "Corvette",
+    name: Corvette,
     faction: StarEmpire,
     card_type: Ship,
     cost: 2,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 1)),
+        Base(Resource(Combat, 1)),
         Draw(Number(1)),
-        If(HasAlly(StarEmpire), TargetedEffect(Resource(Attack, 2))),
+        If(HasAlly(StarEmpire), Base(Resource(Combat, 2))),
     ]),
 )

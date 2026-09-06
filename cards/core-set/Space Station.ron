@@ -1,11 +1,11 @@
 (
-    name: "Space Station",
+    name: SpaceStation,
     faction: StarEmpire,
     card_type: Base(defense: 4, it_outpost: true),
     cost: 4,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 2)),
-        If(HasAlly(StarEmpire), TargetedEffect(Resource(Attack, 2))),
-        On(Scrap, TargetedEffect(Resource(Trade, 4))),
+        Base(Resource(Combat, 2)),
+        If(HasAlly(StarEmpire), Base(Resource(Combat, 2))),
+        On(Scrap, Base(Resource(Trade, 4))),
     ]),
 )

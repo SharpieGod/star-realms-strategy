@@ -1,7 +1,7 @@
 (
-    name: "Battle Station",
+    name: BattleStation,
     faction: MachineCult,
     card_type: Base(defense: 5, it_outpost: true),
     cost: 3,
-    effect: On(Scrap, TargetedEffect(Resource(Attack, 5))),
+    effect: On(Scrap, Base(Resource(Combat, 5))),
 )

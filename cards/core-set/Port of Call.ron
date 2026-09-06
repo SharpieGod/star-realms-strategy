@@ -1,13 +1,13 @@
 (
-    name: "Port of Call",
+    name: PortofCall,
     faction: TradeFederation,
     card_type: Base(defense: 6, it_outpost: true),
     cost: 6,
     effect: Sequence([
-        TargetedEffect(Resource(Trade, 3)),
+        Base(Resource(Trade, 3)),
         On(Scrap, Sequence([
             Draw(Number(1)),
-            May(TargetedEffect(DestroyTargetBase)),
+            May(Base(DestroyTargetBase)),
         ])),
     ]),
 )

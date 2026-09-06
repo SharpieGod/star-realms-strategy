@@ -1,8 +1,7 @@
 (
-    name: "Blob World",
+    name: BlobWorld,
     faction: Blob,
     card_type: Base(defense: 7, it_outpost: false),
     cost: 8,
-    // defense not printed in the source data for this card - confirmed as 5 Combat OR draw text via user, defense value (7) is my best-known recollection and still needs verification
-    effect: Or(TargetedEffect(Resource(Attack, 5)), Draw(ShipsPlayed(Blob))),
+    effect: Or(Base(Resource(Combat, 5)), Draw(ShipsPlayed(Blob))),
 )

@@ -1,10 +1,10 @@
 (
-    name: "Central Office",
+    name: CentralOffice,
     faction: TradeFederation,
     card_type: Base(defense: 6, it_outpost: false),
     cost: 7,
     effect: Sequence([
-        TargetedEffect(Resource(Trade, 2)),
+        Base(Resource(Trade, 2)),
         May(NextAcquiredShipToTopOfDeck),
         If(HasAlly(TradeFederation), Draw(Number(1))),
     ]),

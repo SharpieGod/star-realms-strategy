@@ -1,11 +1,11 @@
 (
-    name: "Dreadnaught",
+    name: Dreadnaught,
     faction: StarEmpire,
     card_type: Ship,
     cost: 7,
     effect: Sequence([
-        TargetedEffect(Resource(Attack, 7)),
+        Base(Resource(Combat, 7)),
         Draw(Number(1)),
-        On(Scrap, TargetedEffect(Resource(Attack, 5))),
+        On(Scrap, Base(Resource(Combat, 5))),
     ]),
 )

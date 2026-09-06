@@ -1,11 +1,68 @@
-use std::{fs::OpenOptions, io::Write};
+use std::{
+    fs::{self, OpenOptions},
+    io::Write,
+    path::{self, Path, PathBuf},
+};
 
 use serde::{Deserialize, Serialize};
 
 use crate::{
     Faction::Unaligned,
-    ResourceType::{Attack, Authority, Trade},
+    ResourceType::{Authority, Combat, Trade},
 };
+
+#[derive(Serialize, Deserialize)]
+enum CardNamed {
+    BarterWorld,
+    BattleBlob,
+    BattleMech,
+    BattlePod,
+    BattleStation,
+    Battlecruiser,
+    BlobCarrier,
+    BlobDestroyer,
+    BlobFighter,
+    BlobWheel,
+    BlobWorld,
+    BrainWorld,
+    CentralOffice,
+    CommandShip,
+    Corvette,
+    Cutter,
+    DefenseCenter,
+    Dreadnaught,
+    EmbassyYacht,
+    Explorer,
+    FederationShuttle,
+    Flagship,
+    FleetHQ,
+    Freighter,
+    ImperialFighter,
+    ImperialFrigate,
+    Junkyard,
+    MachineBase,
+    MechWorld,
+    MissileBot,
+    MissileMech,
+    Mothership,
+    PatrolMech,
+    PortofCall,
+    Ram,
+    RecyclingStation,
+    RoyalRedoubt,
+    Scout,
+    SpaceStation,
+    StealthNeedle,
+    SupplyBot,
+    SurveyShip,
+    TheHive,
+    TradeBot,
+    TradeEscort,
+    TradePod,
+    TradingPost,
+    Viper,
+    WarWorld,
+}
 
 #[derive(Serialize, Deserialize, Clone)]
 enum Amount {
@@ -32,7 +89,7 @@ enum Condition {
 #[derive(Serialize, Deserialize, Clone)]
 enum ResourceType {
     Authority,
-    Attack,
+    Combat,
     Trade,
 }
 
@@ -58,7 +115,7 @@ enum Effect {
     Sequence(Vec<Effect>),
     On(Event, Box<Effect>),
     Draw(Amount),
-    TargetedEffect(BaseEffect),
+    Base(BaseEffect),
     May(Box<Effect>),
     /// Copy another ship played this turn; for ally checks the copy counts under
     /// both its own faction and the copied ship's faction.
@@ -89,7 +146,7 @@ enum CardType {
 
 #[derive(Serialize, Deserialize)]
 struct Card {
-    name: String,
+    name: CardNamed,
     faction: Faction,
     card_type: CardType,
     cost: u32,
@@ -99,25 +156,39 @@ struct Card {
     is_all_faction_ally: bool,
 }
 
-impl Card {
-    fn save(&self) {
-        let Ok(mut file) = OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(format!("./cards/{}.ron", self.name))
-        else {
-            return;
+impl TryFrom<PathBuf> for Card {
+    type Error = ();
+    fn try_from(path: PathBuf) -> Result<Self, Self::Error> {
+        let Ok(s) = fs::read_to_string(path) else {
+            return Err(());
         };
 
-        file.write_all(ron::to_string(self).unwrap().as_bytes())
-            .unwrap();
+        ron::de::from_str::<Self>(s.as_str()).map_err(|_| ())
+    }
+}
+
+/// A deck manifest: card name paired with how many copies it contains.
+#[derive(Serialize, Deserialize)]
+struct Deck(Vec<(CardNamed, u32)>);
+
+impl TryFrom<PathBuf> for Deck {
+    type Error = ();
+    fn try_from(path: PathBuf) -> Result<Self, Self::Error> {
+        let Ok(s) = fs::read_to_string(path) else {
+            return Err(());
+        };
+
+        ron::de::from_str::<Self>(s.as_str()).map_err(|_| ())
     }
 }
 trait State {}
 
 struct Player {
-    deck: Vec<Card>,
+    personal_deck: Vec<Card>,
+    hand: Vec<Card>,
+    on_board: Vec<Card>,
     discard_pile: Vec<Card>,
+    hp: u32,
 }
 
 fn main() {}

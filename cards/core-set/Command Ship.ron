@@ -1,12 +1,12 @@
 (
-    name: "Command Ship",
+    name: CommandShip,
     faction: TradeFederation,
     card_type: Ship,
     cost: 8,
     effect: Sequence([
-        TargetedEffect(Resource(Authority, 4)),
-        TargetedEffect(Resource(Attack, 5)),
+        Base(Resource(Authority, 4)),
+        Base(Resource(Combat, 5)),
         Draw(Number(2)),
-        If(HasAlly(TradeFederation), TargetedEffect(DestroyTargetBase)),
+        If(HasAlly(TradeFederation), Base(DestroyTargetBase)),
     ]),
 )
