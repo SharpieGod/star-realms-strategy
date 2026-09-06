@@ -1,0 +1,9 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+"Promos (Battlecruiser Storage Box),
+Promos (Imperial Fighter Deck Box)",1,Mercenary Garrison,"{Star Empire Ally}: {Gain 2 Combat}
+<hr>
+{Machine Cult Ally}: Scrap a card from your hand or discard pile.
+<hr>
+{Trade Federation Ally}: {Gain 3 Authority}
+<hr>
+{Blob Ally}: Scrap up to two cards currently in the trade row.",Base,Unaligned,4,5 Outpost,Trade Deck,

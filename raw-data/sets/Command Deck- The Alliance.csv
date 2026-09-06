@@ -1,0 +1,30 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Command Deck: The Alliance,1,Super Freighter,"{Gain 4 Trade}
+Draw two cards.
+<hr>
+{Alliance Ally (Star Empire or Trade Federation)}: Draw a card.",Ship,Star Empire / Trade Federation,8,,Trade Deck,
+Command Deck: The Alliance,1,Cargo Boat,"{Gain 2 Trade}
+<hr>
+{Trade Federation Ally}: {Gain 2 Authority}",Ship,Trade Federation,,,Trade Deck,"<a href=""https://www.starrealms.com/faq/#errata"">Errata</a> - This card's secondary ability is a Trade Federation ally ability."
+Command Deck: The Alliance,1,Diplomatic Shuttle,{Gain 1 Trade} OR {Gain 5 Authority},Ship,Trade Federation,,,Trade Deck,
+Command Deck: The Alliance,1,Federation Scout,"{Gain 1 Trade}
+<hr>
+{Trade Federation Ally}: The next {Trade Federation} card you acquire this turn costs {1 Trade} less.",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alliance,1,Imperial Viper,"{Gain 1 Combat}
+<hr>
+{Star Empire Ally}: You may discard a card. If you do, draw a card.",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alliance,1,Ranger,{Gain 1 Trade} OR {Gain 2 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alliance,4,Scout,{Gain 1 Trade},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alliance,1,Stellar Falcon,"{Gain 2 Combat}
+<hr>
+{Star Empire Ally}: Target opponent discards a card.",Ship,Star Empire,,,Trade Deck,
+Command Deck: The Alliance,1,Tribute Transport,"{Gain 2 Trade}
+OR draw a card, then discard a card.",Ship,Star Empire,,,Trade Deck,
+Command Deck: The Alliance,1,Viper,{Gain 1 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alliance,1,Nandi’s Onslaught | Rules (Part 1 of 3),"{Scrap}:
+{Gain a Star Empire Ally} {Gain a Trade Federation Ally}
+Draw two cards, then you and each opponent discard a card.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Alliance,1,Alliance Procurement | Rules (Part 2 of 3),"Once each turn, you may gain {2 Trade} or put the next ship or base you acquire on top of your deck.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Alliance,1,Fleet Director Nandi | Rules (Part 3 of 3),"<i>(Hand Size: 5, Starting Authority: 68)</i>",Legendary Commander,,,,Commander | Rules,
+Command Deck: The Alliance,1,Scorecard (40-70) | Scorecard (00-30),,,,,,Scorecard,
+Command Deck: The Alliance,1,Scorecard (00-09) | Scorecard (80-89),,,,,,Scorecard,

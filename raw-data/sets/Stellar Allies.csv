@@ -1,0 +1,28 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Stellar Allies,2,Alignment Bot,"{Gain 2 Trade}
+<hr>
+{Scrap}: Scrap a card from your discard pile <u>or</u> Gain {2 Combat} and target opponent discards a card.",Ship,Machine Cult / Star Empire,1,,Trade Deck,
+Stellar Allies,1,Missile Silo,"{Gain 3 Combat}
+<hr>
+{Star Empire Ally}: Target opponent discards a card.
+<hr>
+{Machine Cult Ally}: Destroy target base.",Base,Machine Cult / Star Empire,6,5 Outpost,Trade Deck,
+Stellar Allies,2,Needle Lancer,"{Gain 5 Combat}
+<hr>
+{Alignment Ally (Machine Cult or Star Empire)}: Copy an ally ability that you’ve already used this turn.",Ship,Machine Cult / Star Empire,3,,Trade Deck,
+Stellar Allies,2,Pact Pod,"{Gain 2 Trade}
+<hr>
+{Blob Ally}: {Gain 5 Combat}
+<hr>
+{Trade Federation Ally}: {Gain 1 Trade}",Ship,Blob / Trade Federation,2,,Trade Deck,
+Stellar Allies,2,Pact Warship,"{Gain 5 Combat}
+<hr>
+{Blob Ally}: Destroy target base.
+<hr>
+{Trade Federation Ally}: {Gain 5 Authority}",Ship,Blob / Trade Federation,4,,Trade Deck,
+Stellar Allies,1,Summit Site,Draw two cards.,Base,Blob / Trade Federation,8,6,Trade Deck,
+Stellar Allies,1,The Citadel,Target opponent discards a card. You may scrap a card in your hand or discard pile.,Base,Machine Cult / Star Empire,7,7 Outpost,Trade Deck,
+Stellar Allies,1,Trade Hive,"{Gain 2 Trade}
+<hr>
+{Pact Ally (Blob or Trade Federation)}: Draw a card.",Base,Blob / Trade Federation,5,4,Trade Deck,
+Stellar Allies,1,Rules (Faction Pairs) | Ad (Star Realms United),,Rules,,,,Rules,

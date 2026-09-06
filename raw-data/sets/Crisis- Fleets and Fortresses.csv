@@ -1,0 +1,25 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Crisis: Fleets and Fortresses,1,Border Fort,"{Gain 1 Trade} OR {Gain 2 Combat}
+<hr>
+{Machine Cult Ally}: Scrap a card in your hand or discard pile.",Base,Machine Cult,4,5 Outpost,Trade Deck,
+Crisis: Fleets and Fortresses,1,Capitol World,{Gain 6 Authority} Draw a card.,Base,Trade Federation,8,6 Outpost,Trade Deck,
+Crisis: Fleets and Fortresses,2,Cargo Launch,"Draw a card.
+<hr>
+{Scrap}: {Gain 1 Trade}",Ship,Star Empire,1,,Trade Deck,
+Crisis: Fleets and Fortresses,2,Customs Frigate,"You may acquire a ship of cost four or less for free and put it on top of your deck.
+<hr>
+{Trade Federation Ally}: {Gain 4 Combat}
+<hr>
+{Scrap}: Draw a card.",Ship,Trade Federation,4,,Trade Deck,
+Crisis: Fleets and Fortresses,1,Death World,"{Gain 4 Combat}
+You may scrap a Trade Federation, Machine Cult, or Star Empire card from your hand or discard pile. If you do, draw a card.",Base,Blob,7,6,Trade Deck,
+Crisis: Fleets and Fortresses,2,Patrol Bot,"{Gain 2 Trade} OR {Gain 4 Combat}
+<hr>
+{Machine Cult Ally}: Scrap a card in your hand or discard pile.",Ship,Machine Cult,2,,Trade Deck,
+Crisis: Fleets and Fortresses,2,Spike Pod,"{Gain 3 Combat}
+You may scrap up to two cards currently in the Trade Row.
+<hr>
+{Scrap}: {Gain 2 Combat}",Ship,Blob,1,,Trade Deck,
+Crisis: Fleets and Fortresses,1,Star Fortress,"{Gain 3 Combat} Draw a card, then discard a card.
+<hr>
+{Star Empire Ally}: Draw a card, then discard a card.",Base,Star Empire,7,6 Outpost,Trade Deck,

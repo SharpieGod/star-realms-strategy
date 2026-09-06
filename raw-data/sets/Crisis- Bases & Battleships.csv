@@ -1,0 +1,28 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Crisis: Bases & Battleships,1,Construction Hauler,"{Gain 3 Authority} {Gain 2 Trade}
+Draw a card.
+<hr>
+{Trade Federation Ally}: Put the next base you acquire this turn directly into play.",Ship,Trade Federation,6,,Trade Deck,
+Crisis: Bases & Battleships,2,Defense Bot,"{Gain 1 Combat}
+You may scrap a card in your hand or discard pile. If you control two or more bases, gain {8 Combat}",Ship,Machine Cult,2,,Trade Deck,
+Crisis: Bases & Battleships,2,Fighter Base,{Star Empire Ally}: Target opponent discards a card.,Base,Star Empire,3,5 Outpost,Trade Deck,
+Crisis: Bases & Battleships,1,Imperial Trader,"{Gain 3 Trade}
+Draw a card.
+<hr>
+{Star Empire Ally}: {Gain 4 Combat}",Ship,Star Empire,5,,Trade Deck,
+Crisis: Bases & Battleships,1,Mega Mech,"{Gain 6 Combat}
+You may return target base from play to its owner's hand.
+<hr>
+{Star Empire Ally}: Draw a card.",Ship,Machine Cult,5,,Trade Deck,
+Crisis: Bases & Battleships,1,Obliterator,"{Gain 7 Combat}
+If your opponent has two or more bases in play, gain an additional {6 Combat}
+<hr>
+{Blob Ally}: Draw a card.",Ship,Blob,6,,Trade Deck,
+Crisis: Bases & Battleships,2,Trade Raft,"{Gain 1 Trade}
+<hr>
+{Trade Federation Ally}: Draw a card.
+<hr>
+{Scrap}: {Gain 1 Trade}",Ship,Trade Federation,1,,Trade Deck,
+Crisis: Bases & Battleships,2,Trade Wheel,"{Gain 1 Trade}
+<hr>
+{Blob Ally}: {Gain 2 Combat}",Base,Blob,3,5,Trade Deck,

@@ -1,0 +1,37 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+High Alert: Requisition,2,Corsair,"{Gain 3 Trade}
+<hr>
+{Trade Federation Ally}: {Gain 4 Combat}
+<hr>
+Pay {1 Trade} less to acquire this card for each {Trade Federation} card you have in play.",Ship,Trade Federation,3,,Trade Deck,
+High Alert: Requisition,2,Hellfire,"{5 Combat}: Target opponent discards a card.
+<hr>
+{Star Empire Ally}: Draw a card, then discard a card.
+<hr>
+Pay {1 Trade} less to acquire this card for each {Star Empire} card you have in play.",Ship,Star Empire,4,,Trade Deck,
+High Alert: Requisition,1,Lunar Landing,"For each {Trade Federation} card you have in play, gain {1 Authority} and draw a card.
+<hr>
+Pay {1 Trade} less to acquire this card for each {Trade Federation} card you have in play.",Base,Trade Federation,9,5,Trade Deck,
+High Alert: Requisition,2,Operations Platform,"{Gain 1 Trade} or {Gain 1 Combat}
+<hr>
+Pay {1 Trade} less to acquire this card for each {Machine Cult} card you have in play.",Base,Machine Cult,3,4,Trade Deck,
+High Alert: Requisition,1,Swarm Colony,"Discard a card.
+<hr>
+{Blob Ally}: {Gain 4 Combat}
+<hr>
+Pay {1 Trade} less to acquire this card for each {blob} card you have in play.",Base,Blob,6,5,Trade Deck,
+High Alert: Requisition,1,Tanker Mech,"{Gain 4 Trade}
+<hr>
+{Machine Cult} Scrap a card in your hand or discard pile.
+<hr>
+{Scrap}: Draw a card.
+<hr>
+Pay {1 Trade} less to acquire this card for each {Machine Cult} card you have in play.",Ship,Machine Cult,5,,Trade Deck,
+High Alert: Requisition,1,The Armory,"{3 Trade}: Target opponent discards a card.
+<hr>
+Pay {1 Trade} less to acquire this card for each {Star Empire} card you have in play.",Base,Star Empire,7,6,Trade Deck,
+High Alert: Requisition,2,Warrior Pod,"{Gain 4 Combat}
+<hr>
+{Blob Ally}: {Gain 3 Combat}
+<hr>
+Pay {1 Trade} less to acquire this card for each {Blob} card you have in play.",Ship,Blob,2,,Trade Deck,

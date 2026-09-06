@@ -1,0 +1,33 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Command Deck: The Union,1,Meganaut,"{Gain 7 Combat} Draw a card.
+<hr>
+{Union Ally (Blob or Star Empire)}: Draw a card.
+<hr>
+{Scrap}: {Gain 6 Combat}",Ship,Blob / Star Empire,8,,Trade Deck,
+Command Deck: The Union,1,Cluster Viper,"{Gain 2 Combat}
+<hr>
+{Blob Ally}: {Gain 1 Combat}",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Union,1,Imperial Scout,"{Gain 1 Trade}
+<hr>
+{Star Empire Ally}: {Gain 2 Combat}",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Union,1,Imperial Talon,"{Gain 2 Combat}
+<hr>
+{Star Empire Ally}: {Gain 2 Combat}",Ship,Star Empire,,,Trade Deck,
+Command Deck: The Union,1,Protopod,"{Gain 2 Trade}
+<hr>
+{Blob Ally}: {Gain 1 Combat}",Ship,Blob,,,Trade Deck,
+Command Deck: The Union,1,Ranger,{Gain 1 Trade} OR {Gain 2 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Union,1,Ripper,{Gain 3 Combat},Ship,Blob,,,Trade Deck,
+Command Deck: The Union,4,Scout,{Gain 1 Trade},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Union,1,Tribute Transport,"{Gain 2 Trade}
+OR draw a card, then discard a card.",Ship,Star Empire,,,Trade Deck,
+Command Deck: The Union,1,Viper,{Gain 1 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Union,1,McCready's Maneuver | Rules (Part 1 of 3),"{Scrap}:
+{Gain 5 Combat} {Gain a Blob Ally} {Gain a Star Empire Ally}
+Draw a card.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Union,1,Union Blitz | Rules (Part 2 of 3),"{Blob Ally}: {Gain 1 Combat}
+<hr>
+{Star Empire Ally}: {Gain 1 Combat}",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Union,1,Hive Admiral McCready | Rules (Part 3 of 3),"<i>(Hand Size: 6, Starting Authority: 60)</i>",Legendary Commander,,,,Commander | Rules,
+Command Deck: The Union,1,Scorecard (40-70) | Scorecard (00-30),,,,,,Scorecard,
+Command Deck: The Union,1,Scorecard (00-09) | Scorecard (80-89),,,,,,Scorecard,

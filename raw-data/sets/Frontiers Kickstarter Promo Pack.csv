@@ -1,0 +1,73 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Frontiers Kickstarter Promo Pack,1,Ad (Thank You Backers) | Rules (Kickstarter Promo Pack),,Rules,,,,Rules,
+Frontiers Kickstarter Promo Pack,1,Assimilator,"{Gain 5 Trade} OR {Gain 8 Combat}
+You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: Scrap this card from play. Move a card from an opponent’s discard pile to yours.",Ship,Machine Cult,7,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Assur 4,"{Gain 5 Authority}
+<hr>
+{Trade Federation Ally}: {Gain 2 Trade}
+<hr>
+{Double Trade Federation Ally}: Draw a card.",Base,Trade Federation,5,5,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Blockade Runner,"Discard up to two cards, then draw that many cards.
+<hr>
+{Star Empire Ally}: Scrap this card from play. Draw a card. Target opponent discards a card.",Ship,Star Empire,1,,Trade Deck,
+Frontiers Kickstarter Promo Pack,3,Cargo Rocket,"{Gain 3 Authority} {Gain 2 Combat} {Gain 1 Trade}
+<hr>
+{Trade Federation Ally}: Scrap this card from play. Put the next ship you acquire this turn on top of your deck.",Ship,Trade Federation,1,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Converter,"Whenever you scrap a card from your hand or discard pile, gain {2 Combat}
+<hr>
+{Machine Cult Ally}: Scrap a card from your hand.
+<hr>
+{Double Machine Cult Ally}: Scrap a card from your discard pile.",Base,Machine Cult,5,6 Outpost,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Demolisher,"{Gain 6 Combat}
+Draw a card.
+<hr>
+{Star Empire Ally}: Scrap this card from play. Draw two cards. Target opponent discards two cards.",Ship,Star Empire,7,,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Freight Raft,"{Gain 2 Trade} {Gain 4 Authority}
+<b>Trade Federation Docking:</b> During the discard phase, if you have a {Trade Federation} base in play, set this card aside. At the end of the draw phase, return it to your hand.",Ship,Trade Federation,3,,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Imperial Defender,"{Gain 1 Combat} Draw a card.
+<b>Star Empire Docking:</b> During the discard phase, if you have a {Star Empire} base in play, set this card aside. At the end of the draw phase, return it to your hand.",Ship,Star Empire,3,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Midgate Station,"Discard any number of cards. Gain {Trade} or {Combat} equal to the number of cards discarded plus 1.
+<hr>
+{Star Empire Ally}: Target opponent discards a card.
+<hr>
+{Double Star Empire Ally}: Draw a card.",Base,Star Empire,5,5 Outpost,Trade Deck,
+Frontiers Kickstarter Promo Pack,3,Plague Pod,"{Gain 2 Trade}
+<hr>
+{Blob Ally}: Scrap this card from play. Gain {6 Combat}",Ship,Blob,1,,Trade Deck,
+Frontiers Kickstarter Promo Pack,3,Recycle Bot,"{Gain 1 Trade}
+You may scrap a card in your hand.
+<hr>
+{Machine Cult Ally}: Scrap this card from play. Scrap a card in your hand or discard pile.",Ship,Machine Cult,1,,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Sentinel,"{Gain 5 Combat}
+<b>Blob Docking:</b> During the discard phase, if you have a {Blob} base in play, set this card aside. At the end of the draw phase, return it to your hand.",Ship,Blob,3,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Spawning Wurm,"{Gain 8 Combat}
+You may destroy target base.
+<hr>
+{Blob Ally}: Scrap this card from play. Gain {8 Combat}",Ship,Blob,7,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Swarming Point,"{Gain 3 Combat}
+<hr>
+{Blob Ally}: {Gain 3 Combat}
+<hr>
+{Double Blob Ally}: {Gain 3 Combat}",Base,Blob,5,5,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Temple Guardian,"{Gain 2 Trade} OR {Gain 4 Combat}
+<b>Machine Cult Docking:</b> During the discard phase, if you have a {Machine Cult} base in play, set this card aside. At the end of the draw phase, return it to your hand.",Ship,Machine Cult,3,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,The Colossus,"{Gain 10 Combat}
+Choose a faction as you play The Colossus. The Colossus has that faction. Draw a card for each card of that faction you have in play (including The Colossus).",Ship,Unaligned,9,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Trade Envoy,"{Gain 3 Trade} {Gain 5 Authority}
+Draw a card.
+<hr>
+{Trade Federation Ally}: Scrap this card from play. Put the next ship or base you acquire this turn into your hand.",Ship,Trade Federation,7,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Mobilization,"Each player may look at the top four cards of their deck, put any number of those cards into their discard pile, then put the remaining cards back on top of their deck in any order.",Event,,,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Patience Rewarded,"Each player may scrap a card in the trade row, then set it aside. For the rest of the game, players may acquire the card they set aside as if it were in the trade row.",Event,,,,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Powerful Backing,"The player currently taking their turn gains
+{1 Trade} {Two Machine Cult Allies} {Two Star Empire Allies} {Two Trade Federation Allies} {Two Blob Allies}
+Each other player gains
+{5 Authority}",Event,,,,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Recon Mission,Each player may acquire an Explorer for free and put it into their hand.,Event,,,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Superflare,"Each player shuffles their discard pile into their deck, then draws a card.",Event,,,,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Supply Run,Each player may either acquire an Explorer for free and put it on top of their deck or put a card from their discard pile on top of their deck.,Event,,,,Trade Deck,
+Frontiers Kickstarter Promo Pack,2,Tactical Maneuver,"The player currently taking their turn chooses to gain either {2 Trade} or {4 Combat}
+Each other player chooses to either gain {6 Authority} or draw a card.",Event,,,,Trade Deck,
+Frontiers Kickstarter Promo Pack,1,Wormhole,Each player may either put a card from their discard pile into their hand or draw a card.,Event,,,,Trade Deck,

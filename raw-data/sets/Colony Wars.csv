@@ -1,0 +1,144 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Colony Wars,2,Bioformer,"{Gain 3 Combat}
+<hr>
+{Scrap}: {Gain 3 Trade}",Base,Blob,4,4,Trade Deck,
+Colony Wars,3,Cargo Pod,"{Gain 3 Trade}
+<hr>
+{Blob Ally}: {Gain 3 Combat}
+<hr>
+{Scrap}: {Gain 3 Combat}",Ship,Blob,3,,Trade Deck,
+Colony Wars,1,Leviathan,"{Gain 9 Combat}
+Draw a card.
+You may destroy target base.
+<hr>
+{Blob Ally}: Acquire a card of cost three or less for free and put it into your hand.",Ship,Blob,8 ,,Trade Deck,
+Colony Wars,1,Moonwurm,"{Gain 8 Combat}
+Draw a card.
+<hr>
+{Blob Ally}: Acquire a card of cost two or less for free and put it into your hand.",Ship,Blob,7,,Trade Deck,
+Colony Wars,1,Parasite,"{Gain 6 Combat} OR
+Acquire a card of cost six or less for free.
+<hr>
+{Blob Ally}: Draw a card.",Ship,Blob,5,,Trade Deck,
+Colony Wars,1,Plasma Vent,"{Gain 4 Combat}
+When you acquire this card, if you've played a Blob card this turn, you may put this card directly into your hand.
+<hr>
+{Scrap}: Destroy target base.",Base,Blob,6,5,Trade Deck,
+Colony Wars,3,Predator,"{Gain 4 Combat}
+<hr>
+{Blob Ally}: Draw a card.",Ship,Blob,2,,Trade Deck,
+Colony Wars,2,Ravager,"{Gain 6 Combat}
+You may scrap up to two cards that are currently in the trade row.",Ship,Blob,3 ,,Trade Deck,
+Colony Wars,3,Stellar Reef,"{Gain 1 Trade}
+<hr>
+{Scrap}: {Gain 3 Combat}",Base,Blob,2,3,Trade Deck,
+Colony Wars,3,Swarmer,"{Gain 3 Combat}
+You may scrap a card in the trade row.
+<hr>
+{Blob Ally}: {Gain 2 Combat}",Ship,Blob,1,,Trade Deck,
+Colony Wars,3,Battle Bot,"{Gain 2 Combat}
+You may scrap a card in your hand.
+<hr>
+{Machine Cult Ally}: {Gain 2 Combat}",Ship,Machine Cult,1,,Trade Deck,
+Colony Wars,3,Convoy Bot,"{Gain 4 Combat}
+You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: {Gain 2 combat}",Ship,Machine Cult,3,,Trade Deck,
+Colony Wars,1,Frontier Station,{Gain 2 Trade} OR {Gain 3 Combat},Base,Machine Cult,6,6 Outpost,Trade Deck,
+Colony Wars,1,Mech Cruiser,"{Gain 6 Combat}
+You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: Destroy target base.",Ship,Machine Cult,5,,Trade Deck,
+Colony Wars,2,Mining Mech,"{Gain 3 Trade}
+You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: {Gain 3 combat}",Ship,Machine Cult,4,,Trade Deck,
+Colony Wars,3,Repair Bot,"{Gain 2 Trade}
+You may scrap a card in your discard pile.
+<hr>
+{Scrap}: {Gain 2 Combat}",Ship,Machine Cult,2,,Trade Deck,
+Colony Wars,1,Stealth Tower,"Until your turn ends, Stealth Tower becomes a copy of any base in play. Stealth Tower has that base's faction in addition to Machine Cult.",Base,Machine Cult,5,5 Outpost,Trade Deck,
+Colony Wars,1,The Incinerator,"Scrap up to two cards in your hand and/or discard pile.
+<hr>
+{Machine Cult Ally}: Gain {2 Combat} for each card scrapped from your hand and/or discard pile this turn.",Base,Machine Cult,8,6 Outpost,Trade Deck,
+Colony Wars,1,The Oracle,"Scrap a card in your hand.
+<hr>
+{Machine Cult Ally}: {Gain 3 combat}",Base,Machine Cult,4,5 Outpost,Trade Deck,
+Colony Wars,1,The Wrecker,"{Gain 6 Combat}
+You may scrap up to two cards in your hand and/or discard pile.
+<hr>
+{Machine Cult Ally}: Draw a card.",Ship,Machine Cult,7,,Trade Deck,
+Colony Wars,3,Warning Beacon,"{Gain 2 Combat}
+When you acquire this card, if you've played a Machine Cult card this turn, you may put this card directly into your hand.",Base,Machine Cult,2,2 Outpost,Trade Deck,
+Colony Wars,1,Aging Battleship,"{Gain 5 Combat}
+<hr>
+{Star Empire Ally}: Draw a card.
+<hr>
+{Scrap}: {Gain 2 Combat} Draw 2 cards.",Ship,Star Empire,5,,Trade Deck,
+Colony Wars,2,Command Center,"{Gain 2 Trade}
+Whenever you play a Star Empire ship, gain {2 Combat}",Base,Star Empire,4,4 Outpost,Trade Deck,
+Colony Wars,1,Emperor's Dreadnaught,"{Gain 8 Combat}
+Draw a card.
+Target opponent discards a card.
+When you acquire this card, if you've played a Star Empire card this turn, you may put this card directly into your hand.",Ship,Star Empire,8,,Trade Deck,
+Colony Wars,2,Falcon,"{Gain 2 Combat}
+Draw a card.
+<hr>
+{Scrap}: Target opponent discards a card.",Ship,Star Empire,3,,Trade Deck,
+Colony Wars,2,Gunship,"{Gain 5 Combat}
+Target opponent discards a card.
+<hr>
+{Scrap}: {Gain 4 Trade}",Ship,Star Empire,4,,Trade Deck,
+Colony Wars,1,Heavy Cruiser,"{Gain 4 Combat}
+Draw a card.
+<hr>
+{Star Empire Ally}: Draw a card.",Ship,Star Empire,5,,Trade Deck,
+Colony Wars,1,Imperial Palace,"Draw a card. Target opponent discards a card.
+<hr>
+{Star Empire Ally}: {Gain 4 Combat}",Base,Star Empire,7,6 Outpost,Trade Deck,
+Colony Wars,3,Lancer,"{Gain 4 Combat}
+If an opponent controls a base, gain an additional {2 Combat}
+<hr>
+{Star Empire Ally}: Target opponent discards a card.",Ship,Star Empire,2,,Trade Deck,
+Colony Wars,3,Orbital Platform,"Discard a card. If you do, draw a card.
+<hr>
+{Star Empire Ally}: {Gain 3 Combat}",Base,Star Empire,3,4,Trade Deck,
+Colony Wars,3,Star Barge,"{Gain 2 Trade}
+<hr>
+{Star Empire Ally}: {Gain 2 Combat} Target opponent discards a card.",Ship,Star Empire,1,,Trade Deck,
+Colony Wars,1,Supply Depot,"Discard up to 2 cards. Gain {2 Trade} or {2 Combat} for each card discarded this way.
+<hr>
+{Star Empire Ally}: Draw a card.",Base,Star Empire,6,5 Outpost,Trade Deck,
+Colony Wars,2,Central Station,"{Gain 2 Trade}
+If you have three or more bases in play (including this one), gain {4 Authority} and draw a card.",Base,Trade Federation,4,5,Trade Deck,
+Colony Wars,1,Colony Seed Ship,"{Gain 3 Trade} {Gain 3 Combat} {Gain 3 Authority}
+When you acquire this card, if you've played a Trade Federation card this turn, you may put this card directly into your hand.",Ship,Trade Federation,5,,Trade Deck,
+Colony Wars,1,Factory World,"{Gain 3 Trade}
+Put the next ship or base you acquire this turn into your hand.",Base,Trade Federation,8,6 Outpost,Trade Deck,
+Colony Wars,1,Federation Shipyard,"{Gain 2 Trade}
+<hr>
+{Trade Federation Ally}: Put the next ship or base you acquire this turn on top of your deck.",Base,Trade Federation,6,6 Outpost,Trade Deck,
+Colony Wars,2,Frontier Ferry,"{Gain 3 Trade} {Gain 4 Authority}
+<hr>
+{Scrap}: Destroy Target Base.",Ship,Trade Federation,4,,Trade Deck,
+Colony Wars,1,Loyal Colony,{Gain 3 Trade} {Gain 3 Combat} {Gain 3 Authority},Base,Trade Federation,7,6,Trade Deck,
+Colony Wars,3,Patrol Cutter ,"{Gain 2 Trade} {Gain 3 Combat}
+<hr>
+{Trade Federation Ally}: {Gain 4 Authority}",Ship,Trade Federation,3,,Trade Deck,
+Colony Wars,1,Peacekeeper,"{Gain 6 Combat} {Gain 6 Authority}
+<hr>
+{Trade Federation Ally}: Draw a card.",Ship,Trade Federation,6,,Trade Deck,
+Colony Wars,3,Solar Skiff,"{Gain 2 Trade}
+<hr>
+{Trade Federation Ally}: Draw a card.",Ship,Trade Federation,1,,Trade Deck,
+Colony Wars,2,Storage Silo,"{Gain 2 Authority}
+<hr>
+{Trade Federation Ally}: {Gain 2 Trade}",Base,Trade Federation,2,3,Trade Deck,
+Colony Wars,3,Trade Hauler,"{Gain 3 Trade}
+<hr>
+{Trade Federation Ally}: {Gain 3 Authority}",Ship,Trade Federation,2,,Trade Deck,
+Colony Wars,10,Explorer,"{Gain 2 Trade}
+<hr>
+{Scrap}: {Gain 2 Combat}",Ship,Unaligned,2,,Explorer Pile,
+Colony Wars,16,Scout,{Gain 1 Trade},Ship,Unaligned,,,Personal Deck,
+Colony Wars,4,Viper,{Gain 1 Combat},Ship,Unaligned,,,Personal Deck,

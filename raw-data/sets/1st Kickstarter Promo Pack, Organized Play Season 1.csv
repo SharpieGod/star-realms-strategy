@@ -1,0 +1,11 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+"1st Kickstarter Promo Pack,
+Organized Play Season 1",2,Battle Screecher,"{Gain 5 Combat}
+You may scrap up to five cards currently in the trade row.
+<hr>
+{Blob Ally}: {Gain 2 Trade}",Ship,Blob,4,,Trade Deck,
+"1st Kickstarter Promo Pack,
+Organized Play Season 1",1,Megahauler,"{Gain 5 Authority}
+You may acquire any ship without paying its cost and put it on top of your deck.
+<hr>
+{Trade Federation Ally}: Draw a card.",Ship,Trade Federation,7,,Trade Deck,"<a href=""https://www.starrealms.com/faq/#errata"">Optional Errata</a> - You don't have to acquire a ship if you don't want to."

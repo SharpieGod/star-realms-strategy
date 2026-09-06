@@ -1,0 +1,79 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+High Alert: First Strike,1,Arcadia,"Scrap a card in your hand.
+<hr>
+{Machine Cult Ally}: Scrap a card in your discard pile.
+<hr>
+{Double Machine Cult Ally}: {Gain 6 Combat}",Base,Machine Cult,6,5,Trade Deck,
+High Alert: First Strike,1,Battle Star,"{3 Combat}
+<hr>
+{Star Empire Ally} {3 Combat}
+<hr>
+{Double Star Empire Ally}: Target opponent discards a card.",Base,Star Empire,6,5,Trade Deck,
+High Alert: First Strike,1,Blob Builder,"{Gain 5 Trade} You may scrap any number of cards currently in the trade row.
+<hr>
+{Blob Ally}: Acquire a base for free and put it directly on top of your deck.
+<hr>
+Pay {1 Combat} less to acquire this card for each {Blob} card you have in play.",Ship,Blob,7,,Trade Deck,The top ability is a primary ability that gives you 5 Trade and an effect. You do not pay 5 trade in order to activate the abiltiy.
+High Alert: First Strike,2,Cargo Barge,"{Gain 3 Trade}
+<hr>
+{Star Empire Ally}: Target opponent discards a card.
+<hr>
+{Scrap} Draw a card.
+<hr>
+Pay {1 Trade} less to acquire this card for each {Star Empire} card you have in play.",Ship,Star Empire,3,,Trade Deck,
+High Alert: First Strike,1,Command Cruiser,"{Gain 8 Combat}
+<hr>
+{Star Empire Ally}: Draw a card.
+<hr>
+{Double Star Empire Ally}: Draw a card.",Ship,Star Empire,6,,Trade Deck,
+High Alert: First Strike,2,Fighter Pod,"{Gain 3 Combat}
+<hr>
+{Blob Ally}: {Gain 2 Trade}
+<hr>
+{Double Blob Ally}: {Gain 3 Combat}",Ship,Blob,1,,Trade Deck,
+High Alert: First Strike,1,Freight Hauler,"{Gain 4 Trade}
+<hr>
+{Trade Federation Ally}: {Gain 4 Combat}
+<hr>
+{Double Trade Federation Ally}: Put the next card you acquire this turn directly into your hand.",Ship,Trade Federation,5,,Trade Deck,
+High Alert: First Strike,1,Industrial Upgrade,Pay {3 Trade}: Draw a card.,Tech,,5,,Trade Deck,
+High Alert: First Strike,1,Missile Launcher,Pay {3 Trade}: Gain {3 Combat},Tech,,4,,Trade Deck,
+High Alert: First Strike,1,Operations Center,"{Gain 2 Trade}
+<hr>
+{Trade Federation Ally}: {Gain 2 Authority}
+<hr>
+{Double Trade Federation Ally}: Draw a card.",Base,Trade Federation,4,4,Trade Deck,
+High Alert: First Strike,1,Parks Station,"{Gain 2 Trade}
+<hr>
+{Star Empire Ally}: {Gain 3 Combat}
+<hr>
+Pay {1 Trade} less to acquire this card for each {Star Empire} card you have in play.",Base,Star Empire,4,4,Trade Deck,
+High Alert: First Strike,2,Port Cutter,"{Gain 2 Trade} {Gain 2 Combat}
+<hr>
+{Trade Federation Ally}: {Gain 3 Authority}
+<hr>
+Pay {1 Trade} less to acquire this card for each {Trade Federation} card you have in play.",Ship,Trade Federation,2,,Trade Deck,
+High Alert: First Strike,1,Sapphire City Base,"{Gain 2 Combat} {Gain 2 Authority}
+<hr>
+Pay {1 Trade} less to acquire this card for each {Trade Federation} card you have in play.",Base,Trade Federation,5,,Trade Deck,
+High Alert: First Strike,2,Scavenger Bot,"{1 Trade} You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: {Gain 3 Combat}
+<hr>
+{Double Machine Cult Ally}: Draw a card.",Ship,Machine Cult,2,,Trade Deck,The top ability is a primary ability that gives you 1 Trade and an effect. You do not pay 1 trade in order to activate the abiltiy.
+High Alert: First Strike,1,Scrap Factory,"Scrap a card in your hand or discard pile.
+<hr>
+Pay {1 Trade} less to acquire this card for each {Machine Cult} card you have in play.",Base,Machine Cult,7,7,Trade Deck,
+High Alert: First Strike,1,Spike Colony,"{Gain 4 Combat}
+<hr>
+Pay {1 Trade} less to acquire this card for each {Blob} card you have in play.",Base,Blob,5,5,Trade Deck,
+High Alert: First Strike,1,Trading Colony,"{Gain 2 Trade}
+<hr>
+{Blob Ally}: {Gain 4 Combat}
+<hr>
+{Double Blob Ally}: Acquire a ship for free and put it directly on top of your deck.",Base,Blob,6,5,Trade Deck,
+High Alert: First Strike,1,War Mech,"{10 combat} Put up to two bsaes from your discard pile on top of your deck.
+<hr>
+{Combat}: Draw a card.
+<hr>
+Pay {1 Trade} less to acquire this card for each {Machine Cult} card you have in play.",Ship,Machine Cult,8,,Trade Deck,The top ability is a primary ability that gives you 10 Combat and an effect. You do not pay 10 Combat in order to activate the abiltiy.

@@ -1,0 +1,24 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Year 2 Promo Pack,1,Bounty Hunter,"{Gain 7 Combat}
+<hr>
+{Trade Federation Ally}: {Gain 5 Authority}",Ship,Trade Federation,5,,Trade Deck,
+Year 2 Promo Pack,1,Cargo Mech,"{Gain 4 Trade}
+You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: Destroy target base.",Ship,Machine Cult,5,,Trade Deck,
+Year 2 Promo Pack,2,Imperial Smuggler,"{Gain 3 Combat}
+Draw a card, then discard a card.
+<hr>
+{Scrap}: {Gain 2 Trade}",Ship,Star Empire,2,,Trade Deck,
+Year 2 Promo Pack,1,Knightstar,"{Gain 6 Combat}
+If an opponent has a base in play, gain an additional {3 Combat}
+<hr>
+{Star Empire Ally}: Draw a card.",Ship,Star Empire,5,,Trade Deck,
+Year 2 Promo Pack,2,Probe Bot,"{Gain 1 Trade} You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: Draw a card.
+<hr>
+{Scrap}: {Gain 3 Combat}",Ship,Machine Cult,2,,Trade Deck,
+Year 2 Promo Pack,2,War Kite,"{Gain 5 Combat}
+<hr>
+{Scrap}: Destroy target base.",Ship,Blob,2,,Trade Deck,

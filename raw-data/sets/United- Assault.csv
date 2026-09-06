@@ -1,0 +1,28 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+United: Assault,2,Alliance Transport,"{Gain 2 Trade}
+<hr>
+{Star Empire Ally}: Target opponent discards a card.
+<hr>
+{Trade Federation Ally}: {Gain 4 Authority}",Ship,Star Empire / Trade Federation,2,,Trade Deck,
+United: Assault,2,Blob Bot,"{Gain 5 Combat}
+<hr>
+{Blob Ally}: {Gain 2 Trade}
+<hr>
+{Machine Cult Ally}: Scrap a card in your hand or discard pile.",Ship,Blob / Machine Cult,3,,Trade Deck,
+United: Assault,2,Coalition Messenger,"{Gain 2 Trade}
+<hr>
+{Coalition Ally (Machine Cult or Trade Federation)}: Choose a card of cost five or less in your discard pile and put it on top of your deck.",Ship,Machine Cult / Trade Federation,3,,Trade Deck,
+United: Assault,1,Embassy Base,"Draw two cards, then discard a card.",Base,Star Empire / Trade Federation,8,6,Trade Deck,
+United: Assault,1,Exchange Point,"{Gain 2 Combat}
+<hr>
+{Unity Ally (Blob or Machine Cult)}: Scrap a card in your hand, your discard pile, or the trade row.",Base,Blob / Machine Cult,6,7,Trade Deck,
+United: Assault,1,Lookout Post,Draw a card.,Base,Machine Cult / Trade Federation,7,6 Outpost,Trade Deck,
+United: Assault,2,Trade Star,"{Gain 2 Trade}
+<hr>
+{Scrap}: {Gain 2 Combat}",Ship,Blob / Star Empire,1,,Trade Deck,
+United: Assault,1,Union Stronghold,"{Gain 3 Combat}
+<hr>
+{Blob Ally}: Scrap a card in the trade row.
+<hr>
+{Star Empire Ally}: Target opponent discards a card.",Base,Blob / Star Empire,5,5,Trade Deck,
+United: Assault,1,Rules (Faction Pairs) | Ad (Hero Realms),,Rules,,,,Rules,

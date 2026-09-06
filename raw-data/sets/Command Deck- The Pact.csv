@@ -1,0 +1,29 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Command Deck: The Pact,1,Super Carrier,"You may acquire a ship for free and put it into your hand.
+<hr>
+{Pact Ally (Blob or Trade Federation)}: Draw a card.",Ship,Blob / Trade Federation,8,,Trade Deck,
+Command Deck: The Pact,1,Cluster Scout,"{Gain 1 Trade}
+<hr>
+{Blob Ally}: {Gain 1 Combat} You may scrap a card in the trade row.",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Pact,1,Diplomatic Shuttle,{Gain 1 Trade} OR {Gain 5 Authority},Ship,Trade Federation,,,Trade Deck,
+Command Deck: The Pact,1,Escort Viper,"{Gain 1 Combat}
+<hr>
+{Trade Federation Ally}: {Gain 1 Trade}",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Pact,1,Frontier Tug,"{Gain 2 Trade}
+<hr>
+{Trade Federation Ally}: Shuffle the next base you acquire this turn into your deck.",Ship,Trade Federation,,,Trade Deck,
+Command Deck: The Pact,1,Ranger,{Gain 1 Trade} OR {Gain 2 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Pact,1,Ripper,{Gain 3 Combat},Ship,Blob,,,Trade Deck,
+Command Deck: The Pact,4,Scout,{Gain 1 Trade},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Pact,1,Swarmling,"{Gain 2 Combat}
+<hr>
+{Blob Ally}: {Gain 1 Combat} You may scrap a card in the trade row.
+",Ship,Blob,,,Trade Deck,
+Command Deck: The Pact,1,Viper,{Gain 1 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Pact,1,Newburg’s Game | Rules (Part 1 of 3),"{Scrap}:
+{Gain 3 Combat} {Gain 4 Authority} {Gain a Blob Ally} {Gain a Trade Federation Ally}
+Draw a card.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Pact,1,Pact Dominion | Rules (Part 2 of 3),"Each turn, the first time you gain Authority also gain {3 Combat}",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Pact,1,Overlord Newburg | Rules (Part 3 of 3),"<i>(Hand Size: 6, Starting Authority: 66)</i>",Legendary Commander,,,,Commander | Rules,
+Command Deck: The Pact,1,Scorecard (40-70) | Scorecard (00-30),,,,,,Scorecard,
+Command Deck: The Pact,1,Scorecard (00-09) | Scorecard (80-89),,,,,,Scorecard,

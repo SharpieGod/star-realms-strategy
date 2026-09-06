@@ -1,0 +1,13 @@
+(
+    name: "Blob World",
+    faction: Blob,
+    card_type: Base(7, false), // defense not given in the pasted data - confirm this number
+    cost: 8,
+    effects: [
+        Or(
+            TargetedEffect(Resource(Attack, 5)),
+            Draw(ShipsPlayed(Blob)),
+        ),
+    ],
+    on_scrap: None,
+)

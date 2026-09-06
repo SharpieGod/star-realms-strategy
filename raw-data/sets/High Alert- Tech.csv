@@ -1,0 +1,9 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+High Alert: Tech,2,Guidance,Pay {1 Trade}: Scrap a card in the trade row.,Tech,,1,,Trade Deck,
+High Alert: Tech,2,Laser,Pay {1 Trade}: Gain {1 Combat},Tech,,2,,Trade Deck,
+High Alert: Tech,1,Processing,Pay {2 Trade}: Put the next card you acquire this turn directly on top of your deck.,Tech,,4,,Trade Deck,
+High Alert: Tech,2,Shield,Pay {1 Trade}: Gain {1 Authority},Tech,,1,,Trade Deck,
+High Alert: Tech,1,Stealth,Pay {2 Trade}: Choose a faction. You ocunt as having an additional card of that faction in play this turn.,Tech,,3,,Trade Deck,
+High Alert: Tech,2,Stellar Link,Pay {2 Trade}: Look at the top two cards of your deck. Put one into your discard pile and the other back on top of your deck.,Tech,,3,,Trade Deck,
+High Alert: Tech,1,Tractor Beam,Pay {2 Trade}: Return target base to its owner's hand.,Tech,,4,,Trade Deck,
+High Alert: Tech,1,Warp,"Pay {2 Trade}: Draw a card, then discard a card.",Tech,,4,,Trade Deck,

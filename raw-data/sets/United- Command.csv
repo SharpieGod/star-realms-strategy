@@ -1,0 +1,31 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+United: Command,2,Alliance Frigate,"{Gain 4 Combat}
+<hr>
+{Star Empire Ally}: {Gain 3 Combat}
+<hr>
+{Trade Federation Ally}: {Gain 5 Authority}",Ship,Star Empire / Trade Federation,3,,Trade Deck,
+United: Command,1,Alliance Landing,"{Gain 2 Trade}
+<hr>
+{Alliance Ally (Star Empire or Trade Federation)}: {Gain 2 Combat}",Base,Star Empire / Trade Federation,5,5 Outpost,Trade Deck,
+United: Command,2,Assault Pod,"{Gain 3 Combat}
+<hr>
+{Union Ally (Blob or Star Empire)}: Draw a card.",Ship,Blob / Star Empire,2,,Trade Deck,
+United: Command,1,Coalition Fortress,"{Gain 2 Trade}
+<hr>
+{Coalition Ally (Machine Cult or Trade Federation)}: {Gain 2 Combat} OR {Gain 3 Authority}",Base,Trade Federation / Machine Cult,6,6 Outpost,Trade Deck,
+United: Command,2,Coalition Freighter,"{Gain 3 Trade}
+<hr>
+{Trade Federation Ally}: Put the next ship you acquire this turn on top of your deck.
+<hr>
+{Machine Cult Ally}: Scrap a card in your hand or discard pile.",Ship,Trade Federation / Machine Cult,4,,Trade Deck,
+United: Command,1,Union Cluster,"{Gain 4 Combat}
+<hr>
+{Union Ally (Blob or Star Empire)}: Draw a card.",Base,Blob / Star Empire,8,8,Trade Deck,
+United: Command,2,Unity Fighter,"{Gain 3 Combat}
+You may scrap a card in the trade row.
+<hr>
+{Scrap}: You may scrap a card in your hand or discard pile.",Ship,Blob / Machine Cult,1,,Trade Deck,
+United: Command,1,Unity Station,"Scrap a card in your hand or discard pile. You may scrap a card in the trade row.
+<hr>
+{Unity Ally (Blob or Machine Cult)}: {Gain 4 Combat}",Base,Blob / Machine Cult,7,6 Outpost,Trade Deck,
+United: Command,1,Rules (Faction Pairs) | Ad (Hero Realms),,Rules,,,,Rules,

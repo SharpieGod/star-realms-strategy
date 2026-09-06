@@ -3,7 +3,7 @@ use std::{fs::OpenOptions, io::Write};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    Faction::Neutral,
+    Faction::Unaligned,
     ResourceType::{Attack, Authority, Trade},
 };
 
@@ -19,7 +19,7 @@ enum Faction {
     Blob,
     StarEmpire,
     MachineCult,
-    Neutral,
+    Unaligned,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -47,6 +47,7 @@ enum ScrapType {
 
 enum Event {
     PlayShip(Faction), // Neutral = Any
+    Scrap,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -71,7 +72,10 @@ enum BaseEffect {
     DestroyTargetBase,
     ScrapCardInRow,
     OpponentDiscards,
-    AquireShipForFree { to_top_of_deck: bool },
+    AquireShipForFree {
+        to_top_of_deck: bool,
+        max_cost: Option<u32>,
+    },
     Resource(ResourceType, u32),
     Scrap(ScrapType, u32),
     Discard(u32),
@@ -80,7 +84,7 @@ enum BaseEffect {
 #[derive(Serialize, Deserialize)]
 enum CardType {
     Ship,
-    Base(u32, bool), // defense: u32, is_outpost: bool
+    Base { defense: u32, it_outpost: bool }, // defense: u32, is_outpost: bool
 }
 
 #[derive(Serialize, Deserialize)]
@@ -89,8 +93,7 @@ struct Card {
     faction: Faction,
     card_type: CardType,
     cost: u32,
-    effects: Vec<Effect>,
-    on_scrap: Option<Effect>,
+    effect: Effect,
     /// Mech World: counts as an ally for every faction while in play.
     #[serde(default)]
     is_all_faction_ally: bool,
@@ -101,12 +104,12 @@ impl Card {
         let Ok(mut file) = OpenOptions::new()
             .write(true)
             .create_new(true)
-            .open(format!("./cards/{}.json", self.name))
+            .open(format!("./cards/{}.ron", self.name))
         else {
             return;
         };
 
-        file.write_all(serde_json::to_string_pretty(self).unwrap().as_bytes())
+        file.write_all(ron::to_string(self).unwrap().as_bytes())
             .unwrap();
     }
 }

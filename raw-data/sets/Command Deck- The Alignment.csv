@@ -1,0 +1,29 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Command Deck: The Alignment,1,Mech Battleship,"You may scrap up to two cards from your hand and/or discard pile. Draw cards equal to the number of cards scrapped this way, then discard an equal number of cards.
+<hr>
+{Alignment Ally (Machine Cult or Star Empire)}: {Gain 6 Combat}",Ship,Machine Cult / Star Empire,8,,Trade Deck,
+Command Deck: The Alignment,1,Imperial Talon,"{Gain 2 Combat}
+<hr>
+{Star Empire Ally}: {Gain 2 Combat}",Ship,Star Empire,,,Trade Deck,
+Command Deck: The Alignment,1,Imperial Viper,"{Gain 1 Combat}
+<hr>
+{Star Empire Ally}: You may discard a card. If you do, draw a card.",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alignment,1,Ranger,{Gain 1 Trade} OR {Gain 2 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alignment,1,Salvage Drone,"{Gain 1 Trade}
+OR scrap a card in your hand or discard pile.",Ship,Machine Cult,,,Trade Deck,
+Command Deck: The Alignment,4,Scout,{Gain 1 Trade},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alignment,1,Scout Bot,"{Gain 1 Trade}
+<hr>
+{Machine Cult Ally}: Choose a card of cost two or less in your discard pile. Put it on top of your deck.",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alignment,1,Stellar Falcon,"{Gain 2 Combat}
+<hr>
+{Star Empire Ally}: Target opponent discards a card.",Ship,Star Empire,,,Trade Deck,
+Command Deck: The Alignment,1,Viper,{Gain 1 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Alignment,1,Welder Drone,{Gain 2 Trade} OR {Gain 2 Combat},Ship,Machine Cult,,,Trade Deck,
+Command Deck: The Alignment,1,Le's Foray | Rules (Part 1 of 3),"{Scrap}:
+{Gain a Star Empire Ally} {Gain a Machine Cult Ally}
+You may scrap a card in your hand or discard pile. If you do, draw a card.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Alignment,1,Alignment Ingenuity | Rules (Part 2 of 3),"Whenever you use a {Scrap} ability of a ship or base, you may draw a card, then discard a card.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Alignment,1,Divine Admiral Le | Rules (Part 3 of 3),"<i>(Hand Size: 6, Starting Authority: 64)</i>",Legendary Commander | Rules,,,,Commander | Rules,
+Command Deck: The Alignment,1,Scorecard (40-70) | Scorecard (00-30),,Scorecard,,,,Scorecard,
+Command Deck: The Alignment,1,Scorecard (00-09) | Scorecard (80-89),,Scorecard,,,,Scorecard,

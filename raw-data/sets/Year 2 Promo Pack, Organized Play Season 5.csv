@@ -1,0 +1,10 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+"Year 2 Promo Pack,
+Organized Play Season 5",2,Federal Transport,"{Gain 1 Trade} {Gain 5 Authority}
+<hr>
+{Trade Federation Ally}: {Gain 2 Trade}",Ship,Trade Federation,2,,Trade Deck,
+"Year 2 Promo Pack,
+Organized Play Season 5",1,Stellar Ray,"{Gain 3 Trade}
+Draw a card.
+<hr>
+{Scrap}: {Gain 6 Combat}",Ship,Blob,5,,Trade Deck,

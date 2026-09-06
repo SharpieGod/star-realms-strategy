@@ -1,0 +1,30 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Promo Pack 1,2,Battle Barge,"{Gain 5 Combat}
+Target opponent discards a card.
+If you have two or more bases in play, gain an additional {3 Combat} and you may return target base in play to its owner's hand.",Ship,Star Empire,4,,Trade Deck,
+Promo Pack 1,2,Battle Screecher,"{Gain 5 Combat}
+You may scrap up to five cards currently in the trade row.
+<hr>
+{Blob Ally}: {Gain 2 Trade}",Ship,Blob,4,,Trade Deck,
+Promo Pack 1,1,Breeding Site,"If you played a base this turn (including this one), gain {5 Combat}",Base,Blob,4,7,Trade Deck,
+Promo Pack 1,2,Fortress Oblivion,"If you played a base this turn (including this one), you may scrap a card in your hand or discard pile.",Base,Machine Cult,3,4 Outpost,Trade Deck,"<a href=""https://www.starrealms.com/faq/#errata"">Errata</a> - Added reminder text."
+Promo Pack 1,1,Megahauler,"{Gain 5 Authority}
+You may acquire any ship without paying its cost and put it on top of your deck.
+<hr>
+{Trade Federation Ally}: Draw a card.",Ship,Trade Federation,7,,Trade Deck,"<a href=""https://www.starrealms.com/faq/#errata"">Optional Errata</a> - You don't have to acquire a ship if you don't want to."
+Promo Pack 1,1,Mercenary Garrison,"{Star Empire Ally}: {2 Combat}
+<hr>
+{Machine Cult Ally}: Scrap a card from your hand or discard pile.
+<hr>
+{Trade Federation Ally}: {3 Authority}
+<hr>
+{Blob Ally}: Scrap up to two cards currently in the trade row.",Base,Unaligned,4,5 Outpost,Trade Deck,
+Promo Pack 1,2,Security Craft,"{Gain 4 Combat} {Gain 3 Authority}
+<hr>
+{Trade Federation Ally}: {Gain 3 Trade}",Ship,Trade Federation,4,,Trade Deck,
+Promo Pack 1,1,Starbase Omega,"If you played a base this turn (including this one), draw a card.",Base,Star Empire,4,6,Trade Deck,
+Promo Pack 1,2,Starmarket,"If you played a base this turn (including this one), gain {5 Authority} OR {3 Trade}",Base,Trade Federation,4,6,Trade Deck,"<a href=""https://www.starrealms.com/faq/#errata"">Optional Errata</a> - This card costs 4 to acquire."
+Promo Pack 1,1,The Ark,"{Gain 5 Combat}
+You may scrap up to two cards in your hand and/or discard pile. For each card scrapped this way, draw a card.
+<hr>
+{Scrap}: Destroy target base.",Ship,Machine Cult,7,,Trade Deck,

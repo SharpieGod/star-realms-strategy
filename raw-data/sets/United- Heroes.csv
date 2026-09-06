@@ -1,0 +1,33 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+United: Heroes,1,CEO Shaner,"{Gain a Trade Federation Ally}
+You may acquire a ship or base of cost three or less for free and put it on top of your deck.
+<hr>
+{Scrap}: {Gain a Trade Federation Ally} Draw a card.",Hero,Unaligned,5,,Trade Deck,
+United: Heroes,2,Chairman Haygan,"{Gain a Trade Federation Ally} {Gain 4 Authority}
+<hr>
+{Scrap}: {Gain a Trade Federation Ally} {Gain 4 Authority}",Hero,Unaligned,3,,Trade Deck,
+United: Heroes,2,Chancellor Hartman,"{Gain a Machine Cult Ally}
+You may scrap a card in your hand or discard pile.
+<hr>
+{Scrap}: {Gain a Machine Cult Ally} You may scrap a card in your hand or discard pile.",Hero,Unaligned,4,,Trade Deck,
+United: Heroes,2,Commander Klik,"{Gain a Star Empire Ally}
+You may discard a card. If you do, draw a card.
+<hr>
+{Scrap}: {Gain a Star Empire Ally} You may discard a card. If you do, draw a card.",Hero,Unaligned,4,,Trade Deck,
+United: Heroes,1,Commodore Zhang,"{Gain a Star Empire Ally} {Gain 4 Combat}
+Target opponent discards a card.
+<hr>
+{Scrap}: {Gain a Star Empire Ally} Draw a card.",Hero,Unaligned,5,,Trade Deck,
+United: Heroes,1,Confessor Morris,"{Gain a Machine Cult Ally}
+You may scrap up to two cards in your hand and/or discard pile.
+<hr>
+{Scrap}: {Gain a Machine Cult Ally} Draw a card.",Hero,Unaligned,5,,Trade Deck,
+United: Heroes,1,Hive Lord,"{Gain a Blob Ally} {Gain 5 Combat}
+Scrap any number of cards currently in the trade row.
+<hr>
+{Scrap}: {Gain a Blob Ally} Draw a card.",Hero,Unaligned,5,,Trade Deck,
+United: Heroes,2,Screecher,"{Gain a Blob Ally} {Gain 2 Combat}
+You may scrap a card in the trade row.
+<hr>
+{Scrap}: {Gain a Blob Ally} {Gain 2 Combat} You may scrap a card in the trade row.",Hero,Unaligned,3,,Trade Deck,
+United: Heroes,1,Rules (Heroes) | Rules (Hero Faction Abilities),,Rules,,,,Rules,

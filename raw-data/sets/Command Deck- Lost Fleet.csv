@@ -1,0 +1,24 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Command Deck: Lost Fleet,1,Lost Dreadnaught,"{Gain 7 Combat}
+Draw two cards. Lost Dreadnaught has all factions.",Ship,Unaligned,8,,Trade Deck,
+Command Deck: Lost Fleet,3,Assault Shard,"{Gain 1 Combat}
+<hr>
+{Splinter}: {Gain 4 Combat}",Ship,Unaligned,,,Trade Deck,
+Command Deck: Lost Fleet,2,Command Shard,"{Gain 1 Trade}
+You may treat this card as having any name when using a {Splinter} ability.",Ship,Unaligned,,,Trade Deck,
+Command Deck: Lost Fleet,3,Recon Shard,"{Gain 1 Trade}
+<hr>
+{Splinter}: {Gain 5 Authority}",Ship,Unaligned,,,Trade Deck,
+Command Deck: Lost Fleet,3,Salvage Shard,"{Gain 1 Trade}
+<hr>
+{Splinter}: Scrap a card in your hand or discard pile.",Ship,Unaligned,,,Trade Deck,
+Command Deck: Lost Fleet,3,Transport Shard,"{Gain 1 Trade}
+<hr>
+{Splinter}: Draw a card, then discard a card.",Ship,Unaligned,,,Trade Deck,
+Command Deck: Lost Fleet,1,Splinter Tech | Rules (Part 1 of 2),"Whenever you use a {Splinter} ability, choose a faction. You count as having a card of that faction in play this turn.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: Lost Fleet,1,Jochum's Grand Design | Rules (Part 2 of 2),"{Scrap}:
+{Gain a Star Empire Ally} {Gain a Trade Federation Ally} {Gain a Machine Cult Ally} {Gain a Blob Ally}
+Put a card from your discard pile into your hand.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: Lost Fleet,1,High Admiral Jochum | Rules (Splinter Abilities),"<i>(Hand Size: 7, Starting Authority: 72)</i>",Legendary Commander,,,,Commander | Rules,
+Command Deck: Lost Fleet,1,Scorecard (40-70) | Scorecard (00-30),,,,,,Scorecard,
+Command Deck: Lost Fleet,1,Scorecard (00-09) | Scorecard (80-89),,,,,,Scorecard,

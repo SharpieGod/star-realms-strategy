@@ -1,0 +1,31 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+High Alert: Invasion,1,Alpha Max,"{Gain 5 Combat} Draw a card.
+<hr>
+{Blob Ally}: Draw a card.
+<hr>
+{Double Blob Ally}: Draw a card.",Ship,Blob,7,,Trade Deck,
+High Alert: Invasion,1,Arsenal,"{Gain 2 Combat}
+Draw a card, then discard a card.",Base,Star Empire,5,5,Trade Deck,
+High Alert: Invasion,2,Cargo Raptor,"{Gain 3 Trade}
+<hr>
+{Star Empire Ally}: {Gain 2 Combat}
+<hr>
+{Double Star Empire Ally}: Target opponent discards a card.",Ship,Star Empire,2,,Trade Deck,
+High Alert: Invasion,2,Fusion Bot,"{Gain 5 Combat}
+<hr>
+{Machine Cult Ally}: Scrap a card in your hand or discard pile.
+<hr>
+{Double Machine Cult Ally}: Draw a card.",Ship,Machine Cult,3,,Trade Deck,
+High Alert: Invasion,1,Mech Fortress,"Draw a card.
+You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: {Gain 5 Combat}",Base,Machine Cult,8,6,Trade Deck,
+High Alert: Invasion,1,Naval Yard,{Gain 3 Trade} or {Gain 4 Authority},Base,Trade Federation,6,6,Trade Deck,
+High Alert: Invasion,2,Swarm Cell,"{Gain 2 Combat}
+<hr>
+{Blob Ally}: {Gain 2 Combat}",Base,Blob,2,3,Trade Deck,
+High Alert: Invasion,2,Voyager,"{Gain 2 Trade}
+<hr>
+{Trade Federation Ally}: {Gain 2 Combat}
+<hr>
+{Double Trade Federation Ally}: {Gain 4 Authority}",Ship,Trade Federation,1,,Trade Deck,

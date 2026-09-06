@@ -1,0 +1,17 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Crisis: Heroes,1,Admiral Rasmusson,"{Scrap}:
+{Gain a Star Empire Ally} <i>(Until end of turn, you may use all of your {Star Empire} abilities.)</i>
+Draw a card.",Hero,Unaligned,2,,Trade Deck,
+Crisis: Heroes,1,Blob Overlord,"{Scrap}: {Gain 4 Combat} {Gain a Blob Ally} <i>(Until end of turn, you may use all of your {Blob} Ally abilities.)</i>",Hero,Unaligned,2,,Trade Deck,
+Crisis: Heroes,1,CEO Torres,"{Scrap}: {Gain 7 Authority} {Gain a Trade Federation Ally} <i>(Until end of turn, you may use all of your {Trade Federation} Ally abilities.)</i>",Hero,Unaligned,2,,Trade Deck,
+Crisis: Heroes,2,Cunning Captain,"{Scrap}:
+{Gain a Star Empire Ally} <i>(Until end of turn, you may use all of your {Star Empire} Ally abilities.)</i>
+Target player discards a card.",Hero,Unaligned,1,,Trade Deck,
+Crisis: Heroes,1,High Priest Lyle,"{Scrap}:
+{Gain a Machine Cult Ally} <i>(Until end of turn, you may use all of your {Machine Cult} Ally abilities.)</i>
+You may scrap a card from your hand or discard pile.",Hero,Unaligned,2,,Trade Deck,
+Crisis: Heroes,2,Ram Pilot,"{Scrap}: {Gain 2 Combat} {Gain a Blob Ally} <i>(Until end of turn, you may use all of your {Blob} Ally abilities.)</i>",Hero,Unaligned,1,,Trade Deck,
+Crisis: Heroes,2,Special Ops Director,"{Scrap}: {Gain 4 Authority} {Gain a Trade Federation Ally} <i>(Until end of turn, you may use all of your {Trade Federation} Ally abilities.)</i>",Hero,Unaligned,1,,Trade Deck,
+Crisis: Heroes,2,War Elder,"{Scrap}:
+{Gain a Machine Cult Ally} <i>(Until end of turn, you may use all of your {Machine Cult} Ally abilities.)</i>
+You may scrap a card from your hand.",Hero,Unaligned,1,,Trade Deck,

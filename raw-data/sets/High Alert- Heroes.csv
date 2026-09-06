@@ -1,0 +1,61 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+High Alert: Heroes,1,Administrator Tung,"{Gain an Alignment Ally}
+<hr>
+{Scrap}: {Gain an Alignment Ally}",Hero,Machine Cult / Star Empire,1,,Trade Deck,
+High Alert: Heroes,1,Bio-Captain Kalle,"Gain a Union Ally}
+<hr>
+{Scrap}:
+{Gain a Union Ally}
+Choose One:
+• {2 Combat} Target oppenent discards a card.
+• {3 Combat} Scrap a card in the trade row.",Hero,Blob / Star Empire,3,,Trade Deck,
+High Alert: Heroes,1,Bio-Warrior Storm,"Gain a Union Ally}
+<hr>
+{Scrap}: {Gain a Union Ally}",Hero,Blob / Star Empire,1,,Trade Deck,
+High Alert: Heroes,1,Biodroid Otto,"{Gain a Unity Ally}
+<hr>
+{Scrap}:
+{Gain a Unity Ally}
+Choose One:
+• {3 Combat} Scrap a card in the trade row.
+• Scrap a card in your hand or discard pile.",Hero,Blob / Machine Cult,4,,Trade Deck,
+High Alert: Heroes,1,Bioform Freeman,"{Gain a Unity Ally}
+<hr>
+{Scrap}: {Gain a Unity Ally}",Hero,Blob / Machine Cult,1,,Trade Deck,
+High Alert: Heroes,1,Data Priest Kaufman,"{Gain a Coalition Ally}
+<hr>
+{Scrap}: {Gain a Coalition Ally}",Hero,Trade Federation / Machine Cult,1,,Trade Deck,
+High Alert: Heroes,1,Doctor Clark,"{Gain an Alliance Ally}
+<hr>
+{Scrap}: {Gain an Alliance Ally}",Hero,Trade Federation / Star Empire,1,,Trade Deck,
+High Alert: Heroes,1,High Admiral Shaner,"{Gain an Alliance Ally}
+<hr>
+{Scrap}:
+{Gain an Alliance Ally}
+Choose One:
+• {2 Combat} Target opponent discards a card.
+• Gain {6 Authority}.",Hero,Trade Federation / Star Empire,3,,Trade Deck,
+High Alert: Heroes,1,Pact Manager Scott,"{Gain a Pact Ally}
+<hr>
+{Scrap}:
+{Gain a Pact Ally}
+Choose One:
+• {3 Combat} Scrap a card in the trade row.
+• Gain {6 Authority}.",Hero,Blob / Trade Federation,3,,Trade Deck,
+High Alert: Heroes,1,Pact Searcher Sheldon,"{Gain a Pact Ally}
+<hr>
+{Scrap}: {Gain a Pact Ally}",Hero,Blob / Trade Federation,1,,Trade Deck,
+High Alert: Heroes,1,Strategist Thompson,"{Gain a Coalition Ally}
+<hr>
+{Scrap}:
+{Gain a Coalition Ally}
+Choose One:
+• Scrap a card in your hand or discard pile.
+• Gain {6 Authority}.",Hero,Trade Federation / Machine Cult,3,,Trade Deck,
+High Alert: Heroes,1,Templar Brehmer,"{Gain an Alignment Ally}
+<hr>
+{Scrap}:
+{Gain a Alignment Ally}
+Choose One:
+• {2 Combat}: Target opponent discards a card.
+• Scrap a card in your hand or discard pile.",Hero,Star Empire / Machine Cult,3,,Trade Deck,

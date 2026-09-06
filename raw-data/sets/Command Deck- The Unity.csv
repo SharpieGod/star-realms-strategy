@@ -1,0 +1,34 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Command Deck: The Unity,1,Mech Wurm,"You may scrap up to two cards from your hand and/or discard pile. Gain {4 Combat} for each card scrapped in this way.
+<hr>
+{Unity Ally (Blob or Machine Cult)}: Draw a card.",Ship,Blob / Machine Cult,8,,Trade Deck,
+Command Deck: The Unity,1,Cluster Viper,"{Gain 2 Combat}
+<hr>
+{Blob Ally}: {Gain 1 Combat}",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Unity,1,Laser Drone,"{Gain 2 Combat}
+<hr>
+{Machine Cult Ally}: {Gain 1 Combat}
+<hr>
+{Double Machine Cult Ally}: {Gain 2 Combat}",Ship,Machine Cult,,,Trade Deck,
+Command Deck: The Unity,1,Protopod,"{Gain 2 Trade}
+<hr>
+{Blob Ally}: {Gain 1 Combat}",Ship,Blob,,,Trade Deck,
+Command Deck: The Unity,1,Ranger,{Gain 1 Trade} OR {Gain 2 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Unity,4,Scout,{Gain 1 Trade},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Unity,1,Scout Bot,"{Gain 1 Trade}
+<hr>
+{Machine Cult Ally}: Choose a card of cost two or less in your discard pile. Put it on top of your deck.",Ship,Unaligned,,,Trade Deck,
+Command Deck: The Unity,1,Swarmling,"{Gain 2 Combat}
+<hr>
+{Blob Ally}: {Gain 1 Combat} You may scrap a card in the trade row.",Ship,Blob,,,Trade Deck,
+Command Deck: The Unity,1,Viper,{Gain 1 Combat},Ship,Unaligned,,,Trade Deck,
+Command Deck: The Unity,1,Welder Drone,{Gain 2 Trade} OR {Gain 2 Combat},Ship,Machine Cult,,,Trade Deck,
+Command Deck: The Unity,1,Walsh's Stratagem | Rules (Part 1 of 3),"{Scrap}:
+{Gain 2 Trade} {Gain a Machine Cult Ally} {Gain a Blob Ally}
+Put the next base you acquire this turn directly into play.",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Unity,1,Unity Warcraft | Rules (Part 2 of 3),"Your bases get {+1 defense}
+Your opponent’s bases get {-1 defense}
+<i>(This affects both regular bases and Outposts.)</i>",Gambit | Rules,,,,Gambit | Rules,
+Command Deck: The Unity,1,Biolord Walsh | Rules (Part 3 of 3),"<i>(Hand Size: 6, Starting Authority: 70)</i>",Legendary Commander,,,,Commander | Rules,
+Command Deck: The Unity,1,Scorecard (40-70) | Scorecard (00-30),,,,,,Scorecard,
+Command Deck: The Unity,1,Scorecard (00-09) | Scorecard (80-89),,,,,,Scorecard,

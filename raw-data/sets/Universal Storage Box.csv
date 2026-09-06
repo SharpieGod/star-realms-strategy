@@ -1,0 +1,38 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Universal Storage Box,2,Brooder,"{Gain 6 Combat}
+Put a random Pod Token into play.
+<hr>
+{Blob Ally}: Hatch a Pod Token.",Ship,Blob,4,,Trade Deck,
+Universal Storage Box,2,Embassy Transport,"{Gain 3 Trade} {Gain 3 Authority}
+<hr>
+{Scrap}: Draw a card for each base you have in play.",Ship,Trade Federation,4,,Trade Deck,
+Universal Storage Box,2,Orbital Crane,"{Gain 2 Trade}
+You may return target base to its owner’s hand.
+<hr>
+{Star Empire Ally}: Draw a card.",Ship,Star Empire,3,,Trade Deck,
+Universal Storage Box,2,Recovery Mech,"{Gain 5 Combat}
+You may put a card from your discard pile on top of your deck.",Ship,Machine Cult,4,,Trade Deck,
+Universal Storage Box,1,Mutant Drone | Pod Token,"Acquire a card of cost two or less for free and put it into your hand.
+When this card leaves play, return it to the Pod Token pile.
+|
+When this card leaves play, return it to the Pod Token pile.
+<hr>
+{Blob Ally}: If this Pod Token didn’t come into play this turn, it hatches (flip it over).",Ship | Base,Blob,,| 2,Token,
+Universal Storage Box,3,Warrior Drone | Pod Token,"{Gain 3 Combat}
+When this card leaves play, return it to the Pod Token pile.
+|
+When this card leaves play, return it to the Pod Token pile.
+<hr>
+{Blob Ally}: If this Pod Token didn’t come into play this turn, it hatches (flip it over).",Ship | Base,Blob,,| 2,Token,
+Universal Storage Box,2,Worker Drone | Pod Token,"{Gain 2 Trade}
+When this card leaves play, return it to the Pod Token pile.
+|
+When this card leaves play, return it to the Pod Token pile.
+<hr>
+{Blob Ally}: If this Pod Token didn’t come into play this turn, it hatches (flip it over).",Ship | Base,Blob,,| 2,Token,
+Universal Storage Box,1,Young Queen | Pod Token,"Draw two cards.
+When this card leaves play, return it to the Pod Token pile.
+|
+When this card leaves play, return it to the Pod Token pile.
+<hr>
+{Blob Ally}: If this Pod Token didn’t come into play this turn, it hatches (flip it over).",Ship | Base,Blob,,| 2,Token,

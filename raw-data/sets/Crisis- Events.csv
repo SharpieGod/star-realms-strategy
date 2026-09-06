@@ -1,0 +1,10 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Crisis: Events,1,Black Hole,"Each player may discard up to two cards. For each card less than two that a player discards, that player loses {4 Authority}",Event,Unaligned,,,Trade Deck,
+Crisis: Events,1,Bombardment,Each player either destroys a base they control or loses {6 Authority},Event,Unaligned,,,Trade Deck,
+Crisis: Events,2,Comet,Each player may scrap up to two cards in their hand or discard pile.,Event,Unaligned,,,Trade Deck,
+Crisis: Events,1,Galactic Summit,Each player gains {7 Authority},Event,Unaligned,,,Trade Deck,
+Crisis: Events,2,Quasar,Each player draws two cards.,Event,Unaligned,,,Trade Deck,
+Crisis: Events,1,Supernova,"Each player loses {5 Authority}
+Scrap all cards in the trade row.",Event,Unaligned,,,Trade Deck,
+Crisis: Events,2,Trade Mission,The player currently taking their turn gains {4 Trade} and may put the next ship they acquire this turn on top of their deck. Each other player draws two cards.,Event,Unaligned,,,Trade Deck,
+Crisis: Events,2,Warp Jump,"Each player draws three cards, then puts two of those cards back on top of their deck in any order.",Event,Unaligned,,,Trade Deck,

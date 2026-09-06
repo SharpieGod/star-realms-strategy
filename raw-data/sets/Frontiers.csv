@@ -1,0 +1,171 @@
+Set,Qty,Name,Text,Type,Faction / Color,Cost,Defense,Role,Notes
+Frontiers,1,Blob Alpha,{Gain 10 Combat},Ship,Blob,6,,Trade Deck,
+Frontiers,3,Blob Miner,"{Gain 3 Trade}
+You may scrap a card in the trade row.
+<hr>
+{Scrap}: {Gain 2 Combat}",Ship,Blob,2,,Trade Deck,
+Frontiers,2,Burrower,"{Gain 5 Combat}
+<hr>
+{Blob Ally}: Draw a card.
+<hr>
+{Scrap}: Acquire a card of cost four or less for free.",Ship,Blob,3,,Trade Deck,
+Frontiers,2,Crusher,"{Gain 6 Combat}
+<hr>
+{Blob Ally}: {Gain 2 Trade}",Ship,Blob,3,,Trade Deck,
+Frontiers,1,Hive Queen,"{Gain 7 Combat} Draw a card.
+<hr>
+{Blob Ally}: {Gain 3 Combat}
+<hr>
+{Double Blob Ally}: {Gain 3 Combat}",Ship,Blob,7,,Trade Deck,
+Frontiers,1,Infested Moon,"{Gain 4 Combat}
+<hr>
+{Blob Ally}: Draw a card.
+<hr>
+{Double Blob Ally}: Draw a card.",Base,Blob,6,5,Trade Deck,
+Frontiers,2,Moonwurm Hatchling,"{Gain 3 Trade} or destroy target base.
+<hr>
+{Blob Ally}: {Gain 3 Combat}
+<hr>
+{Double Blob Ally}: {Gain 3 Combat}",Ship,Blob,4,,Trade Deck,
+Frontiers,1,Nesting Ground,"{Gain 2 Trade}
+<hr>
+{Blob Ally}: {Gain 4 Combat}",Base,Blob,4,5,Trade Deck,
+Frontiers,1,Pulverizer,"Scrap a card in the trade row, and gain {Combat} equal to its cost.
+<hr>
+{Blob Ally}: Draw a card.",Ship,Blob,5,,Trade Deck,
+Frontiers,2,Spike Cluster,"{Gain 2 Combat}
+<hr>
+{Blob Ally}: {Gain 1 Trade}",Base,Blob,2,3,Trade Deck,
+Frontiers,3,Stinger,"{Gain 3 Combat}
+<hr>
+{Blob Ally}: {Gain 3 Combat}
+<hr>
+{Scrap}: {Gain 1 Trade}",Ship,Blob,1,,Trade Deck,
+Frontiers,1,Swarm Cluster,"{Gain 5 Combat}
+<hr>
+{Blob Ally}: {Gain 3 Combat}
+<hr>
+{Double Blob Ally}: {Gain 3 Combat}",Base,Blob,8,8,Trade Deck,
+Frontiers,3,Builder Bot,"{Gain 1 Trade} You may scrap a card in your discard pile.
+<hr>
+{Machine Cult Ally}: {Gain 1 Trade}
+<hr>
+{Scrap}: {Gain 2 Combat}",Ship,Machine Cult,1,,Trade Deck,
+Frontiers,1,Conversion Yard,"You may scrap a card in your hand. If you do, gain {4 Combat}",Base,Machine Cult,5,4 Outpost,Trade Deck,
+Frontiers,2,Defense System,"{Gain 2 Combat}
+<hr>
+{Machine Cult Ally}: {Gain 2 Combat}",Base,Machine Cult,4,5 Outpost,Trade Deck,
+Frontiers,3,Destroyer Bot,"{Gain 5 Combat}
+You may scrap a card in your discard pile.",Ship,Machine Cult,3,,Trade Deck,
+Frontiers,1,Enforcer Mech,"{Gain 5 Combat} You may scrap a card in your hand or discard pile.
+<hr>
+{Machine Cult Ally}: Destroy target base.
+<hr>
+{Scrap}: Draw a card.",Ship,Machine Cult,5,,Trade Deck,
+Frontiers,2,Integration Port,{Gain 1 Trade},Base,Machine Cult,3,5 Outpost,Trade Deck,
+Frontiers,1,Nanobot Swarm,"{Gain 5 Combat}
+Draw two cards. You may scrap up to two cards in your hand and/or discard pile.",Ship,Machine Cult,8,,Trade Deck,
+Frontiers,1,Neural Nexus,"Scrap a card in your hand or discard pile and gain {Combat} equal to its cost.
+<hr>
+{Machine Cult Ally}: Draw a card.",Base,Machine Cult,7,6 Outpost,Trade Deck,
+Frontiers,3,Plasma Bot,"{Gain 3 Combat}
+You may scrap a card in your hand.
+<hr>
+{Machine Cult Ally}: {Gain 2 Combat}",Ship,Machine Cult,2,,Trade Deck,
+Frontiers,1,Reclamation Station,"Scrap a card in your discard pile.
+<hr>
+{Scrap}: Gain {3 Combat} for each of your cards that you scrapped this turn (including this one).",Base,Machine Cult,6,6 Outpost,Trade Deck,
+Frontiers,2,Repair Mech,"{Gain 3 Trade} OR
+Put a base from your discard pile on top of your deck.
+<hr>
+{Machine Cult Ally}: You may scrap a card in your hand or discard pile.",Ship,Machine Cult,4,,Trade Deck,
+Frontiers,2,Captured Outpost,"Draw a card, then discard a card.",Base,Star Empire,3,3 Outpost,Trade Deck,
+Frontiers,3,Cargo Craft,"{Gain 2 Trade}
+Target opponent discards a card.
+<hr>
+{Star Empire Ally}: {Gain 4 Combat}",Ship,Star Empire,2,,Trade Deck,
+Frontiers,2,Farm Ship,"{Gain 3 Trade}
+Draw a card, then discard a card.
+<hr>
+{Scrap}: {Gain 4 Combat}",Ship,Star Empire,4,,Trade Deck,
+Frontiers,3,Frontier Hawk,"{Gain 3 Combat}
+Draw a card, then discard a card.",Ship,Star Empire,1,,Trade Deck,
+Frontiers,1,Hammerhead,"{Gain 3 Combat}
+Draw a card. Target opponent discards a card.
+<hr>
+{Star Empire Ally}: Draw a card, then discard a card.",Ship,Star Empire,5,,Trade Deck,
+Frontiers,1,Imperial Flagship,"{Gain 7 Combat}
+Draw two cards.
+<hr>
+{Star Empire Ally}: Target player discards a card.",Ship,Star Empire,8,,Trade Deck,
+Frontiers,1,Jamming Terminal,"{Gain 2 Combat}
+Target opponent discards a card.",Base,Star Empire,5,6,Trade Deck,
+Frontiers,3,Light Cruiser,"{Gain 4 Combat} Target opponent discards a card.
+<hr>
+{Star Empire Ally}: {Gain 2 Combat}
+<hr>
+{Double Star Empire Ally}: Draw a card.",Ship,Star Empire,3,,Trade Deck,
+Frontiers,2,Orbital Gun Platform,"{Gain 3 Combat}
+<hr>
+{Scrap}: {Gain 3 Trade}",Base,Star Empire,4,4 Outpost,Trade Deck,
+Frontiers,1,Siege Fortress,"{Gain 5 Combat}
+<hr>
+{Star Empire Ally}: {Gain 4 Combat}",Base,Star Empire,7,5 Outpost,Trade Deck,
+Frontiers,1,Warpgate Cruiser,"Discard any number of cards and gain {2 Combat} for each. Draw a card.
+<hr>
+{Star Empire Ally}: Draw a card.",Ship,Star Empire,6,,Trade Deck,
+Frontiers,1,Federation Battleship,"{Gain 5 Combat} {Gain 5 Authority} Draw a card.
+<hr>
+{Trade Federation Ally}: Destroy target base.
+<hr>
+{Scrap}: {Gain 10 Authority}",Ship,Trade Federation,7,,Trade Deck,
+Frontiers,1,Federation Cruiser,"{Gain 5 Combat} {Gain 4 Authority}
+<hr>
+{Trade Federation Ally}: {Gain 2 Combat} {Gain 2 Authority}",Ship,Trade Federation,5,,Trade Deck,
+Frontiers,3,Frontier Runner,{Gain 2 Trade} {Gain 2 Authority},Ship,Trade Federation,1,,Trade Deck,
+Frontiers,1,Gateship,"Acquire a ship or base of cost six or less for free, and put it on top of your deck.
+<hr>
+{Trade Federation Ally}: {Gain 5 Authority}",Ship,Trade Federation,6,,Trade Deck,
+Frontiers,1,Ion Station,"{Gain 2 Trade}
+<hr>
+{Trade Federation Ally}: {Gain 1 Trade}
+<hr>
+{Double Trade Federation Ally}: {Gain 4 Combat} {Gain 4 Authority}",Base,Trade Federation,5,5 Outpost,Trade Deck,
+Frontiers,2,Long Hauler,"{Gain 3 Trade}
+<hr>
+{Trade Federation Ally}: {Gain 2 Trade}
+<hr>
+{Scrap}: Put the next base you acquire this turn on top of your deck.",Ship,Trade Federation,4,,Trade Deck,
+Frontiers,2,Mobile Market,"{Gain 2 Trade}
+<hr>
+{Scrap}: Gain {2 Authority} and draw a card. At end of turn, move Mobile Market from the scrap heap to your discard pile.",Base,Trade Federation,4,4 Outpost,Trade Deck,
+Frontiers,3,Orbital Shuttle,"{Gain 3 Trade}
+If you have two or more bases in play, gain {4 Authority} and draw a card.",Ship,Trade Federation,2,,Trade Deck,
+Frontiers,3,Outland Station,"{Gain 1 Trade} OR {Gain 3 Authority}
+<hr>
+{Scrap}: Draw a card.",Base,Trade Federation,3,4,Trade Deck,
+Frontiers,2,Patrol Boat,"{Gain 4 Combat} {Gain 3 Authority}
+<hr>
+{Trade Federation Ally}: {Gain 2 Authority}",Ship,Trade Federation,3,,Trade Deck,
+Frontiers,1,Transit Nexus,{Gain 3 Combat} {Gain 4 Trade} {Gain 5 Authority},Base,Trade Federation,8,6,Trade Deck,
+Frontiers,16,Explorer,"{Gain 2 Trade}
+<hr>
+{Scrap}: {Gain 2 Combat}",Ship,Unaligned,2,,Trade Deck,
+Frontiers,32,Scout,{Gain 1 Trade},Ship,Unaligned,,,Trade Deck,
+Frontiers,8,Viper,{Gain 1 Combat},Ship,Unaligned,,,Trade Deck,
+Frontiers,1,Scorecard (40-70) | Scorecard (00-30),,Scorecard,Green,,,Scorecard,
+Frontiers,1,Scorecard (00-09) | Scorecard (80-89),,Scorecard,Green,,,Scorecard,
+Frontiers,1,Scorecard (40-70) | Scorecard (00-30),,Scorecard,Red,,,Scorecard,
+Frontiers,1,Scorecard (00-09) | Scorecard (80-89),,Scorecard,Red,,,Scorecard,
+Frontiers,1,Scorecard (40-70) | Scorecard (00-30),,Scorecard,Yellow,,,Scorecard,
+Frontiers,1,Scorecard (00-09) | Scorecard (80-89),,Scorecard,Yellow,,,Scorecard,
+Frontiers,1,Scorecard (40-70) | Scorecard (00-30),,Scorecard,Blue,,,Scorecard,
+Frontiers,1,Scorecard (00-09) | Scorecard (80-89),,Scorecard,Blue,,,Scorecard,
+Frontiers,1,Automatons | Rules (Automatons),,Challenge,,,,Challenge,
+Frontiers,1,Blob Assault | Rules (Blob Assault),,Challenge,,,,Challenge,
+Frontiers,1,Defy the Empire | Rules (Defy the Empire),,Challenge,,,,Challenge,
+Frontiers,1,Dimensional Horror | Rules (Dimensional Horror),,Challenge,,,,Challenge,
+Frontiers,1,Madness of the Machine | Rules (Madness of the Machine),,Challenge,,,,Challenge,
+Frontiers,1,Nemesis Beast | Rules (Nemesis Beast),,Challenge,,,50 x Players,Challenge,
+Frontiers,1,Pirates of the Dark Star | Rules (Pirates of the Dark Star),,Challenge,,,25 x Players,Challenge,
+Frontiers,1,The Cost of Freedom | Rules (The Cost of Freedom),,Challenge,,,,Challenge,
