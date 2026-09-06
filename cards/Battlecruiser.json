@@ -1,0 +1,26 @@
+{
+  "name": "Battlecruiser",
+  "faction": "StarEmpire",
+  "card_type": "Ship",
+  "cost": 6,
+  "effects": [
+    {
+      "Sequence": [
+        { "TargetedEffect": { "Resource": ["Attack", 5] } },
+        { "Draw": { "Number": 1 } }
+      ]
+    },
+    {
+      "If": [
+        { "HasAlly": "StarEmpire" },
+        { "TargetedEffect": "OpponentDiscards" }
+      ]
+    }
+  ],
+  "on_scrap": {
+    "Sequence": [
+      { "Draw": { "Number": 1 } },
+      { "May": { "TargetedEffect": "DestroyTargetBase" } }
+    ]
+  }
+}
