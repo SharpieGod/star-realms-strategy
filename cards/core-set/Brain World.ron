@@ -1,0 +1,13 @@
+(
+    name: "Brain World",
+    faction: MachineCult,
+    card_type: Base(defense: 6, it_outpost: true),
+    cost: 8,
+    effect: May(Or(Sequence([
+        TargetedEffect(Scrap(HandOrDiscardPile, 1)),
+        Draw(Number(1)),
+    ]), Sequence([
+        TargetedEffect(Scrap(HandOrDiscardPile, 2)),
+        Draw(Number(2)),
+    ]))),
+)

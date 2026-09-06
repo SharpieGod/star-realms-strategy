@@ -1,0 +1,11 @@
+(
+    name: "Missile Mech",
+    faction: MachineCult,
+    card_type: Ship,
+    cost: 6,
+    effect: Sequence([
+        TargetedEffect(Resource(Attack, 6)),
+        May(TargetedEffect(DestroyTargetBase)),
+        If(HasAlly(MachineCult), Draw(Number(1))),
+    ]),
+)

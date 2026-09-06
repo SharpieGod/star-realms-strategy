@@ -1,0 +1,13 @@
+(
+    name: "Recycling Station",
+    faction: StarEmpire,
+    card_type: Base(defense: 4, it_outpost: true),
+    cost: 4,
+    effect: Or(TargetedEffect(Resource(Trade, 1)), May(Or(Sequence([
+        TargetedEffect(Discard(1)),
+        Draw(Number(1)),
+    ]), Sequence([
+        TargetedEffect(Discard(2)),
+        Draw(Number(2)),
+    ])))),
+)

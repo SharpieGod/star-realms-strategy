@@ -1,0 +1,10 @@
+(
+    name: "Patrol Mech",
+    faction: MachineCult,
+    card_type: Ship,
+    cost: 4,
+    effect: Sequence([
+        Or(TargetedEffect(Resource(Trade, 3)), TargetedEffect(Resource(Attack, 5))),
+        If(HasAlly(MachineCult), May(TargetedEffect(Scrap(HandOrDiscardPile, 1)))),
+    ]),
+)

@@ -1,0 +1,12 @@
+(
+    name: "Imperial Frigate",
+    faction: StarEmpire,
+    card_type: Ship,
+    cost: 3,
+    effect: Sequence([
+        TargetedEffect(Resource(Attack, 4)),
+        TargetedEffect(OpponentDiscards),
+        If(HasAlly(StarEmpire), TargetedEffect(Resource(Attack, 2))),
+        On(Scrap, Draw(Number(1))),
+    ]),
+)

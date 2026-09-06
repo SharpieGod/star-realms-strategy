@@ -1,0 +1,10 @@
+(
+    name: "Trade Pod",
+    faction: Blob,
+    card_type: Ship,
+    cost: 2,
+    effect: Sequence([
+        TargetedEffect(Resource(Trade, 3)),
+        If(HasAlly(Blob), TargetedEffect(Resource(Attack, 2))),
+    ]),
+)

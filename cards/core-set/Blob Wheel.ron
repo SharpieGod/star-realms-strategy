@@ -1,0 +1,10 @@
+(
+    name: "Blob Wheel",
+    faction: Blob,
+    card_type: Base(defense: 5, it_outpost: false),
+    cost: 3,
+    effect: Sequence([
+        TargetedEffect(Resource(Attack, 1)),
+        On(Scrap, TargetedEffect(Resource(Trade, 3))),
+    ]),
+)

@@ -1,0 +1,11 @@
+(
+    name: "Imperial Fighter",
+    faction: StarEmpire,
+    card_type: Ship,
+    cost: 1,
+    effect: Sequence([
+        TargetedEffect(Resource(Attack, 2)),
+        TargetedEffect(OpponentDiscards),
+        If(HasAlly(StarEmpire), TargetedEffect(Resource(Attack, 2))),
+    ]),
+)

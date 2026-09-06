@@ -1,0 +1,10 @@
+(
+    name: "The Hive",
+    faction: Blob,
+    card_type: Base(defense: 5, it_outpost: false),
+    cost: 5,
+    effect: Sequence([
+        TargetedEffect(Resource(Attack, 3)),
+        If(HasAlly(Blob), Draw(Number(1))),
+    ]),
+)

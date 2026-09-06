@@ -1,0 +1,11 @@
+(
+    name: "Survey Ship",
+    faction: StarEmpire,
+    card_type: Ship,
+    cost: 3,
+    effect: Sequence([
+        TargetedEffect(Resource(Trade, 1)),
+        Draw(Number(1)),
+        On(Scrap, TargetedEffect(OpponentDiscards)),
+    ]),
+)

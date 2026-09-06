@@ -1,0 +1,11 @@
+(
+    name: "Flagship",
+    faction: TradeFederation,
+    card_type: Ship,
+    cost: 6,
+    effect: Sequence([
+        TargetedEffect(Resource(Attack, 5)),
+        Draw(Number(1)),
+        If(HasAlly(TradeFederation), TargetedEffect(Resource(Authority, 5))),
+    ]),
+)

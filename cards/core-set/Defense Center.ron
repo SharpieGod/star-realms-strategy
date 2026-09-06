@@ -1,0 +1,10 @@
+(
+    name: "Defense Center",
+    faction: TradeFederation,
+    card_type: Base(defense: 5, it_outpost: true),
+    cost: 5,
+    effect: Sequence([
+        Or(TargetedEffect(Resource(Authority, 3)), TargetedEffect(Resource(Attack, 2))),
+        If(HasAlly(TradeFederation), TargetedEffect(Resource(Attack, 2))),
+    ]),
+)

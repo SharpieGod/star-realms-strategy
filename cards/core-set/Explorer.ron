@@ -1,0 +1,10 @@
+(
+    name: "Explorer",
+    faction: Unaligned,
+    card_type: Ship,
+    cost: 2,
+    effect: Sequence([
+        TargetedEffect(Resource(Trade, 2)),
+        On(Scrap, TargetedEffect(Resource(Attack, 2))),
+    ]),
+)

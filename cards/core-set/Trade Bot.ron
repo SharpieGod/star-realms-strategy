@@ -1,0 +1,11 @@
+(
+    name: "Trade Bot",
+    faction: MachineCult,
+    card_type: Ship,
+    cost: 1,
+    effect: Sequence([
+        TargetedEffect(Resource(Trade, 1)),
+        May(TargetedEffect(Scrap(HandOrDiscardPile, 1))),
+        If(HasAlly(MachineCult), TargetedEffect(Resource(Attack, 2))),
+    ]),
+)

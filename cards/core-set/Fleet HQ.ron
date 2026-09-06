@@ -1,0 +1,7 @@
+(
+    name: "Fleet HQ",
+    faction: StarEmpire,
+    card_type: Base(defense: 8, it_outpost: false),
+    cost: 8,
+    effect: On(PlayShip(Unaligned), TargetedEffect(Resource(Attack, 1))),
+)

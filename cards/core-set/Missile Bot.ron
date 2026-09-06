@@ -1,0 +1,11 @@
+(
+    name: "Missile Bot",
+    faction: MachineCult,
+    card_type: Ship,
+    cost: 2,
+    effect: Sequence([
+        TargetedEffect(Resource(Attack, 2)),
+        May(TargetedEffect(Scrap(HandOrDiscardPile, 1))),
+        If(HasAlly(MachineCult), TargetedEffect(Resource(Attack, 2))),
+    ]),
+)

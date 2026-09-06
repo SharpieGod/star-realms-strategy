@@ -1,0 +1,10 @@
+(
+    name: "Barter World",
+    faction: TradeFederation,
+    card_type: Base(defense: 4, it_outpost: false),
+    cost: 4,
+    effect: Sequence([
+        Or(TargetedEffect(Resource(Authority, 2)), TargetedEffect(Resource(Trade, 2))),
+        On(Scrap, TargetedEffect(Resource(Attack, 5))),
+    ]),
+)

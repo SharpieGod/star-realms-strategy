@@ -1,0 +1,10 @@
+(
+    name: "Machine Base",
+    faction: MachineCult,
+    card_type: Base(defense: 6, it_outpost: true),
+    cost: 7,
+    effect: Sequence([
+        Draw(Number(1)),
+        TargetedEffect(Scrap(Hand, 1)),
+    ]),
+)

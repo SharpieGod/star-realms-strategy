@@ -1,13 +1,8 @@
 (
     name: "Blob World",
     faction: Blob,
-    card_type: Base(7, false), // defense not given in the pasted data - confirm this number
+    card_type: Base(defense: 7, it_outpost: false),
     cost: 8,
-    effects: [
-        Or(
-            TargetedEffect(Resource(Attack, 5)),
-            Draw(ShipsPlayed(Blob)),
-        ),
-    ],
-    on_scrap: None,
+    // defense not printed in the source data for this card - confirmed as 5 Combat OR draw text via user, defense value (7) is my best-known recollection and still needs verification
+    effect: Or(TargetedEffect(Resource(Attack, 5)), Draw(ShipsPlayed(Blob))),
 )

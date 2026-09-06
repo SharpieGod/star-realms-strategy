@@ -1,0 +1,10 @@
+(
+    name: "Trading Post",
+    faction: TradeFederation,
+    card_type: Base(defense: 4, it_outpost: true),
+    cost: 3,
+    effect: Sequence([
+        Or(TargetedEffect(Resource(Authority, 1)), TargetedEffect(Resource(Trade, 1))),
+        On(Scrap, TargetedEffect(Resource(Attack, 3))),
+    ]),
+)

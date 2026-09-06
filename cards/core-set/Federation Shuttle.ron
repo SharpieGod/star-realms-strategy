@@ -1,0 +1,10 @@
+(
+    name: "Federation Shuttle",
+    faction: TradeFederation,
+    card_type: Ship,
+    cost: 1,
+    effect: Sequence([
+        TargetedEffect(Resource(Trade, 2)),
+        If(HasAlly(TradeFederation), TargetedEffect(Resource(Authority, 4))),
+    ]),
+)
