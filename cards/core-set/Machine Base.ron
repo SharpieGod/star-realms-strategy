@@ -1,7 +1,7 @@
 (
     name: MachineBase,
     faction: MachineCult,
-    card_type: Base(defense: 6, it_outpost: true),
+    card_type: Base(defense: 6, is_outpost: true),
     cost: 7,
     effects: [
         Draw(Number(1)),

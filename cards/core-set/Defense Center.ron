@@ -1,7 +1,7 @@
 (
     name: DefenseCenter,
     faction: TradeFederation,
-    card_type: Base(defense: 5, it_outpost: true),
+    card_type: Base(defense: 5, is_outpost: true),
     cost: 5,
     effects: [
         Or(Resource(Authority, 3), Resource(Combat, 2)),

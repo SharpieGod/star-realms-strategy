@@ -1,7 +1,7 @@
 (
     name: TheHive,
     faction: Blob,
-    card_type: Base(defense: 5, it_outpost: false),
+    card_type: Base(defense: 5, is_outpost: false),
     cost: 5,
     effects: [
         Resource(Combat, 3),

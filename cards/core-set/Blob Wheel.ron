@@ -1,7 +1,7 @@
 (
     name: BlobWheel,
     faction: Blob,
-    card_type: Base(defense: 5, it_outpost: false),
+    card_type: Base(defense: 5, is_outpost: false),
     cost: 3,
     effects: [
         Resource(Combat, 1),

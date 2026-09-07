@@ -1,7 +1,7 @@
 (
     name: RecyclingStation,
     faction: StarEmpire,
-    card_type: Base(defense: 4, it_outpost: true),
+    card_type: Base(defense: 4, is_outpost: true),
     cost: 4,
     effects: [Or(Resource(Trade, 1), May(Or(Sequence([
         Discard(1),

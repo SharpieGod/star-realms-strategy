@@ -13,7 +13,10 @@ use rand::seq::{IndexedRandom, SliceRandom};
 use serde::{Deserialize, Serialize};
 
 use crate::{
+    CardIndex::InPlay,
+    CardNamed::{Scout, Viper},
     Faction::Unaligned,
+    PlayerAction::PlayCard,
     Resource::{Authority, Combat, Trade},
 };
 
@@ -122,7 +125,7 @@ enum Condition {
 impl Display for Condition {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Condition::HasAlly(faction) => write!(f, "has {faction} allly"),
+            Condition::HasAlly(faction) => write!(f, "{faction}"),
             Condition::And(condition, condition1) => write!(f, "{condition} and {condition1}"),
             Condition::BaseCountAtLeast(count) => write!(f, "at least {count} bases"),
         }
@@ -239,7 +242,7 @@ impl Display for Effect {
                     .iter()
                     .map(|e| format!("{{{e}}}"))
                     .collect::<Vec<String>>()
-                    .join(", ")
+                    .join(" -> ")
             ),
             Effect::On(event, effect) => write!(f, "{{on {event}}}: {{{effect}}}"),
             Effect::Draw(amount) => write!(
@@ -289,7 +292,7 @@ fn n_cards(n: u32) -> String {
 #[derive(Serialize, Deserialize, Debug)]
 enum CardType {
     Ship,
-    Base { defense: u32, it_outpost: bool }, // defense: u32, is_outpost: bool
+    Base { defense: u32, is_outpost: bool },
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -310,7 +313,7 @@ impl Display for Card {
 
         write!(
             f,
-            "({}) {}\n{}",
+            "({}) {}{}\n{}",
             self.cost.to_string().b_yellow(),
             match self.faction {
                 Faction::TradeFederation => n.blue(),
@@ -318,6 +321,16 @@ impl Display for Card {
                 Faction::StarEmpire => n.yellow(),
                 Faction::MachineCult => n.red(),
                 Unaligned => n,
+            },
+            match self.card_type {
+                CardType::Ship => "".to_string(),
+                CardType::Base {
+                    defense,
+                    is_outpost,
+                } => format!(
+                    " {defense} defense{}",
+                    if is_outpost { " outpost" } else { "" }
+                ),
             },
             if self.effects.is_empty() {
                 "no effects".to_string()
@@ -402,25 +415,43 @@ struct Player {
     hand: Vec<Card>,
     in_play: Vec<Card>,
     discard_pile: Vec<Card>,
-    hp: u32,
+    authority: u32,
+    trade: u32,
+    combat: u32,
 }
 
-struct Game<'a> {
-    players: [&'a Player; 2],
+struct Game {
+    players: [Player; 2],
     turn_number: u32,
 }
 
+impl Game {
+    fn new(player1: Player, player2: Player) -> Game {
+        player1
+            .personal_deck
+            .extend(CardCounts(vec![(Viper, 2), (Scout, 8)]));
+        Self {
+            players: [player1, player2],
+            turn_number: 0,
+        }
+    }
+}
+
 enum PlayerAction {
-    PlayCard(usize),
+    PlayCard(usize), // In play always
     Discard(usize),
-    Card(usize, CardAction),
+    Card(CardIndex, CardAction),
     DestroyTargetBase(usize),
 }
 
+enum CardIndex {
+    InPlay(usize),
+    DiscardPile(usize), // for selecting scraps
+}
 enum ChoiceValue {
     Bool(bool),
-    Index(usize),
-    Indicies(Vec<usize>),
+    Index(CardIndex),
+    Indicies(Vec<CardIndex>),
 }
 
 enum CardAction {
@@ -431,11 +462,15 @@ enum CardAction {
 fn main() {
     let card_counts = CardCounts::try_from(PathBuf::from("./cards/deck.ron")).unwrap();
 
+    let mut sorted = CARDS.iter().clone().map(|(_, c)| c).collect::<Vec<&Card>>();
+
+    sorted.sort_by(|a, b| format!("{:?}", a.name).cmp(&format!("{:?}", b.name)));
+
     println!(
         "{}",
-        CARDS
+        sorted
             .iter()
-            .map(|(_, c)| c.to_string())
+            .map(|c| c.to_string())
             .collect::<Vec<String>>()
             .join("\n\n")
     );

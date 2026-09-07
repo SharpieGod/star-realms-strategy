@@ -1,7 +1,7 @@
 (
     name: Junkyard,
     faction: MachineCult,
-    card_type: Base(defense: 5, it_outpost: true),
+    card_type: Base(defense: 5, is_outpost: true),
     cost: 6,
     effects: [May(Scrap(HandOrDiscardPile, 1))],
 )

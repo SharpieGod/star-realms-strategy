@@ -1,7 +1,7 @@
 (
     name: BarterWorld,
     faction: TradeFederation,
-    card_type: Base(defense: 4, it_outpost: false),
+    card_type: Base(defense: 4, is_outpost: false),
     cost: 4,
     effects: [
         Or(Resource(Authority, 2), Resource(Trade, 2)),

@@ -7,6 +7,8 @@
         Resource(Authority, 4),
         Resource(Combat, 5),
         Draw(Number(2)),
-        If(HasAlly(TradeFederation), DestroyTargetBase),
+        // Core Set.csv lists this as "Destroy target base." (no "may"), but the
+        // actual printed card text is "You may destroy target base."
+        If(HasAlly(TradeFederation), May(DestroyTargetBase)),
     ],
 )

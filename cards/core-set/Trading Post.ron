@@ -1,7 +1,7 @@
 (
     name: TradingPost,
     faction: TradeFederation,
-    card_type: Base(defense: 4, it_outpost: true),
+    card_type: Base(defense: 4, is_outpost: true),
     cost: 3,
     effects: [
         Or(Resource(Authority, 1), Resource(Trade, 1)),

@@ -1,7 +1,7 @@
 (
     name: WarWorld,
     faction: StarEmpire,
-    card_type: Base(defense: 4, it_outpost: true),
+    card_type: Base(defense: 4, is_outpost: true),
     cost: 5,
     effects: [
         Resource(Combat, 3),

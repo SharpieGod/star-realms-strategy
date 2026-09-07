@@ -1,7 +1,7 @@
 (
     name: CentralOffice,
     faction: TradeFederation,
-    card_type: Base(defense: 6, it_outpost: false),
+    card_type: Base(defense: 6, is_outpost: false),
     cost: 7,
     effects: [
         Resource(Trade, 2),
