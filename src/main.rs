@@ -1,5 +1,6 @@
 use std::{
     collections::HashMap,
+    fmt::Display,
     fs::{self, OpenOptions},
     io::Write,
     marker::PhantomData,
@@ -7,6 +8,7 @@ use std::{
     sync::LazyLock,
 };
 
+use colorize::AnsiColor;
 use rand::seq::{IndexedRandom, SliceRandom};
 use serde::{Deserialize, Serialize};
 
@@ -83,6 +85,24 @@ enum Faction {
     Unaligned,
 }
 
+impl Display for Faction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = format!("{:?}", self);
+
+        write!(
+            f,
+            "{}",
+            match self {
+                Faction::TradeFederation => s.blue(),
+                Faction::Blob => s.green(),
+                Faction::StarEmpire => s.yellow(),
+                Faction::MachineCult => s.red(),
+                Unaligned => s,
+            }
+        )
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 enum Condition {
     HasAlly(Faction),
@@ -140,6 +160,53 @@ enum Effect {
     NextAcquiredShipToTopOfDeck,
 }
 
+impl Display for Effect {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Effect::If(condition, effect) => write!(f, "{condition:?}: {effect}"),
+            Effect::Or(effect, effect1) => write!(f, "{effect} or {effect1}"),
+            Effect::AndOr(effect, effect1) => write!(f, "{effect} and/or {effect1}"),
+            Effect::Sequence(effects) => write!(
+                f,
+                "{}",
+                effects
+                    .iter()
+                    .map(|e| e.to_string())
+                    .collect::<Vec<String>>()
+                    .join(" --> ")
+            ),
+            Effect::On(event, effect) => write!(f, "on {event:?}: {effect}"),
+            Effect::Draw(amount) => write!(f, "draw {amount:?} cards"),
+            Effect::May(effect) => write!(f, "you may {effect}"),
+            Effect::AquireShipForFree {
+                to_top_of_deck,
+                max_cost,
+            } => write!(
+                f,
+                "aquire ship for free{}{}",
+                if *to_top_of_deck {
+                    " to top of deck"
+                } else {
+                    ""
+                },
+                if let Some(cost) = max_cost {
+                    format!(" less than {cost}")
+                } else {
+                    "".to_string()
+                }
+            ),
+            Effect::Resource(resource_type, count) => write!(f, "gain {count} {resource_type:#?}"),
+            Effect::Scrap(scrap_type, count) => write!(f, "scrap {count} cards {scrap_type:?}"),
+            Effect::Discard(count) => write!(f, "discard {count} cards"),
+            Effect::DestroyTargetBase => write!(f, "destroy target base"),
+            Effect::ScrapCardInRow => write!(f, "scrap card in trade row"),
+            Effect::OpponentDiscards => write!(f, "opponent discards a card"),
+            Effect::CopyPlayedShip => write!(f, "copy played ship"),
+            Effect::NextAcquiredShipToTopOfDeck => write!(f, "next aquired ship on top of deck"),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 enum CardType {
     Ship,
@@ -156,6 +223,18 @@ struct Card {
     /// Mech World: counts as an ally for every faction while in play.
     #[serde(default)]
     is_all_faction_ally: bool,
+}
+
+impl Display for Card {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "({}) {:?} {} {}",
+            self.cost, self.name, self.faction, self.effect
+        )?;
+
+        Ok(())
+    }
 }
 
 impl TryFrom<PathBuf> for Card {
@@ -246,6 +325,7 @@ enum ChoiceValue {
     Index(usize),
     Indicies(Vec<usize>),
 }
+
 enum CardAction {
     Scrap,
     Choice(ChoiceValue),
@@ -258,11 +338,12 @@ fn main() {
     deck.shuffle(&mut rng);
 
     println!(
-        "{:#?}",
+        "{}",
         deck.iter()
             .take(5)
             .copied()
-            .map(|n| &CARDS[&n])
-            .collect::<Vec<&Card>>()
+            .map(|n| (&CARDS[&n]).to_string())
+            .collect::<Vec<String>>()
+            .join("\n")
     );
 }
