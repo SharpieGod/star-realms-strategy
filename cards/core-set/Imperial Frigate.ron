@@ -7,6 +7,6 @@
         Resource(Combat, 4),
         OpponentDiscards,
         If(HasAlly(StarEmpire), Resource(Combat, 2)),
-        On(Scrap, Draw(Number(1))),
+        ScrapAbility(Draw(Number(1))),
     ],
 )

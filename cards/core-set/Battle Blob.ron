@@ -6,6 +6,6 @@
     effects: [
         Resource(Combat, 8),
         If(HasAlly(Blob), Draw(Number(1))),
-        On(Scrap, Resource(Combat, 4)),
+        ScrapAbility(Resource(Combat, 4)),
     ],
 )

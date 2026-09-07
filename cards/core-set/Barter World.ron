@@ -5,6 +5,6 @@
     cost: 4,
     effects: [
         Or(Resource(Authority, 2), Resource(Trade, 2)),
-        On(Scrap, Resource(Combat, 5)),
+        ScrapAbility(Resource(Combat, 5)),
     ],
 )

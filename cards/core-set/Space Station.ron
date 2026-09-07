@@ -6,6 +6,6 @@
     effects: [
         Resource(Combat, 2),
         If(HasAlly(StarEmpire), Resource(Combat, 2)),
-        On(Scrap, Resource(Trade, 4)),
+        ScrapAbility(Resource(Trade, 4)),
     ],
 )

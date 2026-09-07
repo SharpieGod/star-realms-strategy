@@ -5,6 +5,6 @@
     cost: 2,
     effects: [
         Resource(Trade, 2),
-        On(Scrap, Resource(Combat, 2)),
+        ScrapAbility(Resource(Combat, 2)),
     ],
 )

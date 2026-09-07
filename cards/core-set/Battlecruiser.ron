@@ -7,7 +7,7 @@
         Resource(Combat, 5),
         Draw(Number(1)),
         If(HasAlly(StarEmpire), OpponentDiscards),
-        On(Scrap, Sequence([
+        ScrapAbility(Sequence([
             Draw(Number(1)),
             May(DestroyTargetBase),
         ])),

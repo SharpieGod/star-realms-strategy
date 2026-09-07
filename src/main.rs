@@ -9,7 +9,11 @@ use std::{
 };
 
 use colorize::AnsiColor;
-use rand::seq::{IndexedRandom, SliceRandom};
+use rand::{
+    RngExt,
+    rngs::ThreadRng,
+    seq::{IndexedRandom, SliceRandom},
+};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -73,6 +77,66 @@ enum CardNamed {
     WarWorld,
 }
 
+impl Display for CardNamed {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                CardNamed::BarterWorld => "Barter World",
+                CardNamed::BattleBlob => "Battle Blob",
+                CardNamed::BattleMech => "Battle Mech",
+                CardNamed::BattlePod => "Battle Pod",
+                CardNamed::BattleStation => "Battle Station",
+                CardNamed::Battlecruiser => "Battlecruiser",
+                CardNamed::BlobCarrier => "Blob Carrier",
+                CardNamed::BlobDestroyer => "Blob Destroyer",
+                CardNamed::BlobFighter => "Blob Fighter",
+                CardNamed::BlobWheel => "Blob Wheel",
+                CardNamed::BlobWorld => "Blob World",
+                CardNamed::BrainWorld => "Brain World",
+                CardNamed::CentralOffice => "Central Office",
+                CardNamed::CommandShip => "Command Ship",
+                CardNamed::Corvette => "Corvette",
+                CardNamed::Cutter => "Cutter",
+                CardNamed::DefenseCenter => "Defense Center",
+                CardNamed::Dreadnaught => "Dreadnaught",
+                CardNamed::EmbassyYacht => "Embassy Yacht",
+                CardNamed::Explorer => "Explorer",
+                CardNamed::FederationShuttle => "Federation Shuttle",
+                CardNamed::Flagship => "Flagship",
+                CardNamed::FleetHQ => "Fleet HQ",
+                CardNamed::Freighter => "Freighter",
+                CardNamed::ImperialFighter => "Imperial Fighter",
+                CardNamed::ImperialFrigate => "Imperial Frigate",
+                CardNamed::Junkyard => "Junkyard",
+                CardNamed::MachineBase => "Machine Base",
+                CardNamed::MechWorld => "Mech World",
+                CardNamed::MissileBot => "Missile Bot",
+                CardNamed::MissileMech => "Missile Mech",
+                CardNamed::Mothership => "Mothership",
+                CardNamed::PatrolMech => "Patrol Mech",
+                CardNamed::PortofCall => "Port of Call",
+                CardNamed::Ram => "Ram",
+                CardNamed::RecyclingStation => "Recycling Station",
+                CardNamed::RoyalRedoubt => "Royal Redoubt",
+                CardNamed::Scout => "Scout",
+                CardNamed::SpaceStation => "Space Station",
+                CardNamed::StealthNeedle => "Stealth Needle",
+                CardNamed::SupplyBot => "Supply Bot",
+                CardNamed::SurveyShip => "Survey Ship",
+                CardNamed::TheHive => "The Hive",
+                CardNamed::TradeBot => "Trade Bot",
+                CardNamed::TradeEscort => "Trade Escort",
+                CardNamed::TradePod => "Trade Pod",
+                CardNamed::TradingPost => "Trading Post",
+                CardNamed::Viper => "Viper",
+                CardNamed::WarWorld => "War World",
+            }
+        )
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 enum Amount {
     Number(u32),
@@ -125,7 +189,7 @@ enum Condition {
 impl Display for Condition {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Condition::HasAlly(faction) => write!(f, "{faction}"),
+            Condition::HasAlly(faction) => write!(f, "{faction} Ally"),
             Condition::And(condition, condition1) => write!(f, "{condition} and {condition1}"),
             Condition::BaseCountAtLeast(count) => write!(f, "at least {count} bases"),
         }
@@ -180,7 +244,6 @@ impl Display for ScrapType {
 
 enum Event {
     PlayShip(Faction), // Neutral = Any
-    Scrap,
 }
 
 impl Display for Event {
@@ -195,7 +258,6 @@ impl Display for Event {
                     "any".to_string()
                 }
             ),
-            Event::Scrap => write!(f, "scrap"),
         }
     }
 }
@@ -207,7 +269,10 @@ enum Effect {
     Or(Box<Effect>, Box<Effect>),
     AndOr(Box<Effect>, Box<Effect>),
     Sequence(Vec<Effect>),
-    On(Event, Box<Effect>),
+    /// "Scrap this: ...". Available at will while the card sits in play.
+    ScrapAbility(Box<Effect>),
+    /// "Whenever <event>, ...". Fires reactively while the card is in play.
+    Trigger(Event, Box<Effect>),
     Draw(Amount),
     May(Box<Effect>),
 
@@ -244,7 +309,8 @@ impl Display for Effect {
                     .collect::<Vec<String>>()
                     .join(" -> ")
             ),
-            Effect::On(event, effect) => write!(f, "{{on {event}}}: {{{effect}}}"),
+            Effect::ScrapAbility(effect) => write!(f, "scrap this: {{{effect}}}"),
+            Effect::Trigger(event, effect) => write!(f, "whenever {event}: {{{effect}}}"),
             Effect::Draw(amount) => write!(
                 f,
                 "Draw {}",
@@ -289,13 +355,13 @@ fn n_cards(n: u32) -> String {
     format!("{n} {}", if n == 1 { "card" } else { "cards" })
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 enum CardType {
     Ship,
     Base { defense: u32, is_outpost: bool },
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct Card {
     name: CardNamed,
     faction: Faction,
@@ -309,7 +375,7 @@ struct Card {
 
 impl Display for Card {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let n = format!("{:?}", self.name);
+        let n = self.name.to_string();
 
         write!(
             f,
@@ -347,6 +413,20 @@ impl Display for Card {
     }
 }
 
+impl Card {
+    fn name_only(&self) -> String {
+        let n = self.name.to_string();
+
+        match self.faction {
+            Faction::TradeFederation => n.blue(),
+            Faction::Blob => n.green(),
+            Faction::StarEmpire => n.yellow(),
+            Faction::MachineCult => n.red(),
+            Unaligned => n,
+        }
+    }
+}
+
 impl TryFrom<PathBuf> for Card {
     type Error = ();
     fn try_from(path: PathBuf) -> Result<Self, Self::Error> {
@@ -379,7 +459,12 @@ fn load_cards() -> HashMap<CardNamed, Card> {
 
 /// All cards, keyed by name, loaded once on first access.
 static CARDS: LazyLock<HashMap<CardNamed, Card>> = LazyLock::new(load_cards);
-
+static STARTER_PERSONAL_DECK: LazyLock<Vec<CardNamed>> =
+    LazyLock::new(|| Vec::<CardNamed>::from(CardCounts(vec![(Viper, 2), (Scout, 8)])));
+static STARTER_GAME_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
+    let card_counts = CardCounts::try_from(PathBuf::from("./cards/deck.ron")).unwrap();
+    card_counts.into()
+});
 fn effect(name: &CardNamed) -> &'static Vec<Effect> {
     &CARDS[name].effects
 }
@@ -411,37 +496,104 @@ impl From<CardCounts> for Vec<CardNamed> {
 }
 
 struct Player {
-    personal_deck: Vec<Card>,
-    hand: Vec<Card>,
-    in_play: Vec<Card>,
-    discard_pile: Vec<Card>,
+    personal_deck: Vec<CardNamed>,
+    hand: Vec<CardNamed>,
+    in_play: Vec<CardNamed>,
+    discard_pile: Vec<CardNamed>,
     authority: u32,
     trade: u32,
     combat: u32,
 }
 
+impl Default for Player {
+    fn default() -> Self {
+        let starter_deck = Vec::<CardNamed>::from(CardCounts(vec![(Viper, 2), (Scout, 8)]));
+        Self {
+            personal_deck: STARTER_PERSONAL_DECK.clone(),
+            hand: Default::default(),
+            in_play: Default::default(),
+            discard_pile: Default::default(),
+            authority: 50,
+            trade: Default::default(),
+            combat: Default::default(),
+        }
+    }
+}
+
 struct Game {
     players: [Player; 2],
     turn_number: u32,
+    rng: ThreadRng,
+    deck: Vec<CardNamed>,
+    shop: [Option<CardNamed>; 5],
 }
 
 impl Game {
-    fn new(player1: Player, player2: Player) -> Game {
-        player1
-            .personal_deck
-            .extend(CardCounts(vec![(Viper, 2), (Scout, 8)]));
+    fn new() -> Game {
+        let player1 = Player::default();
+        let player2 = Player::default();
+        let mut rng = rand::rng();
+
+        let turn_number = rng.random_range(0..=1);
+        let mut deck = STARTER_GAME_DECK.clone();
+        deck.shuffle(&mut rng);
+
+        let shop = deck
+            .iter()
+            .copied()
+            .take(5)
+            .map(|c| Some(c))
+            .collect::<Vec<Option<CardNamed>>>();
+
         Self {
             players: [player1, player2],
-            turn_number: 0,
+            turn_number,
+            rng,
+            deck,
+            shop: *shop.as_array().unwrap(),
+        }
+    }
+
+    fn do_action(&mut self, acting_player: usize, action: PlayerAction) {
+        let player = &mut self.players[acting_player];
+
+        match action {
+            PlayCard(hand_index) => {
+                let card_played = player.hand.remove(hand_index);
+                player.in_play.push(card_played);
+
+                for e in &CARDS[&card_played].effects {
+                    match e {
+                        Effect::Resource(resource, count) => match resource {
+                            Authority => player.authority += count,
+                            Combat => player.combat += count,
+                            Trade => player.trade += count,
+                        },
+                        _ => {}
+                    }
+                }
+            }
+            PlayerAction::BuyCard(_) => todo!(),
+            PlayerAction::Card(card_index, card_action) => todo!(),
+            PlayerAction::DestroyTargetBase(_) => todo!(),
+            PlayerAction::SpendCombat(combat_target) => todo!(),
+            PlayerAction::EndTurn => todo!(),
         }
     }
 }
 
 enum PlayerAction {
     PlayCard(usize), // In play always
-    Discard(usize),
+    BuyCard(usize),
     Card(CardIndex, CardAction),
     DestroyTargetBase(usize),
+    SpendCombat(CombatTarget),
+    EndTurn,
+}
+
+enum CombatTarget {
+    Enemy,
+    EnemyBase(usize),
 }
 
 enum CardIndex {
@@ -460,32 +612,15 @@ enum CardAction {
 }
 
 fn main() {
-    let card_counts = CardCounts::try_from(PathBuf::from("./cards/deck.ron")).unwrap();
-
-    let mut sorted = CARDS.iter().clone().map(|(_, c)| c).collect::<Vec<&Card>>();
-
-    sorted.sort_by(|a, b| format!("{:?}", a.name).cmp(&format!("{:?}", b.name)));
+    let mut game = Game::new();
 
     println!(
         "{}",
-        sorted
+        game.shop
             .iter()
-            .map(|c| c.to_string())
+            .enumerate()
+            .map(|(i, c)| format!("({i}) {}", (&CARDS[&c.unwrap()]).name_only()))
             .collect::<Vec<String>>()
-            .join("\n\n")
+            .join("\n")
     );
-
-    // let mut deck: Vec<CardNamed> = card_counts.into();
-    // let mut rng = rand::rng();
-    // deck.shuffle(&mut rng);
-
-    // println!(
-    //     "{}",
-    //     deck.iter()
-    //         .take(5)
-    //         .copied()
-    //         .map(|n| (&CARDS[&n]).to_string())
-    //         .collect::<Vec<String>>()
-    //         .join("\n\n")
-    // );
 }

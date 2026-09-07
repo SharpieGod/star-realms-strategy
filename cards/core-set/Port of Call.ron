@@ -5,7 +5,7 @@
     cost: 6,
     effects: [
         Resource(Trade, 3),
-        On(Scrap, Sequence([
+        ScrapAbility(Sequence([
             Draw(Number(1)),
             May(DestroyTargetBase),
         ])),

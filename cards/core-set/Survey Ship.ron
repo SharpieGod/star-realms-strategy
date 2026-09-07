@@ -6,6 +6,6 @@
     effects: [
         Resource(Trade, 1),
         Draw(Number(1)),
-        On(Scrap, OpponentDiscards),
+        ScrapAbility(OpponentDiscards),
     ],
 )
