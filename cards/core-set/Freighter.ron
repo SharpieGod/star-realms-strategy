@@ -5,6 +5,6 @@
     cost: 4,
     effects: [
         Resource(Trade, 4),
-        If(HasAlly(TradeFederation), May(NextAcquiredShipToTopOfDeck)),
+        Ally(TradeFederation, May(NextAcquiredShipToTopOfDeck)),
     ],
 )

@@ -5,6 +5,6 @@
     cost: 5,
     effects: [
         Or(Resource(Authority, 3), Resource(Combat, 2)),
-        If(HasAlly(TradeFederation), Resource(Combat, 2)),
+        Ally(TradeFederation, Resource(Combat, 2)),
     ],
 )

@@ -6,6 +6,6 @@
     effects: [
         Resource(Trade, 1),
         May(Scrap(HandOrDiscardPile, 1)),
-        If(HasAlly(MachineCult), Resource(Combat, 2)),
+        Ally(MachineCult, Resource(Combat, 2)),
     ],
 )

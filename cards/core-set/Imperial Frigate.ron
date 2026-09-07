@@ -6,7 +6,7 @@
     effects: [
         Resource(Combat, 4),
         OpponentDiscards,
-        If(HasAlly(StarEmpire), Resource(Combat, 2)),
+        Ally(StarEmpire, Resource(Combat, 2)),
         ScrapAbility(Draw(Number(1))),
     ],
 )

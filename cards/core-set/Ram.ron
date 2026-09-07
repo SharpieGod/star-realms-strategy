@@ -5,7 +5,7 @@
     cost: 3,
     effects: [
         Resource(Combat, 5),
-        If(HasAlly(Blob), Resource(Combat, 2)),
+        Ally(Blob, Resource(Combat, 2)),
         ScrapAbility(Resource(Trade, 3)),
     ],
 )

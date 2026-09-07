@@ -5,6 +5,6 @@
     cost: 2,
     effects: [
         Resource(Trade, 3),
-        If(HasAlly(Blob), Resource(Combat, 2)),
+        Ally(Blob, Resource(Combat, 2)),
     ],
 )

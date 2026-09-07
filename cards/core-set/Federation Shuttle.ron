@@ -5,6 +5,6 @@
     cost: 1,
     effects: [
         Resource(Trade, 2),
-        If(HasAlly(TradeFederation), Resource(Authority, 4)),
+        Ally(TradeFederation, Resource(Authority, 4)),
     ],
 )

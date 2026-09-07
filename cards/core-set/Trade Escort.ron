@@ -6,6 +6,6 @@
     effects: [
         Resource(Authority, 4),
         Resource(Combat, 4),
-        If(HasAlly(TradeFederation), Draw(Number(1))),
+        Ally(TradeFederation, Draw(Number(1))),
     ],
 )

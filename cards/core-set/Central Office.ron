@@ -6,6 +6,6 @@
     effects: [
         Resource(Trade, 2),
         May(NextAcquiredShipToTopOfDeck),
-        If(HasAlly(TradeFederation), Draw(Number(1))),
+        Ally(TradeFederation, Draw(Number(1))),
     ],
 )

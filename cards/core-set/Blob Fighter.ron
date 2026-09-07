@@ -5,6 +5,6 @@
     cost: 1,
     effects: [
         Resource(Combat, 3),
-        If(HasAlly(Blob), Draw(Number(1))),
+        Ally(Blob, Draw(Number(1))),
     ],
 )

@@ -181,7 +181,6 @@ impl Display for Faction {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 enum Condition {
-    HasAlly(Faction),
     And(Box<Condition>, Box<Condition>),
     BaseCountAtLeast(u32),
 }
@@ -189,7 +188,6 @@ enum Condition {
 impl Display for Condition {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Condition::HasAlly(faction) => write!(f, "{faction} Ally"),
             Condition::And(condition, condition1) => write!(f, "{condition} and {condition1}"),
             Condition::BaseCountAtLeast(count) => write!(f, "at least {count} bases"),
         }
@@ -273,6 +271,9 @@ enum Effect {
     ScrapAbility(Box<Effect>),
     /// "Whenever <event>, ...". Fires reactively while the card is in play.
     Trigger(Event, Box<Effect>),
+    /// Ally ability: usable at will during your main phase, once you have another
+    /// card of this faction in play. Usable once per play of this card.
+    Ally(Faction, Box<Effect>),
     Draw(Amount),
     May(Box<Effect>),
 
@@ -311,6 +312,7 @@ impl Display for Effect {
             ),
             Effect::ScrapAbility(effect) => write!(f, "scrap this: {{{effect}}}"),
             Effect::Trigger(event, effect) => write!(f, "whenever {event}: {{{effect}}}"),
+            Effect::Ally(faction, effect) => write!(f, "{faction} ally: {{{effect}}}"),
             Effect::Draw(amount) => write!(
                 f,
                 "Draw {}",
@@ -425,6 +427,16 @@ impl Card {
             Unaligned => n,
         }
     }
+
+    fn is_base(&self) -> bool {
+        match self.card_type {
+            CardType::Ship => false,
+            CardType::Base {
+                defense: _,
+                is_outpost: _,
+            } => true,
+        }
+    }
 }
 
 impl TryFrom<PathBuf> for Card {
@@ -503,6 +515,7 @@ struct Player {
     authority: u32,
     trade: u32,
     combat: u32,
+    pending_ally_effects: Vec<(CardNamed, Effect)>,
 }
 
 impl Default for Player {
@@ -516,6 +529,7 @@ impl Default for Player {
             authority: 50,
             trade: Default::default(),
             combat: Default::default(),
+            pending_ally_effects: Default::default(),
         }
     }
 }
@@ -554,30 +568,77 @@ impl Game {
         }
     }
 
-    fn do_action(&mut self, acting_player: usize, action: PlayerAction) {
-        let player = &mut self.players[acting_player];
+    fn do_action(&mut self, actor: usize, action: PlayerAction) {
+        let player = &mut self.players[actor];
 
         match action {
             PlayCard(hand_index) => {
-                let card_played = player.hand.remove(hand_index);
-                player.in_play.push(card_played);
+                let played_card = player.hand.remove(hand_index);
+                player.in_play.push(played_card);
 
-                for e in &CARDS[&card_played].effects {
-                    match e {
-                        Effect::Resource(resource, count) => match resource {
-                            Authority => player.authority += count,
-                            Combat => player.combat += count,
-                            Trade => player.trade += count,
-                        },
-                        _ => {}
-                    }
-                }
+                self.resolve_effect(
+                    actor,
+                    played_card,
+                    &Effect::Sequence(CARDS[&played_card].effects.clone()),
+                );
             }
             PlayerAction::BuyCard(_) => todo!(),
             PlayerAction::Card(card_index, card_action) => todo!(),
             PlayerAction::DestroyTargetBase(_) => todo!(),
             PlayerAction::SpendCombat(combat_target) => todo!(),
             PlayerAction::EndTurn => todo!(),
+        }
+    }
+
+    fn resolve_effect(&mut self, actor: usize, source: CardNamed, effect: &Effect) {
+        match effect {
+            Effect::Resource(resource, count) => {
+                let player = &mut self.players[actor];
+                match resource {
+                    Authority => player.authority += count,
+                    Combat => player.combat += count,
+                    Trade => player.trade += count,
+                }
+            }
+            Effect::Sequence(effects) => {
+                for e in effects {
+                    self.resolve_effect(actor, source, e);
+                }
+            }
+            Effect::If(condition, inner) => {
+                if self.evaluate_condition(actor, condition) {
+                    self.resolve_effect(actor, source, inner);
+                }
+            }
+            // Ally abilities become available for at-will use once queued here;
+            // they aren't resolved immediately like a normal effect.
+            Effect::Ally(_, inner) => {
+                self.players[actor]
+                    .pending_ally_effects
+                    .push((source, (**inner).clone()));
+            }
+            // Held abilities: never walked during normal play, only looked up
+            // on demand (ScrapInPlay action, or the PlayShip trigger scan) —
+            // so they're intentional no-ops here.
+            Effect::ScrapAbility(_) | Effect::Trigger(_, _) => {}
+            _ => todo!(),
+        }
+    }
+
+    fn evaluate_condition(&self, actor: usize, condition: &Condition) -> bool {
+        match condition {
+            Condition::And(condition, condition1) => {
+                self.evaluate_condition(actor, condition)
+                    && self.evaluate_condition(actor, condition1)
+            }
+            Condition::BaseCountAtLeast(count) => {
+                self.players[actor]
+                    .in_play
+                    .iter()
+                    .filter(|c| CARDS[c].is_base())
+                    .count()
+                    >= *count as usize
+            }
         }
     }
 }

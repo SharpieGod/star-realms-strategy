@@ -6,6 +6,6 @@
     effects: [
         Resource(Combat, 4),
         May(Scrap(HandOrDiscardPile, 1)),
-        If(HasAlly(MachineCult), Draw(Number(1))),
+        Ally(MachineCult, Draw(Number(1))),
     ],
 )

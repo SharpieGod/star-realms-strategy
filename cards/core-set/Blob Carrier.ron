@@ -5,6 +5,6 @@
     cost: 6,
     effects: [
         Resource(Combat, 7),
-        If(HasAlly(Blob), AquireShipForFree(to_top_of_deck: true, max_cost: None)),
+        Ally(Blob, AquireShipForFree(to_top_of_deck: true, max_cost: None)),
     ],
 )

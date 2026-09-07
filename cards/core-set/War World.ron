@@ -5,6 +5,6 @@
     cost: 5,
     effects: [
         Resource(Combat, 3),
-        If(HasAlly(StarEmpire), Resource(Combat, 4)),
+        Ally(StarEmpire, Resource(Combat, 4)),
     ],
 )
