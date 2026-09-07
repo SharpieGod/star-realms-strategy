@@ -3,10 +3,10 @@
     faction: TradeFederation,
     card_type: Ship,
     cost: 8,
-    effect: Sequence([
+    effects: [
         Resource(Authority, 4),
         Resource(Combat, 5),
         Draw(Number(2)),
         If(HasAlly(TradeFederation), DestroyTargetBase),
-    ]),
+    ],
 )

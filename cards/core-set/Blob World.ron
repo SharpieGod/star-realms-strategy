@@ -3,5 +3,5 @@
     faction: Blob,
     card_type: Base(defense: 7, it_outpost: false),
     cost: 8,
-    effect: Or(Resource(Combat, 5), Draw(ShipsPlayed(Blob))),
+    effects: [Or(Resource(Combat, 5), Draw(ShipsPlayed(Blob)))],
 )

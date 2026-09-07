@@ -3,5 +3,5 @@
     faction: MachineCult,
     card_type: Base(defense: 5, it_outpost: true),
     cost: 3,
-    effect: On(Scrap, Resource(Combat, 5)),
+    effects: [On(Scrap, Resource(Combat, 5))],
 )

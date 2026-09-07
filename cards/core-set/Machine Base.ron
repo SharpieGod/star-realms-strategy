@@ -3,8 +3,8 @@
     faction: MachineCult,
     card_type: Base(defense: 6, it_outpost: true),
     cost: 7,
-    effect: Sequence([
+    effects: [
         Draw(Number(1)),
         Scrap(Hand, 1),
-    ]),
+    ],
 )

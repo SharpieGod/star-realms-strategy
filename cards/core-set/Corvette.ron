@@ -3,9 +3,9 @@
     faction: StarEmpire,
     card_type: Ship,
     cost: 2,
-    effect: Sequence([
+    effects: [
         Resource(Combat, 1),
         Draw(Number(1)),
         If(HasAlly(StarEmpire), Resource(Combat, 2)),
-    ]),
+    ],
 )

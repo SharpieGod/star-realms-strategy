@@ -3,11 +3,11 @@
     faction: MachineCult,
     card_type: Base(defense: 6, it_outpost: true),
     cost: 8,
-    effect: May(Or(Sequence([
+    effects: [May(Or(Sequence([
         Scrap(HandOrDiscardPile, 1),
         Draw(Number(1)),
     ]), Sequence([
         Scrap(HandOrDiscardPile, 2),
         Draw(Number(2)),
-    ]))),
+    ])))],
 )

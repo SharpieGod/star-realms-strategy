@@ -3,8 +3,8 @@
     faction: Unaligned,
     card_type: Ship,
     cost: 2,
-    effect: Sequence([
+    effects: [
         Resource(Trade, 2),
         On(Scrap, Resource(Combat, 2)),
-    ]),
+    ],
 )

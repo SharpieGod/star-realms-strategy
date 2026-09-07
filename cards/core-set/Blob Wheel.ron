@@ -3,8 +3,8 @@
     faction: Blob,
     card_type: Base(defense: 5, it_outpost: false),
     cost: 3,
-    effect: Sequence([
+    effects: [
         Resource(Combat, 1),
         On(Scrap, Resource(Trade, 3)),
-    ]),
+    ],
 )

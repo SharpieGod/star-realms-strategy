@@ -3,8 +3,8 @@
     faction: MachineCult,
     card_type: Ship,
     cost: 4,
-    effect: Sequence([
+    effects: [
         Or(Resource(Trade, 3), Resource(Combat, 5)),
         If(HasAlly(MachineCult), May(Scrap(HandOrDiscardPile, 1))),
-    ]),
+    ],
 )

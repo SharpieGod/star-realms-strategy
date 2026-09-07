@@ -1,0 +1,138 @@
+([93m6[0;39;49m) BattleBlob [32mBlob[0;39;49m
+{8 [31mCombat[0;39;49m}, {{has [32mBlob[0;39;49m allly}: {draw 1 card}}, {on scrap: {4 [31mCombat[0;39;49m}}
+
+([93m2[0;39;49m) BattlePod [32mBlob[0;39;49m
+{4 [31mCombat[0;39;49m}, {you may scrap card in trade row}, {{has [32mBlob[0;39;49m allly}: {2 [31mCombat[0;39;49m}}
+
+([93m6[0;39;49m) BlobCarrier [32mBlob[0;39;49m
+{7 [31mCombat[0;39;49m}, {{has [32mBlob[0;39;49m allly}: {aquire ship for free to top of deck}}
+
+([93m4[0;39;49m) BlobDestroyer [32mBlob[0;39;49m
+{6 [31mCombat[0;39;49m}, {{has [32mBlob[0;39;49m allly}: {you may {destroy target base} and/or {scrap card in trade row}}}
+
+([93m1[0;39;49m) BlobFighter [32mBlob[0;39;49m
+{3 [31mCombat[0;39;49m}, {{has [32mBlob[0;39;49m allly}: {draw 1 card}}
+
+([93m3[0;39;49m) BlobWheel [32mBlob[0;39;49m
+{1 [31mCombat[0;39;49m}, {on scrap: {3 [33mTrade[0;39;49m}}
+
+([93m8[0;39;49m) BlobWorld [32mBlob[0;39;49m
+{5 [31mCombat[0;39;49m} or {draw # of Blob played}
+
+([93m7[0;39;49m) Mothership [32mBlob[0;39;49m
+{6 [31mCombat[0;39;49m}, {draw 1 card}, {{has [32mBlob[0;39;49m allly}: {draw 1 card}}
+
+([93m3[0;39;49m) Ram [32mBlob[0;39;49m
+{5 [31mCombat[0;39;49m}, {{has [32mBlob[0;39;49m allly}: {2 [31mCombat[0;39;49m}}, {on scrap: {3 [33mTrade[0;39;49m}}
+
+([93m5[0;39;49m) TheHive [32mBlob[0;39;49m
+{3 [31mCombat[0;39;49m}, {{has [32mBlob[0;39;49m allly}: {draw 1 card}}
+
+([93m2[0;39;49m) TradePod [32mBlob[0;39;49m
+{3 [33mTrade[0;39;49m}, {{has [32mBlob[0;39;49m allly}: {2 [31mCombat[0;39;49m}}
+
+([93m5[0;39;49m) BattleMech [31mMachineCult[0;39;49m
+{4 [31mCombat[0;39;49m}, {you may scrap 1 card HandOrDiscardPile}, {{has [31mMachineCult[0;39;49m allly}: {draw 1 card}}
+
+([93m3[0;39;49m) BattleStation [31mMachineCult[0;39;49m
+on scrap: {5 [31mCombat[0;39;49m}
+
+([93m8[0;39;49m) BrainWorld [31mMachineCult[0;39;49m
+you may {{scrap 1 card HandOrDiscardPile}, {draw 1 card}} or {{scrap 2 cards HandOrDiscardPile}, {draw 2 cards}}
+
+([93m6[0;39;49m) Junkyard [31mMachineCult[0;39;49m
+you may scrap 1 card HandOrDiscardPile
+
+([93m7[0;39;49m) MachineBase [31mMachineCult[0;39;49m
+{draw 1 card}, {scrap 1 card Hand}
+
+([93m5[0;39;49m) MechWorld [31mMachineCult[0;39;49m
+
+
+([93m2[0;39;49m) MissileBot [31mMachineCult[0;39;49m
+{2 [31mCombat[0;39;49m}, {you may scrap 1 card HandOrDiscardPile}, {{has [31mMachineCult[0;39;49m allly}: {2 [31mCombat[0;39;49m}}
+
+([93m6[0;39;49m) MissileMech [31mMachineCult[0;39;49m
+{6 [31mCombat[0;39;49m}, {you may destroy target base}, {{has [31mMachineCult[0;39;49m allly}: {draw 1 card}}
+
+([93m4[0;39;49m) PatrolMech [31mMachineCult[0;39;49m
+{{3 [33mTrade[0;39;49m} or {5 [31mCombat[0;39;49m}}, {{has [31mMachineCult[0;39;49m allly}: {you may scrap 1 card HandOrDiscardPile}}
+
+([93m4[0;39;49m) StealthNeedle [31mMachineCult[0;39;49m
+copy played ship
+
+([93m3[0;39;49m) SupplyBot [31mMachineCult[0;39;49m
+{2 [33mTrade[0;39;49m}, {you may scrap 1 card HandOrDiscardPile}, {{has [31mMachineCult[0;39;49m allly}: {2 [31mCombat[0;39;49m}}
+
+([93m1[0;39;49m) TradeBot [31mMachineCult[0;39;49m
+{1 [33mTrade[0;39;49m}, {you may scrap 1 card HandOrDiscardPile}, {{has [31mMachineCult[0;39;49m allly}: {2 [31mCombat[0;39;49m}}
+
+([93m6[0;39;49m) Battlecruiser [33mStarEmpire[0;39;49m
+{5 [31mCombat[0;39;49m}, {draw 1 card}, {{has [33mStarEmpire[0;39;49m allly}: {opponent discards a card}}, {on scrap: {{draw 1 card}, {you may destroy target base}}}
+
+([93m2[0;39;49m) Corvette [33mStarEmpire[0;39;49m
+{1 [31mCombat[0;39;49m}, {draw 1 card}, {{has [33mStarEmpire[0;39;49m allly}: {2 [31mCombat[0;39;49m}}
+
+([93m7[0;39;49m) Dreadnaught [33mStarEmpire[0;39;49m
+{7 [31mCombat[0;39;49m}, {draw 1 card}, {on scrap: {5 [31mCombat[0;39;49m}}
+
+([93m8[0;39;49m) FleetHQ [33mStarEmpire[0;39;49m
+on any played: {1 [31mCombat[0;39;49m}
+
+([93m1[0;39;49m) ImperialFighter [33mStarEmpire[0;39;49m
+{2 [31mCombat[0;39;49m}, {opponent discards a card}, {{has [33mStarEmpire[0;39;49m allly}: {2 [31mCombat[0;39;49m}}
+
+([93m3[0;39;49m) ImperialFrigate [33mStarEmpire[0;39;49m
+{4 [31mCombat[0;39;49m}, {opponent discards a card}, {{has [33mStarEmpire[0;39;49m allly}: {2 [31mCombat[0;39;49m}}, {on scrap: {draw 1 card}}
+
+([93m4[0;39;49m) RecyclingStation [33mStarEmpire[0;39;49m
+{1 [33mTrade[0;39;49m} or {you may {{discard 1 card}, {draw 1 card}} or {{discard 2 cards}, {draw 2 cards}}}
+
+([93m6[0;39;49m) RoyalRedoubt [33mStarEmpire[0;39;49m
+{3 [31mCombat[0;39;49m}, {{has [33mStarEmpire[0;39;49m allly}: {opponent discards a card}}
+
+([93m4[0;39;49m) SpaceStation [33mStarEmpire[0;39;49m
+{2 [31mCombat[0;39;49m}, {{has [33mStarEmpire[0;39;49m allly}: {2 [31mCombat[0;39;49m}}, {on scrap: {4 [33mTrade[0;39;49m}}
+
+([93m3[0;39;49m) SurveyShip [33mStarEmpire[0;39;49m
+{1 [33mTrade[0;39;49m}, {draw 1 card}, {on scrap: {opponent discards a card}}
+
+([93m5[0;39;49m) WarWorld [33mStarEmpire[0;39;49m
+{3 [31mCombat[0;39;49m}, {{has [33mStarEmpire[0;39;49m allly}: {4 [31mCombat[0;39;49m}}
+
+([93m4[0;39;49m) BarterWorld [34mTradeFederation[0;39;49m
+{{2 [32mAuthority[0;39;49m} or {2 [33mTrade[0;39;49m}}, {on scrap: {5 [31mCombat[0;39;49m}}
+
+([93m7[0;39;49m) CentralOffice [34mTradeFederation[0;39;49m
+{2 [33mTrade[0;39;49m}, {you may next aquired ship on top of deck}, {{has [34mTradeFederation[0;39;49m allly}: {draw 1 card}}
+
+([93m8[0;39;49m) CommandShip [34mTradeFederation[0;39;49m
+{4 [32mAuthority[0;39;49m}, {5 [31mCombat[0;39;49m}, {draw 2 cards}, {{has [34mTradeFederation[0;39;49m allly}: {destroy target base}}
+
+([93m2[0;39;49m) Cutter [34mTradeFederation[0;39;49m
+{4 [32mAuthority[0;39;49m}, {2 [33mTrade[0;39;49m}, {{has [34mTradeFederation[0;39;49m allly}: {4 [31mCombat[0;39;49m}}
+
+([93m5[0;39;49m) DefenseCenter [34mTradeFederation[0;39;49m
+{{3 [32mAuthority[0;39;49m} or {2 [31mCombat[0;39;49m}}, {{has [34mTradeFederation[0;39;49m allly}: {2 [31mCombat[0;39;49m}}
+
+([93m3[0;39;49m) EmbassyYacht [34mTradeFederation[0;39;49m
+{3 [32mAuthority[0;39;49m}, {2 [33mTrade[0;39;49m}, {{at least 2 bases}: {draw 2 cards}}
+
+([93m1[0;39;49m) FederationShuttle [34mTradeFederation[0;39;49m
+{2 [33mTrade[0;39;49m}, {{has [34mTradeFederation[0;39;49m allly}: {4 [32mAuthority[0;39;49m}}
+
+([93m6[0;39;49m) Flagship [34mTradeFederation[0;39;49m
+{5 [31mCombat[0;39;49m}, {draw 1 card}, {{has [34mTradeFederation[0;39;49m allly}: {5 [32mAuthority[0;39;49m}}
+
+([93m4[0;39;49m) Freighter [34mTradeFederation[0;39;49m
+{4 [33mTrade[0;39;49m}, {{has [34mTradeFederation[0;39;49m allly}: {you may next aquired ship on top of deck}}
+
+([93m6[0;39;49m) PortofCall [34mTradeFederation[0;39;49m
+{3 [33mTrade[0;39;49m}, {on scrap: {{draw 1 card}, {you may destroy target base}}}
+
+([93m5[0;39;49m) TradeEscort [34mTradeFederation[0;39;49m
+{4 [32mAuthority[0;39;49m}, {4 [31mCombat[0;39;49m}, {{has [34mTradeFederation[0;39;49m allly}: {draw 1 card}}
+
+([93m3[0;39;49m) TradingPost [34mTradeFederation[0;39;49m
+{{1 [32mAuthority[0;39;49m} or {1 [33mTrade[0;39;49m}}, {on scrap: {3 [31mCombat[0;39;49m}}
+[0;39;49m

@@ -86,6 +86,23 @@ def render(node, indent):
     raise TypeError(f"unhandled node type: {node!r}")
 
 
+def render_effects(effect, indent):
+    """Render the card's top-level effect(s) as a RON list: a top-level
+    Sequence is flattened into the list's items, anything else becomes a
+    single-item list."""
+    pad = "    " * indent
+    inner_pad = "    " * (indent + 1)
+
+    if isinstance(effect, V) and effect.name == "Sequence":
+        (lst,) = effect.args
+        if not lst.items:
+            return "[]"
+        items = "".join(f"{inner_pad}{render(i, indent + 1)},\n" for i in lst.items)
+        return f"[\n{items}{pad}]"
+
+    return f"[{render(effect, indent)}]"
+
+
 def card(name, faction, card_type, cost, effect, is_all_faction_ally=False, note=None):
     lines = ["("]
     lines.append(f"    name: {card_named(name)},")
@@ -95,7 +112,7 @@ def card(name, faction, card_type, cost, effect, is_all_faction_ally=False, note
     if note:
         for n in note if isinstance(note, list) else [note]:
             lines.append(f"    // {n}")
-    lines.append(f"    effect: {render(effect, 1)},")
+    lines.append(f"    effects: {render_effects(effect, 1)},")
     if is_all_faction_ally:
         lines.append("    is_all_faction_ally: true,")
     lines.append(")\n")

@@ -3,9 +3,9 @@
     faction: Blob,
     card_type: Ship,
     cost: 2,
-    effect: Sequence([
+    effects: [
         Resource(Combat, 4),
         May(ScrapCardInRow),
         If(HasAlly(Blob), Resource(Combat, 2)),
-    ]),
+    ],
 )

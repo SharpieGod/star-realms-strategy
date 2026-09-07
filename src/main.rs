@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     Faction::Unaligned,
-    ResourceType::{Authority, Combat, Trade},
+    Resource::{Authority, Combat, Trade},
 };
 
 #[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Hash, Debug)]
@@ -76,7 +76,16 @@ enum Amount {
     ShipsPlayed(Faction), // Neutral = any
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+impl Display for Amount {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Amount::Number(n) => write!(f, "{n}"),
+            Amount::ShipsPlayed(faction) => write!(f, "# of {faction} played"),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 enum Faction {
     TradeFederation,
     Blob,
@@ -110,11 +119,37 @@ enum Condition {
     BaseCountAtLeast(u32),
 }
 
+impl Display for Condition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Condition::HasAlly(faction) => write!(f, "has {faction} allly"),
+            Condition::And(condition, condition1) => write!(f, "{condition} and {condition1}"),
+            Condition::BaseCountAtLeast(count) => write!(f, "at least {count} bases"),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
-enum ResourceType {
+enum Resource {
     Authority,
     Combat,
     Trade,
+}
+
+impl Display for Resource {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = format!("{self:?}");
+
+        write!(
+            f,
+            "{}",
+            match self {
+                Authority => s.green(),
+                Combat => s.red(),
+                Trade => s.yellow(),
+            },
+        )
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -124,11 +159,42 @@ enum ScrapType {
     HandOrDiscardPile,
 }
 
+impl Display for ScrapType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                ScrapType::DiscardPile => "Discard Pile",
+                ScrapType::Hand => "Hand",
+                ScrapType::HandOrDiscardPile => "Hand or Discard Pile",
+            }
+        )
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 
 enum Event {
     PlayShip(Faction), // Neutral = Any
     Scrap,
+}
+
+impl Display for Event {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Event::PlayShip(faction) => write!(
+                f,
+                "{} played",
+                if *faction != Faction::Unaligned {
+                    faction.to_string()
+                } else {
+                    "any".to_string()
+                }
+            ),
+            Event::Scrap => write!(f, "scrap"),
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -147,7 +213,7 @@ enum Effect {
         to_top_of_deck: bool,
         max_cost: Option<u32>,
     },
-    Resource(ResourceType, u32),
+    Resource(Resource, u32),
     Scrap(ScrapType, u32),
     Discard(u32),
     DestroyTargetBase,
@@ -163,21 +229,28 @@ enum Effect {
 impl Display for Effect {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Effect::If(condition, effect) => write!(f, "{condition:?}: {effect}"),
-            Effect::Or(effect, effect1) => write!(f, "{effect} or {effect1}"),
-            Effect::AndOr(effect, effect1) => write!(f, "{effect} and/or {effect1}"),
+            Effect::If(condition, effect) => write!(f, "{{{condition}}}: {{{effect}}}"),
+            Effect::Or(effect, effect1) => write!(f, "{{{effect}}} or {{{effect1}}}"),
+            Effect::AndOr(effect, effect1) => write!(f, "{{{effect}}} and/or {{{effect1}}}"),
             Effect::Sequence(effects) => write!(
                 f,
                 "{}",
                 effects
                     .iter()
-                    .map(|e| e.to_string())
+                    .map(|e| format!("{{{e}}}"))
                     .collect::<Vec<String>>()
-                    .join(" --> ")
+                    .join(", ")
             ),
-            Effect::On(event, effect) => write!(f, "on {event:?}: {effect}"),
-            Effect::Draw(amount) => write!(f, "draw {amount:?} cards"),
-            Effect::May(effect) => write!(f, "you may {effect}"),
+            Effect::On(event, effect) => write!(f, "{{on {event}}}: {{{effect}}}"),
+            Effect::Draw(amount) => write!(
+                f,
+                "Draw {}",
+                match amount {
+                    Amount::Number(count) => format!("{}", n_cards(*count)),
+                    Amount::ShipsPlayed(_) => amount.to_string(),
+                }
+            ),
+            Effect::May(effect) => write!(f, "may {{{effect}}}"),
             Effect::AquireShipForFree {
                 to_top_of_deck,
                 max_cost,
@@ -195,9 +268,11 @@ impl Display for Effect {
                     "".to_string()
                 }
             ),
-            Effect::Resource(resource_type, count) => write!(f, "gain {count} {resource_type:#?}"),
-            Effect::Scrap(scrap_type, count) => write!(f, "scrap {count} cards {scrap_type:?}"),
-            Effect::Discard(count) => write!(f, "discard {count} cards"),
+            Effect::Resource(resource_type, count) => write!(f, "Gain {count} {resource_type}"),
+            Effect::Scrap(scrap_type, count) => {
+                write!(f, "scrap {} in {scrap_type}", n_cards(*count))
+            }
+            Effect::Discard(count) => write!(f, "Discard {}", n_cards(*count)),
             Effect::DestroyTargetBase => write!(f, "destroy target base"),
             Effect::ScrapCardInRow => write!(f, "scrap card in trade row"),
             Effect::OpponentDiscards => write!(f, "opponent discards a card"),
@@ -205,6 +280,10 @@ impl Display for Effect {
             Effect::NextAcquiredShipToTopOfDeck => write!(f, "next aquired ship on top of deck"),
         }
     }
+}
+
+fn n_cards(n: u32) -> String {
+    format!("{n} {}", if n == 1 { "card" } else { "cards" })
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -219,7 +298,7 @@ struct Card {
     faction: Faction,
     card_type: CardType,
     cost: u32,
-    effect: Effect,
+    effects: Vec<Effect>,
     /// Mech World: counts as an ally for every faction while in play.
     #[serde(default)]
     is_all_faction_ally: bool,
@@ -227,10 +306,28 @@ struct Card {
 
 impl Display for Card {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let n = format!("{:?}", self.name);
+
         write!(
             f,
-            "({}) {:?} {} {}",
-            self.cost, self.name, self.faction, self.effect
+            "({}) {}\n{}",
+            self.cost.to_string().b_yellow(),
+            match self.faction {
+                Faction::TradeFederation => n.blue(),
+                Faction::Blob => n.green(),
+                Faction::StarEmpire => n.yellow(),
+                Faction::MachineCult => n.red(),
+                Unaligned => n,
+            },
+            if self.effects.is_empty() {
+                "no effects".to_string()
+            } else {
+                self.effects
+                    .iter()
+                    .map(|e| e.to_string())
+                    .collect::<Vec<String>>()
+                    .join("\n")
+            }
         )?;
 
         Ok(())
@@ -270,8 +367,8 @@ fn load_cards() -> HashMap<CardNamed, Card> {
 /// All cards, keyed by name, loaded once on first access.
 static CARDS: LazyLock<HashMap<CardNamed, Card>> = LazyLock::new(load_cards);
 
-fn effect(name: &CardNamed) -> &'static Effect {
-    &CARDS[name].effect
+fn effect(name: &CardNamed) -> &'static Vec<Effect> {
+    &CARDS[name].effects
 }
 
 /// A deck manifest: card name paired with how many copies it contains.
@@ -333,17 +430,27 @@ enum CardAction {
 
 fn main() {
     let card_counts = CardCounts::try_from(PathBuf::from("./cards/deck.ron")).unwrap();
-    let mut deck: Vec<CardNamed> = card_counts.into();
-    let mut rng = rand::rng();
-    deck.shuffle(&mut rng);
 
     println!(
         "{}",
-        deck.iter()
-            .take(5)
-            .copied()
-            .map(|n| (&CARDS[&n]).to_string())
+        CARDS
+            .iter()
+            .map(|(_, c)| c.to_string())
             .collect::<Vec<String>>()
-            .join("\n")
+            .join("\n\n")
     );
+
+    // let mut deck: Vec<CardNamed> = card_counts.into();
+    // let mut rng = rand::rng();
+    // deck.shuffle(&mut rng);
+
+    // println!(
+    //     "{}",
+    //     deck.iter()
+    //         .take(5)
+    //         .copied()
+    //         .map(|n| (&CARDS[&n]).to_string())
+    //         .collect::<Vec<String>>()
+    //         .join("\n\n")
+    // );
 }

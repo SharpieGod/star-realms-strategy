@@ -3,8 +3,8 @@
     faction: StarEmpire,
     card_type: Base(defense: 4, it_outpost: true),
     cost: 5,
-    effect: Sequence([
+    effects: [
         Resource(Combat, 3),
         If(HasAlly(StarEmpire), Resource(Combat, 4)),
-    ]),
+    ],
 )

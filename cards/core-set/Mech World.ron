@@ -3,7 +3,6 @@
     faction: MachineCult,
     card_type: Base(defense: 6, it_outpost: true),
     cost: 5,
-    effect: Sequence([
-    ]),
+    effects: [],
     is_all_faction_ally: true,
 )

@@ -3,8 +3,8 @@
     faction: TradeFederation,
     card_type: Base(defense: 5, it_outpost: true),
     cost: 5,
-    effect: Sequence([
+    effects: [
         Or(Resource(Authority, 3), Resource(Combat, 2)),
         If(HasAlly(TradeFederation), Resource(Combat, 2)),
-    ]),
+    ],
 )

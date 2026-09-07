@@ -3,8 +3,8 @@
     faction: TradeFederation,
     card_type: Ship,
     cost: 4,
-    effect: Sequence([
+    effects: [
         Resource(Trade, 4),
         If(HasAlly(TradeFederation), May(NextAcquiredShipToTopOfDeck)),
-    ]),
+    ],
 )
