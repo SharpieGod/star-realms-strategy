@@ -704,6 +704,24 @@ impl Game {
         }
     }
 
+    fn game_ended(&self) -> bool {
+        self.players.iter().any(|p| p.authority <= 0)
+    }
+    fn run_game(&mut self, agents: &mut [Box<dyn Agent>; 2]) {
+        while !self.game_ended() {
+            let actor = self.turn_number as usize % 2;
+
+            loop {
+                let action = agents[actor].choose_action(self, actor);
+                if action == PlayerAction::EndTurn {
+                    break;
+                }
+                self.do_action(agents, actor, action);
+            }
+
+            self.turn_number += 1;
+        }
+    }
     fn do_action(&mut self, agents: &mut [Box<dyn Agent>; 2], actor: usize, action: PlayerAction) {
         let player = &mut self.players[actor];
 
@@ -830,6 +848,7 @@ impl Game {
     }
 }
 
+#[derive(PartialEq, Eq)]
 enum PlayerAction {
     PlayCard(usize), // In play always
     BuyCard(usize),
@@ -838,17 +857,21 @@ enum PlayerAction {
     SpendCombat(CombatTarget),
     EndTurn,
 }
-
+#[derive(PartialEq, Eq)]
 enum CombatTarget {
     Enemy,
     EnemyBase(usize),
 }
+
+#[derive(PartialEq, Eq)]
 
 enum ChoiceValue {
     Bool(bool),
     Index(usize),
     Indicies(Vec<usize>),
 }
+
+#[derive(PartialEq, Eq)]
 
 enum CardAction {
     Scrap,
@@ -900,7 +923,19 @@ struct UserCLI {}
 
 impl Agent for UserCLI {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
-        todo!()
+        println!("{game}");
+        println!("what do you do?");
+
+        let mut s = String::new();
+        stdin().read_line(&mut s).unwrap();
+
+        s = s.trim().to_string();
+
+        let Ok(index) = s.parse::<usize>() else {
+            return PlayerAction::EndTurn;
+        };
+
+        PlayCard(index)
     }
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
@@ -945,6 +980,9 @@ impl Agent for UserCLI {
 
 fn main() {
     let mut game = Game::new();
+    let agent1 = UserCLI {};
+    let agent2 = UserCLI {};
 
+    game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);
     println!("{}", game);
 }
