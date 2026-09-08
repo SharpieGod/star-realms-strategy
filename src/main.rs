@@ -802,25 +802,16 @@ enum CardAction {
 }
 
 enum ChoiceKind {
-    YesNo,    // May, each half of AndOr
-    OrBranch, // Or: true = left, false = right
-    SelectFromHand {
-        count: u32,
-    }, // Discard, OpponentDiscards
-    SelectFromPile {
-        pile: ScrapType,
-        count: u32,
-    }, // Scrap
-    SelectShopCard {
-        eligible: Vec<usize>,
-        optional: bool,
-    }, // AquireShipForFree, ScrapCardInRow
-    SelectEnemyBase {
-        eligible: Vec<usize>,
-    }, // DestroyTargetBase
-    SelectPlayedShip {
-        eligible: Vec<CardNamed>,
-    }, // CopyPlayedShip
+    YesNo,                                          // May, each half of AndOr, Or's branch pick
+    SelectFromPile { pile: ScrapType, count: u32 }, // Scrap, Discard (pile: Hand), OpponentDiscards (pile: Hand)
+    SelectShopCard { eligible: Vec<usize> }, // AquireShipForFree (after a YesNo), ScrapCardInRow
+    SelectEnemyBase { eligible: Vec<usize> }, // DestroyTargetBase
+    SelectPlayedShip { eligible: Vec<CardNamed> }, // CopyPlayedShip
+}
+
+enum GamePhase {
+    Main,
+    Drawing,
 }
 
 trait Agent {
