@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     CardNamed::{Scout, Viper},
     Faction::Unaligned,
-    PlayerAction::PlayCard,
+    PlayerAction::{EndTurn, PlayCard},
     Resource::{Authority, Combat, Trade},
 };
 
@@ -607,6 +607,8 @@ struct Game {
     shop: [Option<CardNamed>; 5],
 }
 
+struct IllegalAction;
+
 impl Display for Player {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
@@ -716,17 +718,30 @@ impl Game {
                 if action == PlayerAction::EndTurn {
                     break;
                 }
-                self.do_action(agents, actor, action);
+
+                match self.do_action(agents, actor, action) {
+                    Ok(_) => {}
+                    Err(_) => {}
+                };
             }
 
             self.turn_number += 1;
         }
     }
-    fn do_action(&mut self, agents: &mut [Box<dyn Agent>; 2], actor: usize, action: PlayerAction) {
+    fn do_action(
+        &mut self,
+        agents: &mut [Box<dyn Agent>; 2],
+        actor: usize,
+        action: PlayerAction,
+    ) -> Result<(), IllegalAction> {
         let player = &mut self.players[actor];
 
         match action {
             PlayCard(hand_index) => {
+                if hand_index >= player.hand.len() {
+                    return Err(IllegalAction);
+                }
+
                 let played_card = player.hand.remove(hand_index);
                 let instance = player.play_card(played_card);
 
@@ -740,7 +755,7 @@ impl Game {
             }
             PlayerAction::BuyCard(card_index) => {
                 let Some(target_card) = self.shop[card_index] else {
-                    return;
+                    return Err(IllegalAction {});
                 };
 
                 self.shop[card_index] = self.deck.pop(); // Draw new card, if no card its None anyways
@@ -749,7 +764,7 @@ impl Game {
             }
             PlayerAction::Card(card_index, card_action) => {
                 let Some(target_card) = player.in_play.get(card_index) else {
-                    return;
+                    return Err(IllegalAction {});
                 };
                 let target_name = target_card.name;
                 let target_id = target_card.id;
@@ -761,7 +776,7 @@ impl Game {
                             .iter()
                             .find(|e| matches!(e, Effect::ScrapAbility(_)))
                         else {
-                            return;
+                            return Err(IllegalAction);
                         };
 
                         player.remove_from_play(target_id);
@@ -774,6 +789,8 @@ impl Game {
             PlayerAction::SpendCombat(combat_target) => todo!(),
             PlayerAction::EndTurn => todo!(),
         }
+
+        Ok(())
     }
 
     fn resolve_effect(
@@ -931,11 +948,14 @@ impl Agent for UserCLI {
 
         s = s.trim().to_string();
 
-        let Ok(index) = s.parse::<usize>() else {
-            return PlayerAction::EndTurn;
-        };
+        // PlayCard(_) play index
+        // PlayerAction::BuyCard(_) buy index
+        // PlayerAction::Card(_, card_action) index
+        // PlayerAction::DestroyTargetBase(_) destroy base index
+        // PlayerAction::SpendCombat(combat_target) target deal
+        // PlayerAction::EndTurn turn/end turn/any invalid input
 
-        PlayCard(index)
+        EndTurn
     }
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
