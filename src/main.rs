@@ -2,7 +2,7 @@ use std::{
     collections::HashMap,
     fmt::Display,
     fs::{self, OpenOptions},
-    io::Write,
+    io::{Write, stdin},
     marker::PhantomData,
     path::{self, Path, PathBuf},
     sync::LazyLock,
@@ -520,15 +520,45 @@ impl From<CardCounts> for Vec<CardNamed> {
     }
 }
 
+/// Identifies one specific card instance in play, distinct from others of the
+/// same `CardNamed` (e.g. two Vipers), independent of its position in `in_play`.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+struct CardInstanceId(u32);
+
+struct InPlayCard {
+    id: CardInstanceId,
+    name: CardNamed,
+}
+
 struct Player {
     personal_deck: Vec<CardNamed>,
     hand: Vec<CardNamed>,
-    in_play: Vec<CardNamed>,
+    in_play: Vec<InPlayCard>,
     discard_pile: Vec<CardNamed>,
     authority: u32,
     trade: u32,
     combat: u32,
-    pending_ally_effects: Vec<(CardNamed, Effect)>,
+    pending_ally_effects: Vec<(CardInstanceId, Effect)>,
+    next_instance_id: u32,
+}
+
+impl Player {
+    fn play_card(&mut self, name: CardNamed) -> CardInstanceId {
+        let id = CardInstanceId(self.next_instance_id);
+        self.next_instance_id += 1;
+        self.in_play.push(InPlayCard { id, name });
+        id
+    }
+
+    /// Removes one card instance from play (scrapped, discarded, destroyed),
+    /// dropping any of its still-unused pending Ally effects along with it.
+    fn remove_from_play(&mut self, id: CardInstanceId) -> Option<CardNamed> {
+        let pos = self.in_play.iter().position(|c| c.id == id)?;
+        let card = self.in_play.remove(pos);
+        self.pending_ally_effects
+            .retain(|(source, _)| *source != id);
+        Some(card.name)
+    }
 }
 
 impl Player {
@@ -564,6 +594,7 @@ impl Default for Player {
             trade: Default::default(),
             combat: Default::default(),
             pending_ally_effects: Default::default(),
+            next_instance_id: 0,
         }
     }
 }
@@ -598,7 +629,7 @@ impl Display for Player {
             "in play: {}",
             self.in_play
                 .iter()
-                .map(|c| CARDS[c].name_only())
+                .map(|c| CARDS[&c.name].name_only())
                 .collect::<Vec<String>>()
                 .join(", ")
         )?;
@@ -673,16 +704,18 @@ impl Game {
         }
     }
 
-    fn do_action(&mut self, actor: usize, action: PlayerAction) {
+    fn do_action(&mut self, agents: &mut [Box<dyn Agent>; 2], actor: usize, action: PlayerAction) {
         let player = &mut self.players[actor];
 
         match action {
             PlayCard(hand_index) => {
                 let played_card = player.hand.remove(hand_index);
-                player.in_play.push(played_card);
+                let instance = player.play_card(played_card);
 
                 self.resolve_effect(
+                    agents,
                     actor,
+                    instance,
                     played_card,
                     &Effect::Sequence(CARDS[&played_card].effects.clone()),
                 );
@@ -697,13 +730,15 @@ impl Game {
                 player.discard_pile.push(target_card); // TODO: next card from shop to top of deck
             }
             PlayerAction::Card(card_index, card_action) => {
-                let Some(&target_card) = player.in_play.get(card_index) else {
+                let Some(target_card) = player.in_play.get(card_index) else {
                     return;
                 };
+                let target_name = target_card.name;
+                let target_id = target_card.id;
 
                 match card_action {
                     CardAction::Scrap => {
-                        let Some(Effect::ScrapAbility(inner)) = CARDS[&target_card]
+                        let Some(Effect::ScrapAbility(inner)) = CARDS[&target_name]
                             .effects
                             .iter()
                             .find(|e| matches!(e, Effect::ScrapAbility(_)))
@@ -711,8 +746,8 @@ impl Game {
                             return;
                         };
 
-                        player.in_play.remove(card_index);
-                        self.resolve_effect(actor, target_card, inner);
+                        player.remove_from_play(target_id);
+                        self.resolve_effect(agents, actor, target_id, target_name, inner);
                     }
                     CardAction::Choice(_) => todo!(),
                 }
@@ -723,7 +758,14 @@ impl Game {
         }
     }
 
-    fn resolve_effect(&mut self, actor: usize, source: CardNamed, effect: &Effect) {
+    fn resolve_effect(
+        &mut self,
+        agents: &mut [Box<dyn Agent>; 2],
+        actor: usize,
+        source: CardInstanceId,
+        source_name: CardNamed,
+        effect: &Effect,
+    ) {
         match effect {
             Effect::Resource(resource, count) => {
                 let player = &mut self.players[actor];
@@ -735,12 +777,12 @@ impl Game {
             }
             Effect::Sequence(effects) => {
                 for e in effects {
-                    self.resolve_effect(actor, source, e);
+                    self.resolve_effect(agents, actor, source, source_name, e);
                 }
             }
             Effect::If(condition, inner) => {
                 if self.evaluate_condition(actor, condition) {
-                    self.resolve_effect(actor, source, inner);
+                    self.resolve_effect(agents, actor, source, source_name, inner);
                 }
             }
             // Ally abilities become available for at-will use once queued here;
@@ -754,6 +796,18 @@ impl Game {
             // on demand (ScrapInPlay action, or the PlayShip trigger scan) —
             // so they're intentional no-ops here.
             Effect::ScrapAbility(_) | Effect::Trigger(_, _) => {}
+            Effect::May(inner) => {
+                let ctx = AskContext {
+                    actor,
+                    source,
+                    source_name,
+                    source_effect: effect,
+                };
+
+                if agents[actor].ask_yes_no(self, &ctx) {
+                    self.resolve_effect(agents, actor, source, source_name, inner);
+                }
+            }
             _ => todo!(),
         }
     }
@@ -768,7 +822,7 @@ impl Game {
                 self.players[actor]
                     .in_play
                     .iter()
-                    .filter(|c| CARDS[c].is_base())
+                    .filter(|c| CARDS[&c.name].is_base())
                     .count()
                     >= *count as usize
             }
@@ -801,6 +855,7 @@ enum CardAction {
     Choice(ChoiceValue),
 }
 
+#[derive(Debug)]
 enum ChoiceKind {
     YesNo,                                          // May, each half of AndOr, Or's branch pick
     SelectFromPile { pile: ScrapType, count: u32 }, // Scrap, Discard (pile: Hand), OpponentDiscards (pile: Hand)
@@ -814,9 +869,78 @@ enum GamePhase {
     Drawing,
 }
 
+/// Who's being asked, and which card instance's effect is asking.
+struct AskContext<'a> {
+    actor: usize,
+    source: CardInstanceId,
+    source_name: CardNamed,
+    source_effect: &'a Effect,
+}
+
 trait Agent {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction;
-    fn choose(&mut self, game: &Game, actor: usize, kind: &ChoiceKind) -> ChoiceValue;
+    fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool;
+    fn ask_cards_from_pile(
+        &mut self,
+        game: &Game,
+        ctx: &AskContext,
+        pile: ScrapType,
+        count: u32,
+    ) -> Vec<usize>;
+    fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
+    fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
+    fn ask_played_ship(
+        &mut self,
+        game: &Game,
+        ctx: &AskContext,
+        eligible: &[CardNamed],
+    ) -> CardNamed;
+}
+struct UserCLI {}
+
+impl Agent for UserCLI {
+    fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
+        todo!()
+    }
+
+    fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
+        println!(
+            "{}: {}\n yes or no? (y/n)",
+            ctx.source_name, ctx.source_effect
+        );
+
+        let mut s = String::new();
+        stdin().read_line(&mut s).unwrap();
+
+        s.trim() == "y"
+    }
+
+    fn ask_cards_from_pile(
+        &mut self,
+        game: &Game,
+        ctx: &AskContext,
+        pile: ScrapType,
+        count: u32,
+    ) -> Vec<usize> {
+        todo!()
+    }
+
+    fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
+        todo!()
+    }
+
+    fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
+        todo!()
+    }
+
+    fn ask_played_ship(
+        &mut self,
+        game: &Game,
+        ctx: &AskContext,
+        eligible: &[CardNamed],
+    ) -> CardNamed {
+        todo!()
+    }
 }
 
 fn main() {
