@@ -17,7 +17,6 @@ use rand::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    CardIndex::InPlay,
     CardNamed::{Scout, Viper},
     Faction::Unaligned,
     PlayerAction::PlayCard,
@@ -388,7 +387,7 @@ impl Display for Card {
                 Faction::Blob => n.green(),
                 Faction::StarEmpire => n.yellow(),
                 Faction::MachineCult => n.red(),
-                Unaligned => n,
+                Unaligned => n.grey(),
             },
             match self.card_type {
                 CardType::Ship => "".to_string(),
@@ -419,12 +418,26 @@ impl Card {
     fn name_only(&self) -> String {
         let n = self.name.to_string();
 
-        match self.faction {
-            Faction::TradeFederation => n.blue(),
-            Faction::Blob => n.green(),
-            Faction::StarEmpire => n.yellow(),
-            Faction::MachineCult => n.red(),
-            Unaligned => n,
+        if self.cost > 0 {
+            format!(
+                "({}) {}",
+                self.cost.to_string().b_yellow(),
+                match self.faction {
+                    Faction::TradeFederation => n.blue(),
+                    Faction::Blob => n.green(),
+                    Faction::StarEmpire => n.yellow(),
+                    Faction::MachineCult => n.red(),
+                    Unaligned => n.grey(),
+                }
+            )
+        } else {
+            match self.faction {
+                Faction::TradeFederation => n.blue(),
+                Faction::Blob => n.green(),
+                Faction::StarEmpire => n.yellow(),
+                Faction::MachineCult => n.red(),
+                Unaligned => n.grey(),
+            }
         }
     }
 
@@ -518,11 +531,32 @@ struct Player {
     pending_ally_effects: Vec<(CardNamed, Effect)>,
 }
 
+impl Player {
+    fn draw_cards(&mut self, mut n: usize, rng: &mut ThreadRng) {
+        while n > 0 && !(self.personal_deck.is_empty() && self.discard_pile.is_empty()) {
+            while n > 0
+                && let Some(card) = self.personal_deck.pop()
+            {
+                self.hand.push(card);
+                n -= 1;
+            }
+
+            if n > 0 {
+                self.personal_deck = self.discard_pile.drain(..).collect();
+                self.personal_deck.shuffle(rng);
+            }
+        }
+    }
+}
+
 impl Default for Player {
     fn default() -> Self {
-        let starter_deck = Vec::<CardNamed>::from(CardCounts(vec![(Viper, 2), (Scout, 8)]));
+        let mut deck = STARTER_PERSONAL_DECK.clone();
+        let mut rng = rand::rng();
+        deck.shuffle(&mut rng);
+
         Self {
-            personal_deck: STARTER_PERSONAL_DECK.clone(),
+            personal_deck: deck,
             hand: Default::default(),
             in_play: Default::default(),
             discard_pile: Default::default(),
@@ -542,10 +576,73 @@ struct Game {
     shop: [Option<CardNamed>; 5],
 }
 
+impl Display for Player {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(
+            f,
+            "authority: {}, combat: {}, trade: {}",
+            self.authority, self.combat, self.trade
+        )?;
+        writeln!(f, "deck: {} cards", self.personal_deck.len())?;
+        writeln!(
+            f,
+            "hand: {}",
+            self.hand
+                .iter()
+                .map(|c| CARDS[c].name_only())
+                .collect::<Vec<String>>()
+                .join(", ")
+        )?;
+        writeln!(
+            f,
+            "in play: {}",
+            self.in_play
+                .iter()
+                .map(|c| CARDS[c].name_only())
+                .collect::<Vec<String>>()
+                .join(", ")
+        )?;
+        write!(
+            f,
+            "discard pile: {}",
+            self.discard_pile
+                .iter()
+                .map(|c| CARDS[c].name_only())
+                .collect::<Vec<String>>()
+                .join(", ")
+        )
+    }
+}
+
+impl Display for Game {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "player 1:")?;
+        writeln!(f, "{}", self.players[0])?;
+        writeln!(f)?;
+        writeln!(f, "turn: {}", self.turn_number)?;
+        writeln!(f, "trade deck: {} cards", self.deck.len())?;
+        writeln!(
+            f,
+            "shop: {}",
+            self.shop
+                .iter()
+                .map(|c| match c {
+                    Some(c) => CARDS[c].name_only(),
+                    None => "-".to_string(),
+                })
+                .collect::<Vec<String>>()
+                .join(", ")
+        )?;
+        writeln!(f)?;
+        writeln!(f, "player 2:")?;
+        writeln!(f, "{}", self.players[1])
+    }
+}
+
 impl Game {
     fn new() -> Game {
-        let player1 = Player::default();
-        let player2 = Player::default();
+        let mut player1 = Player::default();
+        let mut player2 = Player::default();
         let mut rng = rand::rng();
 
         let turn_number = rng.random_range(0..=1);
@@ -558,6 +655,14 @@ impl Game {
             .take(5)
             .map(|c| Some(c))
             .collect::<Vec<Option<CardNamed>>>();
+
+        if turn_number == 0 {
+            player1.draw_cards(3, &mut rng);
+            player2.draw_cards(5, &mut rng);
+        } else {
+            player1.draw_cards(5, &mut rng);
+            player2.draw_cards(3, &mut rng);
+        }
 
         Self {
             players: [player1, player2],
@@ -582,8 +687,36 @@ impl Game {
                     &Effect::Sequence(CARDS[&played_card].effects.clone()),
                 );
             }
-            PlayerAction::BuyCard(_) => todo!(),
-            PlayerAction::Card(card_index, card_action) => todo!(),
+            PlayerAction::BuyCard(card_index) => {
+                let Some(target_card) = self.shop[card_index] else {
+                    return;
+                };
+
+                self.shop[card_index] = self.deck.pop(); // Draw new card, if no card its None anyways
+
+                player.discard_pile.push(target_card); // TODO: next card from shop to top of deck
+            }
+            PlayerAction::Card(card_index, card_action) => {
+                let Some(&target_card) = player.in_play.get(card_index) else {
+                    return;
+                };
+
+                match card_action {
+                    CardAction::Scrap => {
+                        let Some(Effect::ScrapAbility(inner)) = CARDS[&target_card]
+                            .effects
+                            .iter()
+                            .find(|e| matches!(e, Effect::ScrapAbility(_)))
+                        else {
+                            return;
+                        };
+
+                        player.in_play.remove(card_index);
+                        self.resolve_effect(actor, target_card, inner);
+                    }
+                    CardAction::Choice(_) => todo!(),
+                }
+            }
             PlayerAction::DestroyTargetBase(_) => todo!(),
             PlayerAction::SpendCombat(combat_target) => todo!(),
             PlayerAction::EndTurn => todo!(),
@@ -646,7 +779,7 @@ impl Game {
 enum PlayerAction {
     PlayCard(usize), // In play always
     BuyCard(usize),
-    Card(CardIndex, CardAction),
+    Card(usize, CardAction),
     DestroyTargetBase(usize),
     SpendCombat(CombatTarget),
     EndTurn,
@@ -657,14 +790,10 @@ enum CombatTarget {
     EnemyBase(usize),
 }
 
-enum CardIndex {
-    InPlay(usize),
-    DiscardPile(usize), // for selecting scraps
-}
 enum ChoiceValue {
     Bool(bool),
-    Index(CardIndex),
-    Indicies(Vec<CardIndex>),
+    Index(usize),
+    Indicies(Vec<usize>),
 }
 
 enum CardAction {
@@ -672,16 +801,35 @@ enum CardAction {
     Choice(ChoiceValue),
 }
 
+enum ChoiceKind {
+    YesNo,    // May, each half of AndOr
+    OrBranch, // Or: true = left, false = right
+    SelectFromHand {
+        count: u32,
+    }, // Discard, OpponentDiscards
+    SelectFromPile {
+        pile: ScrapType,
+        count: u32,
+    }, // Scrap
+    SelectShopCard {
+        eligible: Vec<usize>,
+        optional: bool,
+    }, // AquireShipForFree, ScrapCardInRow
+    SelectEnemyBase {
+        eligible: Vec<usize>,
+    }, // DestroyTargetBase
+    SelectPlayedShip {
+        eligible: Vec<CardNamed>,
+    }, // CopyPlayedShip
+}
+
+trait Agent {
+    fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction;
+    fn choose(&mut self, game: &Game, actor: usize, kind: &ChoiceKind) -> ChoiceValue;
+}
+
 fn main() {
     let mut game = Game::new();
 
-    println!(
-        "{}",
-        game.shop
-            .iter()
-            .enumerate()
-            .map(|(i, c)| format!("({i}) {}", (&CARDS[&c.unwrap()]).name_only()))
-            .collect::<Vec<String>>()
-            .join("\n")
-    );
+    println!("{}", game);
 }
