@@ -17,9 +17,10 @@ use rand::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
+    CardAction::{EngageEffect, Scrap},
     CardNamed::{Scout, Viper},
     Faction::Unaligned,
-    PlayerAction::{EndTurn, PlayCard},
+    PlayerAction::{BuyCard, Card as PACard, DestroyTargetBase, EndTurn, PlayCard},
     Resource::{Authority, Combat, Trade},
 };
 
@@ -404,7 +405,7 @@ impl Display for Card {
             } else {
                 self.effects
                     .iter()
-                    .map(|e| e.to_string())
+                    .map(|e| format!("  {e}"))
                     .collect::<Vec<String>>()
                     .join("\n")
             }
@@ -649,8 +650,8 @@ impl Display for Player {
 
 impl Display for Game {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "player 1:")?;
-        writeln!(f, "{}", self.players[0])?;
+        writeln!(f, "player {}:", self.turn_number % 2 + 1)?;
+        writeln!(f, "{}", self.players[(self.turn_number as usize + 1) % 2])?;
         writeln!(f)?;
         writeln!(f, "turn: {}", self.turn_number)?;
         writeln!(f, "trade deck: {} cards", self.deck.len())?;
@@ -667,8 +668,8 @@ impl Display for Game {
                 .join(", ")
         )?;
         writeln!(f)?;
-        writeln!(f, "player 2:")?;
-        writeln!(f, "{}", self.players[1])
+        writeln!(f, "player {}:", (self.turn_number + 1) % 2 + 1)?;
+        writeln!(f, "{}", self.players[(self.turn_number as usize) % 2])
     }
 }
 
@@ -782,7 +783,7 @@ impl Game {
                         player.remove_from_play(target_id);
                         self.resolve_effect(agents, actor, target_id, target_name, inner);
                     }
-                    CardAction::Choice(_) => todo!(),
+                    CardAction::EngageEffect => todo!(),
                 }
             }
             PlayerAction::DestroyTargetBase(_) => todo!(),
@@ -889,10 +890,9 @@ enum ChoiceValue {
 }
 
 #[derive(PartialEq, Eq)]
-
 enum CardAction {
     Scrap,
-    Choice(ChoiceValue),
+    EngageEffect,
 }
 
 #[derive(Debug)]
@@ -940,22 +940,50 @@ struct UserCLI {}
 
 impl Agent for UserCLI {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
-        println!("{game}");
-        println!("what do you do?");
+        loop {
+            println!("{game}");
+            println!("what do you do?");
 
-        let mut s = String::new();
-        stdin().read_line(&mut s).unwrap();
+            let mut s = String::new();
+            stdin().read_line(&mut s).unwrap();
 
-        s = s.trim().to_string();
+            s = s.trim().to_string();
 
-        // PlayCard(_) play index
-        // PlayerAction::BuyCard(_) buy index
-        // PlayerAction::Card(_, card_action) index
-        // PlayerAction::DestroyTargetBase(_) destroy base index
-        // PlayerAction::SpendCombat(combat_target) target deal
-        // PlayerAction::EndTurn turn/end turn/any invalid input
+            // PlayCard(_) play index
+            // PlayerAction::BuyCard(_) buy index
+            // PlayerAction::Card(_, card_action) index {card action}
+            // PlayerAction::DestroyTargetBase(_) destroybase index
+            // PlayerAction::SpendCombat(combat_target) target {target} deal {damage}
+            // PlayerAction::EndTurn turn/end turn/any invalid input
 
-        EndTurn
+            let mut tokens = s.split_whitespace();
+
+            match tokens.next().unwrap_or_default() {
+                c if c == "play" || c == "buy" || c == "destroybase" => {
+                    let Ok(index) = tokens.next().unwrap_or(&"").parse::<usize>() else {
+                        continue;
+                    };
+
+                    return match c {
+                        "play" => PlayCard(index),
+                        "buy" => BuyCard(index),
+                        "destroybase" => DestroyTargetBase(index),
+                        _ => unreachable!(),
+                    };
+                }
+                index if index.parse::<usize>().is_ok() => {
+                    let index = index.parse::<usize>().unwrap_or_default();
+
+                    match tokens.nth(1).unwrap_or_default() {
+                        "scrap" => return PACard(index, Scrap),
+                        "engage" => return PACard(index, EngageEffect),
+                        _ => {}
+                    }
+                }
+                "pass" | "turn" | "end turn" => return EndTurn,
+                _ => {}
+            }
+        }
     }
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
@@ -1003,6 +1031,6 @@ fn main() {
     let agent1 = UserCLI {};
     let agent2 = UserCLI {};
 
-    game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);
-    println!("{}", game);
+    // game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);
+    println!("{}", &CARDS[&CardNamed::Cutter]);
 }
