@@ -758,7 +758,13 @@ impl Game {
                 let Some(target_card) = self.shop[card_index] else {
                     return Err(IllegalAction {});
                 };
+                let target_cost = CARDS[&target_card].cost;
 
+                if target_cost > player.trade {
+                    return Err(IllegalAction {});
+                }
+
+                player.trade -= target_cost;
                 self.shop[card_index] = self.deck.pop(); // Draw new card, if no card its None anyways
 
                 player.discard_pile.push(target_card); // TODO: next card from shop to top of deck
@@ -956,11 +962,11 @@ impl Agent for UserCLI {
             // PlayerAction::SpendCombat(combat_target) target {target} deal {damage}
             // PlayerAction::EndTurn turn/end turn/any invalid input
 
-            let mut tokens = s.split_whitespace();
+            let mut tokens = s.split_whitespace().collect::<Vec<&str>>();
 
-            match tokens.next().unwrap_or_default() {
-                c if c == "play" || c == "buy" || c == "destroybase" => {
-                    let Ok(index) = tokens.next().unwrap_or(&"").parse::<usize>() else {
+            match *tokens.iter().nth(0).unwrap_or(&"") {
+                c if (c == "play" || c == "buy" || c == "destroybase") => {
+                    let Ok(index) = tokens.iter().nth(1).unwrap_or(&"").parse::<usize>() else {
                         continue;
                     };
 
@@ -974,7 +980,7 @@ impl Agent for UserCLI {
                 index if index.parse::<usize>().is_ok() => {
                     let index = index.parse::<usize>().unwrap_or_default();
 
-                    match tokens.nth(1).unwrap_or_default() {
+                    match *tokens.iter().nth(1).unwrap_or(&"") {
                         "scrap" => return PACard(index, Scrap),
                         "engage" => return PACard(index, EngageEffect),
                         _ => {}
@@ -1031,6 +1037,6 @@ fn main() {
     let agent1 = UserCLI {};
     let agent2 = UserCLI {};
 
-    // game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);
-    println!("{}", &CARDS[&CardNamed::Cutter]);
+    game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);
+    // println!("{}", &CARDS[&CardNamed::Cutter]);
 }
