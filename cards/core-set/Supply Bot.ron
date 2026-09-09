@@ -5,7 +5,7 @@
     cost: 3,
     effects: [
         Resource(Trade, 2),
-        May(Scrap(HandOrDiscardPile, 1)),
+        May(Scrap("HAND | DISCARD_PILE", 1)),
         Ally(MachineCult, Resource(Combat, 2)),
     ],
 )

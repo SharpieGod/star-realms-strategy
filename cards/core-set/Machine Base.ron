@@ -5,6 +5,6 @@
     cost: 7,
     effects: [
         Draw(Number(1)),
-        Scrap(Hand, 1),
+        Scrap("HAND", 1),
     ],
 )

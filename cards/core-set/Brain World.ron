@@ -4,10 +4,10 @@
     card_type: Base(defense: 6, is_outpost: true),
     cost: 8,
     effects: [May(Or(Sequence([
-        Scrap(HandOrDiscardPile, 1),
+        Scrap("HAND | DISCARD_PILE", 1),
         Draw(Number(1)),
     ]), Sequence([
-        Scrap(HandOrDiscardPile, 2),
+        Scrap("HAND | DISCARD_PILE", 2),
         Draw(Number(2)),
     ])))],
 )

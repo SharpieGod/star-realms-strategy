@@ -3,5 +3,5 @@
     faction: MachineCult,
     card_type: Base(defense: 5, is_outpost: true),
     cost: 6,
-    effects: [May(Scrap(HandOrDiscardPile, 1))],
+    effects: [May(Scrap("HAND | DISCARD_PILE", 1))],
 )

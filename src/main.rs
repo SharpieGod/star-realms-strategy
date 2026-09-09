@@ -1,4 +1,5 @@
 use std::{
+    cmp::Ordering,
     collections::HashMap,
     fmt::Display,
     fs::{self, OpenOptions},
@@ -8,6 +9,7 @@ use std::{
     sync::LazyLock,
 };
 
+use bitflags::bitflags;
 use colorize::AnsiColor;
 use rand::{
     RngExt,
@@ -80,59 +82,67 @@ enum CardNamed {
 
 impl Display for CardNamed {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let n = match self {
+            CardNamed::BarterWorld => "Barter World",
+            CardNamed::BattleBlob => "Battle Blob",
+            CardNamed::BattleMech => "Battle Mech",
+            CardNamed::BattlePod => "Battle Pod",
+            CardNamed::BattleStation => "Battle Station",
+            CardNamed::Battlecruiser => "Battlecruiser",
+            CardNamed::BlobCarrier => "Blob Carrier",
+            CardNamed::BlobDestroyer => "Blob Destroyer",
+            CardNamed::BlobFighter => "Blob Fighter",
+            CardNamed::BlobWheel => "Blob Wheel",
+            CardNamed::BlobWorld => "Blob World",
+            CardNamed::BrainWorld => "Brain World",
+            CardNamed::CentralOffice => "Central Office",
+            CardNamed::CommandShip => "Command Ship",
+            CardNamed::Corvette => "Corvette",
+            CardNamed::Cutter => "Cutter",
+            CardNamed::DefenseCenter => "Defense Center",
+            CardNamed::Dreadnaught => "Dreadnaught",
+            CardNamed::EmbassyYacht => "Embassy Yacht",
+            CardNamed::Explorer => "Explorer",
+            CardNamed::FederationShuttle => "Federation Shuttle",
+            CardNamed::Flagship => "Flagship",
+            CardNamed::FleetHQ => "Fleet HQ",
+            CardNamed::Freighter => "Freighter",
+            CardNamed::ImperialFighter => "Imperial Fighter",
+            CardNamed::ImperialFrigate => "Imperial Frigate",
+            CardNamed::Junkyard => "Junkyard",
+            CardNamed::MachineBase => "Machine Base",
+            CardNamed::MechWorld => "Mech World",
+            CardNamed::MissileBot => "Missile Bot",
+            CardNamed::MissileMech => "Missile Mech",
+            CardNamed::Mothership => "Mothership",
+            CardNamed::PatrolMech => "Patrol Mech",
+            CardNamed::PortofCall => "Port of Call",
+            CardNamed::Ram => "Ram",
+            CardNamed::RecyclingStation => "Recycling Station",
+            CardNamed::RoyalRedoubt => "Royal Redoubt",
+            CardNamed::Scout => "Scout",
+            CardNamed::SpaceStation => "Space Station",
+            CardNamed::StealthNeedle => "Stealth Needle",
+            CardNamed::SupplyBot => "Supply Bot",
+            CardNamed::SurveyShip => "Survey Ship",
+            CardNamed::TheHive => "The Hive",
+            CardNamed::TradeBot => "Trade Bot",
+            CardNamed::TradeEscort => "Trade Escort",
+            CardNamed::TradePod => "Trade Pod",
+            CardNamed::TradingPost => "Trading Post",
+            CardNamed::Viper => "Viper",
+            CardNamed::WarWorld => "War World",
+        };
+
         write!(
             f,
             "{}",
-            match self {
-                CardNamed::BarterWorld => "Barter World",
-                CardNamed::BattleBlob => "Battle Blob",
-                CardNamed::BattleMech => "Battle Mech",
-                CardNamed::BattlePod => "Battle Pod",
-                CardNamed::BattleStation => "Battle Station",
-                CardNamed::Battlecruiser => "Battlecruiser",
-                CardNamed::BlobCarrier => "Blob Carrier",
-                CardNamed::BlobDestroyer => "Blob Destroyer",
-                CardNamed::BlobFighter => "Blob Fighter",
-                CardNamed::BlobWheel => "Blob Wheel",
-                CardNamed::BlobWorld => "Blob World",
-                CardNamed::BrainWorld => "Brain World",
-                CardNamed::CentralOffice => "Central Office",
-                CardNamed::CommandShip => "Command Ship",
-                CardNamed::Corvette => "Corvette",
-                CardNamed::Cutter => "Cutter",
-                CardNamed::DefenseCenter => "Defense Center",
-                CardNamed::Dreadnaught => "Dreadnaught",
-                CardNamed::EmbassyYacht => "Embassy Yacht",
-                CardNamed::Explorer => "Explorer",
-                CardNamed::FederationShuttle => "Federation Shuttle",
-                CardNamed::Flagship => "Flagship",
-                CardNamed::FleetHQ => "Fleet HQ",
-                CardNamed::Freighter => "Freighter",
-                CardNamed::ImperialFighter => "Imperial Fighter",
-                CardNamed::ImperialFrigate => "Imperial Frigate",
-                CardNamed::Junkyard => "Junkyard",
-                CardNamed::MachineBase => "Machine Base",
-                CardNamed::MechWorld => "Mech World",
-                CardNamed::MissileBot => "Missile Bot",
-                CardNamed::MissileMech => "Missile Mech",
-                CardNamed::Mothership => "Mothership",
-                CardNamed::PatrolMech => "Patrol Mech",
-                CardNamed::PortofCall => "Port of Call",
-                CardNamed::Ram => "Ram",
-                CardNamed::RecyclingStation => "Recycling Station",
-                CardNamed::RoyalRedoubt => "Royal Redoubt",
-                CardNamed::Scout => "Scout",
-                CardNamed::SpaceStation => "Space Station",
-                CardNamed::StealthNeedle => "Stealth Needle",
-                CardNamed::SupplyBot => "Supply Bot",
-                CardNamed::SurveyShip => "Survey Ship",
-                CardNamed::TheHive => "The Hive",
-                CardNamed::TradeBot => "Trade Bot",
-                CardNamed::TradeEscort => "Trade Escort",
-                CardNamed::TradePod => "Trade Pod",
-                CardNamed::TradingPost => "Trading Post",
-                CardNamed::Viper => "Viper",
-                CardNamed::WarWorld => "War World",
+            match CARDS[self].faction {
+                Faction::TradeFederation => n.blue(),
+                Faction::Blob => n.green(),
+                Faction::StarEmpire => n.yellow(),
+                Faction::MachineCult => n.red(),
+                Unaligned => n.grey(),
             }
         )
     }
@@ -219,27 +229,6 @@ impl Display for Resource {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-enum ScrapType {
-    DiscardPile,
-    Hand,
-    HandOrDiscardPile,
-}
-
-impl Display for ScrapType {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                ScrapType::DiscardPile => "Discard Pile",
-                ScrapType::Hand => "Hand",
-                ScrapType::HandOrDiscardPile => "Hand or Discard Pile",
-            }
-        )
-    }
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
 
 enum Event {
     PlayShip(Faction), // Neutral = Any
@@ -283,7 +272,7 @@ enum Effect {
         max_cost: Option<u32>,
     },
     Resource(Resource, u32),
-    Scrap(ScrapType, u32),
+    Scrap(PileFlag, u32),
     Discard(u32),
     DestroyTargetBase,
     ScrapCardInRow,
@@ -339,8 +328,8 @@ impl Display for Effect {
                 }
             ),
             Effect::Resource(resource_type, count) => write!(f, "Gain {count} {resource_type}"),
-            Effect::Scrap(scrap_type, count) => {
-                write!(f, "scrap {} in {scrap_type}", n_cards(*count))
+            Effect::Scrap(pile, count) => {
+                write!(f, "scrap {} in {pile}", n_cards(*count))
             }
             Effect::Discard(count) => write!(f, "Discard {}", n_cards(*count)),
             Effect::DestroyTargetBase => write!(f, "destroy target base"),
@@ -388,13 +377,7 @@ impl Display for Card {
             f,
             "({}) {}{}\n{}",
             self.cost.to_string().b_yellow(),
-            match self.faction {
-                Faction::TradeFederation => n.blue(),
-                Faction::Blob => n.green(),
-                Faction::StarEmpire => n.yellow(),
-                Faction::MachineCult => n.red(),
-                Unaligned => n.grey(),
-            },
+            self.name,
             match self.card_type {
                 CardType::Ship => "".to_string(),
                 CardType::Base {
@@ -425,25 +408,9 @@ impl Card {
         let n = self.name.to_string();
 
         if self.cost > 0 {
-            format!(
-                "({}) {}",
-                self.cost.to_string().b_yellow(),
-                match self.faction {
-                    Faction::TradeFederation => n.blue(),
-                    Faction::Blob => n.green(),
-                    Faction::StarEmpire => n.yellow(),
-                    Faction::MachineCult => n.red(),
-                    Unaligned => n.grey(),
-                }
-            )
+            format!("({}) {}", self.cost.to_string().b_yellow(), self.name)
         } else {
-            match self.faction {
-                Faction::TradeFederation => n.blue(),
-                Faction::Blob => n.green(),
-                Faction::StarEmpire => n.yellow(),
-                Faction::MachineCult => n.red(),
-                Unaligned => n.grey(),
-            }
+            self.name.to_string()
         }
     }
 
@@ -511,9 +478,9 @@ fn load_cards() -> HashMap<CardNamed, Card> {
 /// All cards, keyed by name, loaded once on first access.
 static CARDS: LazyLock<HashMap<CardNamed, Card>> = LazyLock::new(load_cards);
 static STARTER_PERSONAL_DECK: LazyLock<Vec<CardNamed>> =
-    LazyLock::new(|| Vec::<CardNamed>::from(CardCounts(vec![(Viper, 2), (Scout, 8)])));
+    LazyLock::new(|| Vec::<CardNamed>::from(CardCounts(vec![(Viper, 1), (Scout, 1)])));
 static STARTER_GAME_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
-    let card_counts = CardCounts::try_from(PathBuf::from("./cards/deck.ron")).unwrap();
+    let card_counts = CardCounts::try_from(PathBuf::from("./cards/deck.ron.dev")).unwrap();
     card_counts.into()
 });
 fn effect(name: &CardNamed) -> &'static Vec<Effect> {
@@ -952,6 +919,13 @@ impl Game {
         source_name: CardNamed,
         effect: &Effect,
     ) {
+        let ctx = AskContext {
+            actor,
+            source,
+            source_name,
+            source_effect: effect,
+        };
+
         match effect {
             Effect::Resource(resource, count) => {
                 let player = &mut self.players[actor];
@@ -983,18 +957,80 @@ impl Game {
             // so they're intentional no-ops here.
             Effect::ScrapAbility(_) | Effect::Trigger(_, _) => {}
             Effect::May(inner) => {
-                let ctx = AskContext {
-                    actor,
-                    source,
-                    source_name,
-                    source_effect: effect,
-                };
-
                 if agents[actor].ask_yes_no(self, &ctx) {
                     self.resolve_effect(agents, actor, source, source_name, inner);
                 }
             }
-            _ => todo!(),
+            Effect::Scrap(pile, count) => {
+                let player = &mut self.players[actor];
+                let mut max_count = 0;
+
+                if pile.contains(PileFlag::HAND) {
+                    max_count += player.hand.len();
+                }
+
+                if pile.contains(PileFlag::DISCARD_PILE) {
+                    max_count += player.discard_pile.len();
+                }
+                let new_count = (*count).min(max_count as u32);
+
+                if new_count == 0 {
+                    return; // nothing to do
+                }
+
+                loop {
+                    let choices = agents[actor].ask_cards_from_pile(self, &ctx, *pile, new_count);
+                    let player = &mut self.players[actor];
+
+                    if choices.iter().any(|&(p, index)| {
+                        p == PileFlag::all()
+                            || p == PileFlag::empty()
+                            || p == PileFlag::HAND && index >= player.hand.len()
+                            || p == PileFlag::DISCARD_PILE && index >= player.discard_pile.len()
+                    }) {
+                        continue;
+                    }
+
+                    let hand_choices = choices
+                        .iter()
+                        .filter_map(|(p, index)| (*p == PileFlag::HAND).then_some(*index))
+                        .collect::<Vec<_>>();
+                    let discard_pile_choices = choices
+                        .iter()
+                        .filter_map(|(p, index)| (*p == PileFlag::DISCARD_PILE).then_some(*index))
+                        .collect::<Vec<_>>();
+
+                    player.hand = player
+                        .hand
+                        .iter()
+                        .copied()
+                        .enumerate()
+                        .filter_map(|(i, c)| (!hand_choices.contains(&i)).then_some(c))
+                        .collect();
+
+                    player.discard_pile = player
+                        .discard_pile
+                        .iter()
+                        .copied()
+                        .enumerate()
+                        .filter_map(|(i, c)| (!discard_pile_choices.contains(&i)).then_some(c))
+                        .collect();
+
+                    break;
+                }
+            }
+            Effect::Or(effect, effect1) => todo!("yesno"),
+            Effect::Draw(amount) => todo!("player just gains card in hand"),
+            Effect::AquireShipForFree {
+                to_top_of_deck,
+                max_cost,
+            } => todo!("select card from shop"),
+            Effect::Discard(_) => todo!("select card from hand"),
+            Effect::DestroyTargetBase => todo!("select enemy base in play"),
+            Effect::ScrapCardInRow => todo!("select card from shop"),
+            Effect::OpponentDiscards => todo!("no actions"),
+            Effect::CopyPlayedShip => todo!("chose played shi"),
+            Effect::NextAcquiredShipToTopOfDeck => todo!("no action"),
         }
     }
 
@@ -1047,8 +1083,8 @@ enum CardAction {
 
 #[derive(Debug)]
 enum ChoiceKind {
-    YesNo,                                          // May, Or's branch pick
-    SelectFromPile { pile: ScrapType, count: u32 }, // Scrap, Discard (pile: Hand), OpponentDiscards (pile: Hand)
+    YesNo,                                         // May, Or's branch pick
+    SelectFromPile { pile: PileFlag, count: u32 }, // Scrap, Discard (pile: Hand), OpponentDiscards (pile: Hand)
     SelectShopCard { eligible: Vec<usize> }, // AquireShipForFree (after a YesNo), ScrapCardInRow
     SelectEnemyBase { eligible: Vec<usize> }, // DestroyTargetBase
     SelectPlayedShip { eligible: Vec<CardNamed> }, // CopyPlayedShip
@@ -1067,6 +1103,33 @@ struct AskContext<'a> {
     source_effect: &'a Effect,
 }
 
+bitflags! {
+    // `transparent` forwards to the inner flags type, whose Serialize/Deserialize
+    // (from bitflags' `serde` feature, Cargo.toml) read/write names like
+    // "HAND | DISCARD_PILE" in .ron instead of the raw bits.
+    #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone, Copy)]
+    #[serde(transparent)]
+    pub struct PileFlag: u8 {
+        const HAND = 0b01;
+        const DISCARD_PILE = 0b10;
+    }
+}
+
+impl Display for PileFlag {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = if self.contains(PileFlag::HAND) && self.contains(PileFlag::DISCARD_PILE) {
+            "Hand or Discard Pile"
+        } else if self.contains(PileFlag::HAND) {
+            "Hand"
+        } else if self.contains(PileFlag::DISCARD_PILE) {
+            "Discard Pile"
+        } else {
+            "no pile"
+        };
+        write!(f, "{s}")
+    }
+}
+
 trait Agent {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction;
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool;
@@ -1074,9 +1137,9 @@ trait Agent {
         &mut self,
         game: &Game,
         ctx: &AskContext,
-        pile: ScrapType,
+        pile: PileFlag,
         count: u32,
-    ) -> Vec<usize>;
+    ) -> Vec<(PileFlag, usize)>;
     fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
     fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
     fn ask_played_ship(
@@ -1155,6 +1218,12 @@ impl Agent for UserCLI {
                         continue;
                     };
 
+                    let player_ships = player
+                        .ships_in_play()
+                        .iter()
+                        .map(|b| b.name)
+                        .collect::<Vec<CardNamed>>();
+
                     let player_bases = player
                         .bases_in_play()
                         .iter()
@@ -1173,6 +1242,9 @@ impl Agent for UserCLI {
                         CARDS[match *tokens.get(1).unwrap_or(&"") {
                             "hand" | "h" => {
                                 player.hand.get(index)
+                            }
+                            "play" | "p" | "ip" | "ships" => {
+                                player_ships.get(index)
                             }
                             "bases" | "b" => {
                                 player_bases.get(index)
@@ -1213,13 +1285,137 @@ impl Agent for UserCLI {
         s.trim() == "y"
     }
 
+    fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
+        println!(
+            "{}: {}\nwhich card from shop",
+            ctx.source_name, ctx.source_effect
+        );
+
+        0
+    }
+
+    fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
+        todo!()
+    }
+
+    fn ask_played_ship(
+        &mut self,
+        game: &Game,
+        ctx: &AskContext,
+        eligible: &[CardNamed],
+    ) -> CardNamed {
+        todo!()
+    }
+
     fn ask_cards_from_pile(
         &mut self,
         game: &Game,
         ctx: &AskContext,
-        pile: ScrapType,
+        pile: PileFlag,
         count: u32,
-    ) -> Vec<usize> {
+    ) -> Vec<(PileFlag, usize)> {
+        clear_console();
+        let mut out = Vec::new();
+        let player = &game.players[ctx.actor];
+        while out.len() < count as usize {
+            println!(
+                "hand: {}",
+                player
+                    .hand
+                    .iter()
+                    .map(|c| c.to_string())
+                    .collect::<Vec<String>>()
+                    .join(" ")
+            );
+            println!(
+                "discard pile: {}",
+                player
+                    .discard_pile
+                    .iter()
+                    .map(|c| c.to_string())
+                    .collect::<Vec<String>>()
+                    .join(" ")
+            );
+
+            println!("{}: {}", ctx.source_name, ctx.source_effect);
+            println!("choose card {}/{count} from {pile}", out.len());
+
+            let mut s = String::new();
+
+            stdin().read_line(&mut s).unwrap();
+            s = s.trim().to_string();
+            let tokens = s.split_whitespace().collect::<Vec<&str>>();
+
+            clear_console();
+            let Ok(index) = tokens.get(1).copied().unwrap_or_default().parse::<usize>() else {
+                println!(
+                    "invalid usize {:?}",
+                    tokens.get(1).copied().unwrap_or_default()
+                );
+
+                continue;
+            };
+
+            match tokens.get(0).copied().unwrap_or_default() {
+                "hand" => {
+                    if !pile.contains(PileFlag::HAND) {
+                        println!("invalid pile. only allowed {pile}");
+                        continue;
+                    }
+
+                    if index >= player.hand.len() {
+                        println!(
+                            "max index in hand is {}. invalid index",
+                            player.hand.len() as i32 - 1
+                        );
+                        continue;
+                    }
+
+                    out.push((PileFlag::HAND, index));
+                }
+                "discardpile" => {
+                    if !pile.contains(PileFlag::DISCARD_PILE) {
+                        println!("invalid pile. only allowed {pile}");
+                        continue;
+                    }
+                    if index >= player.discard_pile.len() {
+                        println!(
+                            "max index in hand is {}. invalid index",
+                            player.discard_pile.len() as i32 - 1
+                        );
+                        continue;
+                    }
+
+                    out.push((PileFlag::DISCARD_PILE, index))
+                }
+                _ => {
+                    println!("invalid pile selector. (hand|discardpile)")
+                }
+            }
+        }
+
+        out
+    }
+}
+
+struct PassBot1000 {}
+
+impl Agent for PassBot1000 {
+    fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
+        PlayerAction::EndTurn
+    }
+
+    fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
+        todo!()
+    }
+
+    fn ask_cards_from_pile(
+        &mut self,
+        game: &Game,
+        ctx: &AskContext,
+        pile: PileFlag,
+        count: u32,
+    ) -> Vec<(PileFlag, usize)> {
         todo!()
     }
 
@@ -1248,7 +1444,7 @@ pub fn clear_console() {
 
 fn main() {
     let mut game = Game::new();
-    let agent1 = UserCLI {};
+    let agent1 = PassBot1000 {};
     let agent2 = UserCLI {};
 
     game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);

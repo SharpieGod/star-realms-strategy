@@ -1,0 +1,6 @@
+// Core Set trade deck: the shared 80-card deck that forms the trade row and
+// trade deck draw pile. Does not include the Explorer pile (10x Explorer) or
+// each player's starting personal deck (8x Scout, 2x Viper).
+CardCounts([
+    (TradeBot, 80)
+])
