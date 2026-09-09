@@ -266,7 +266,6 @@ enum Effect {
     // Logical Statements and conditions
     If(Condition, Box<Effect>),
     Or(Box<Effect>, Box<Effect>),
-    AndOr(Box<Effect>, Box<Effect>),
     Sequence(Vec<Effect>),
     /// "Scrap this: ...". Available at will while the card sits in play.
     ScrapAbility(Box<Effect>),
@@ -301,7 +300,6 @@ impl Display for Effect {
         match self {
             Effect::If(condition, effect) => write!(f, "{{{condition}}}: {{{effect}}}"),
             Effect::Or(effect, effect1) => write!(f, "{{{effect}}} or {{{effect1}}}"),
-            Effect::AndOr(effect, effect1) => write!(f, "{{{effect}}} and/or {{{effect1}}}"),
             Effect::Sequence(effects) => write!(
                 f,
                 "{}",
@@ -412,7 +410,7 @@ impl Display for Card {
             } else {
                 self.effects
                     .iter()
-                    .map(|e| format!("  {e}"))
+                    .map(|e| format!("\t{e}"))
                     .collect::<Vec<String>>()
                     .join("\n")
             }
@@ -645,14 +643,19 @@ impl Default for Player {
         let mut rng = rand::rng();
         deck.shuffle(&mut rng);
 
+        #[cfg(feature = "reset_resources")]
+        let (trade, combat) = (0, 0);
+        #[cfg(not(feature = "reset_resources"))]
+        let (trade, combat) = (100, 100); // only for testing
+
         Self {
             personal_deck: deck,
             hand: Default::default(),
             in_play: Default::default(),
             discard_pile: Default::default(),
             authority: 50,
-            trade: Default::default(),
-            combat: Default::default(),
+            trade,
+            combat,
             pending_ally_effects: Default::default(),
             next_instance_id: 0,
         }
@@ -679,15 +682,6 @@ impl Display for Player {
         writeln!(f, "deck: {} cards", self.personal_deck.len())?;
         writeln!(
             f,
-            "hand: {}",
-            self.hand
-                .iter()
-                .map(|c| CARDS[c].name_only())
-                .collect::<Vec<String>>()
-                .join(", ")
-        )?;
-        writeln!(
-            f,
             "bases in play: {}",
             self.in_play
                 .iter()
@@ -703,6 +697,15 @@ impl Display for Player {
                 .iter()
                 .filter(|c| !CARDS[&c.name].is_base())
                 .map(|c| CARDS[&c.name].name_only())
+                .collect::<Vec<String>>()
+                .join(", ")
+        )?;
+        writeln!(
+            f,
+            "hand: {}",
+            self.hand
+                .iter()
+                .map(|c| CARDS[c].name_only())
                 .collect::<Vec<String>>()
                 .join(", ")
         )?;
@@ -810,6 +813,12 @@ impl Game {
 
             player.draw_cards(5, &mut self.rng);
 
+            #[cfg(feature = "reset_resources")]
+            {
+                player.combat = 0;
+                player.trade = 0;
+            }
+
             self.turn_number += 1;
         }
     }
@@ -830,16 +839,7 @@ impl Game {
                     return Err(IllegalAction);
                 }
 
-                let played_card = player.hand.remove(hand_index);
-                let instance = player.play_card(played_card);
-
-                self.resolve_effect(
-                    agents,
-                    actor,
-                    instance,
-                    played_card,
-                    &Effect::Sequence(CARDS[&played_card].effects.clone()),
-                );
+                self.play_from_hand(agents, actor, hand_index);
             }
             PlayerAction::BuyCard(card_index) => {
                 let Some(target_card) = self.shop[card_index] else {
@@ -913,10 +913,35 @@ impl Game {
                     }
                 }
             }
-            PlayerAction::EndTurn => todo!(),
+
+            PlayerAction::PlayAll => {
+                while !self.players[actor].hand.is_empty() {
+                    self.play_from_hand(agents, actor, 0);
+                }
+            }
+            EndTurn => todo!(),
         }
 
         Ok(())
+    }
+
+    fn play_from_hand(
+        &mut self,
+        agents: &mut [Box<dyn Agent>; 2],
+        actor: usize,
+        hand_index: usize,
+    ) {
+        let player = &mut self.players[actor];
+        let played_card = player.hand.remove(hand_index);
+        let instance = player.play_card(played_card);
+
+        self.resolve_effect(
+            agents,
+            actor,
+            instance,
+            played_card,
+            &Effect::Sequence(CARDS[&played_card].effects.clone()),
+        );
     }
 
     fn resolve_effect(
@@ -993,7 +1018,8 @@ impl Game {
 
 #[derive(PartialEq, Eq)]
 enum PlayerAction {
-    PlayCard(usize), // In play always
+    PlayCard(usize),
+    PlayAll,
     BuyCard(usize),
     Card(usize, CardAction),
     SpendCombat(CombatTarget),
@@ -1021,7 +1047,7 @@ enum CardAction {
 
 #[derive(Debug)]
 enum ChoiceKind {
-    YesNo,                                          // May, each half of AndOr, Or's branch pick
+    YesNo,                                          // May, Or's branch pick
     SelectFromPile { pile: ScrapType, count: u32 }, // Scrap, Discard (pile: Hand), OpponentDiscards (pile: Hand)
     SelectShopCard { eligible: Vec<usize> }, // AquireShipForFree (after a YesNo), ScrapCardInRow
     SelectEnemyBase { eligible: Vec<usize> }, // DestroyTargetBase
@@ -1085,6 +1111,9 @@ impl Agent for UserCLI {
             let tokens = s.split_whitespace().collect::<Vec<&str>>();
 
             match tokens.get(0).copied().unwrap_or_default() {
+                "play" if tokens.get(1).copied().unwrap_or_default() == "all" => {
+                    return PlayerAction::PlayAll;
+                }
                 c if (c == "play" || c == "buy") => {
                     let Ok(index) = tokens.get(1).copied().unwrap_or_default().parse::<usize>()
                     else {

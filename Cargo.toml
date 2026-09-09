@@ -3,6 +3,10 @@ name = "star-realms"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = ["reset_resources"]
+reset_resources = []
+
 [dependencies]
 colorize = "0.1.0"
 rand = "0.10.2"

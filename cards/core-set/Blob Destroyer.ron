@@ -5,6 +5,6 @@
     cost: 4,
     effects: [
         Resource(Combat, 6),
-        Ally(Blob, May(AndOr(DestroyTargetBase, ScrapCardInRow))),
+        Ally(Blob, Sequence([May(DestroyTargetBase), May(ScrapCardInRow)])),
     ],
 )
