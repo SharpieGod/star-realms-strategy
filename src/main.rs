@@ -1398,9 +1398,9 @@ impl Agent for UserCLI {
     }
 }
 
-struct PassBot1000 {}
+struct PassBot10000 {}
 
-impl Agent for PassBot1000 {
+impl Agent for PassBot10000 {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
         PlayerAction::EndTurn
     }
@@ -1444,7 +1444,7 @@ pub fn clear_console() {
 
 fn main() {
     let mut game = Game::new();
-    let agent1 = PassBot1000 {};
+    let agent1 = PassBot10000 {};
     let agent2 = UserCLI {};
 
     game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);
