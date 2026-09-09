@@ -2,7 +2,7 @@ use std::{
     collections::HashMap,
     fmt::Display,
     fs::{self, OpenOptions},
-    io::{Write, stdin},
+    io::{self, Write, stdin},
     marker::PhantomData,
     path::{self, Path, PathBuf},
     sync::LazyLock,
@@ -19,8 +19,9 @@ use serde::{Deserialize, Serialize};
 use crate::{
     CardAction::{EngageEffect, Scrap},
     CardNamed::{Scout, Viper},
+    CombatTarget::{Enemy, EnemyBase},
     Faction::Unaligned,
-    PlayerAction::{BuyCard, Card as PACard, DestroyTargetBase, EndTurn, PlayCard},
+    PlayerAction::{BuyCard, Card as PACard, EndTurn, PlayCard, SpendCombat},
     Resource::{Authority, Combat, Trade},
 };
 
@@ -310,9 +311,9 @@ impl Display for Effect {
                     .collect::<Vec<String>>()
                     .join(" -> ")
             ),
-            Effect::ScrapAbility(effect) => write!(f, "scrap this: {{{effect}}}"),
+            Effect::ScrapAbility(effect) => write!(f, "Scrap: {{{effect}}}"),
             Effect::Trigger(event, effect) => write!(f, "whenever {event}: {{{effect}}}"),
-            Effect::Ally(faction, effect) => write!(f, "{faction} ally: {{{effect}}}"),
+            Effect::Ally(faction, effect) => write!(f, "{{{faction} ally}}: {{{effect}}}"),
             Effect::Draw(amount) => write!(
                 f,
                 "Draw {}",
@@ -373,6 +374,12 @@ struct Card {
     /// Mech World: counts as an ally for every faction while in play.
     #[serde(default)]
     is_all_faction_ally: bool,
+}
+
+impl From<CardNamed> for &Card {
+    fn from(value: CardNamed) -> Self {
+        &CARDS[&value]
+    }
 }
 
 impl Display for Card {
@@ -451,6 +458,26 @@ impl Card {
             } => true,
         }
     }
+
+    fn is_outpost(&self) -> bool {
+        matches!(
+            self.card_type,
+            CardType::Base {
+                defense: _,
+                is_outpost: true
+            }
+        )
+    }
+
+    fn get_base_defense(&self) -> Option<u32> {
+        match self.card_type {
+            CardType::Ship => None,
+            CardType::Base {
+                defense,
+                is_outpost: _,
+            } => Some(defense),
+        }
+    }
 }
 
 impl TryFrom<PathBuf> for Card {
@@ -526,6 +553,7 @@ impl From<CardCounts> for Vec<CardNamed> {
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 struct CardInstanceId(u32);
 
+#[derive(Clone, Copy)]
 struct InPlayCard {
     id: CardInstanceId,
     name: CardNamed,
@@ -578,6 +606,37 @@ impl Player {
             }
         }
     }
+
+    fn outposts_in_play(&self) -> Vec<InPlayCard> {
+        self.bases_in_play()
+            .into_iter()
+            .filter(|b| {
+                matches!(
+                    CARDS[&b.name].card_type,
+                    CardType::Base {
+                        defense: _,
+                        is_outpost: true
+                    }
+                )
+            })
+            .collect()
+    }
+
+    fn bases_in_play(&self) -> Vec<InPlayCard> {
+        self.in_play
+            .iter()
+            .copied()
+            .filter(|c| CARDS[&c.name].is_base())
+            .collect()
+    }
+
+    fn ships_in_play(&self) -> Vec<InPlayCard> {
+        self.in_play
+            .iter()
+            .copied()
+            .filter(|c| !CARDS[&c.name].is_base())
+            .collect()
+    }
 }
 
 impl Default for Player {
@@ -629,9 +688,20 @@ impl Display for Player {
         )?;
         writeln!(
             f,
-            "in play: {}",
+            "bases in play: {}",
             self.in_play
                 .iter()
+                .filter(|c| CARDS[&c.name].is_base())
+                .map(|c| CARDS[&c.name].name_only())
+                .collect::<Vec<String>>()
+                .join(", ")
+        )?;
+        writeln!(
+            f,
+            "ships in play: {}",
+            self.in_play
+                .iter()
+                .filter(|c| !CARDS[&c.name].is_base())
                 .map(|c| CARDS[&c.name].name_only())
                 .collect::<Vec<String>>()
                 .join(", ")
@@ -720,11 +790,25 @@ impl Game {
                     break;
                 }
 
-                match self.do_action(agents, actor, action) {
+                match self.do_action(agents, action) {
                     Ok(_) => {}
                     Err(_) => {}
                 };
             }
+
+            let player = &mut self.players[actor];
+
+            // all ships in play get discarded
+            for s in player.ships_in_play() {
+                if let Some(name) = player.remove_from_play(s.id) {
+                    player.discard_pile.push(name);
+                }
+            }
+
+            // all in hand get discarded
+            player.discard_pile.extend(player.hand.drain(..));
+
+            player.draw_cards(5, &mut self.rng);
 
             self.turn_number += 1;
         }
@@ -732,10 +816,13 @@ impl Game {
     fn do_action(
         &mut self,
         agents: &mut [Box<dyn Agent>; 2],
-        actor: usize,
+
         action: PlayerAction,
     ) -> Result<(), IllegalAction> {
-        let player = &mut self.players[actor];
+        let actor = self.turn_number as usize % 2;
+
+        let [p1, p2] = &mut self.players;
+        let (player, enemy) = if actor == 0 { (p1, p2) } else { (p2, p1) };
 
         match action {
             PlayCard(hand_index) => {
@@ -756,12 +843,12 @@ impl Game {
             }
             PlayerAction::BuyCard(card_index) => {
                 let Some(target_card) = self.shop[card_index] else {
-                    return Err(IllegalAction {});
+                    return Err(IllegalAction);
                 };
                 let target_cost = CARDS[&target_card].cost;
 
                 if target_cost > player.trade {
-                    return Err(IllegalAction {});
+                    return Err(IllegalAction);
                 }
 
                 player.trade -= target_cost;
@@ -771,7 +858,7 @@ impl Game {
             }
             PlayerAction::Card(card_index, card_action) => {
                 let Some(target_card) = player.in_play.get(card_index) else {
-                    return Err(IllegalAction {});
+                    return Err(IllegalAction);
                 };
                 let target_name = target_card.name;
                 let target_id = target_card.id;
@@ -792,8 +879,40 @@ impl Game {
                     CardAction::EngageEffect => todo!(),
                 }
             }
-            PlayerAction::DestroyTargetBase(_) => todo!(),
-            PlayerAction::SpendCombat(combat_target) => todo!(),
+            PlayerAction::SpendCombat(combat_target) => {
+                let enemy_has_outposts = !enemy.outposts_in_play().is_empty();
+                match combat_target {
+                    Enemy => {
+                        if enemy_has_outposts {
+                            // Cannot target enemy if has outpost
+                            return Err(IllegalAction);
+                        }
+                        enemy.authority -= player.combat;
+                        player.combat = 0;
+                    }
+                    EnemyBase(base_index) => {
+                        let Some(&target_base) = enemy.bases_in_play().get(base_index) else {
+                            return Err(IllegalAction);
+                        };
+
+                        let target_base_card = &CARDS[&target_base.name];
+
+                        if enemy_has_outposts && target_base_card.is_outpost() {
+                            // Cannot attack non-outpost bases if has outpost
+                            return Err(IllegalAction);
+                        }
+
+                        if player.combat < target_base_card.get_base_defense().unwrap() {
+                            // Not enough combat to attack base. Just waists combat.
+                            return Err(IllegalAction);
+                        }
+
+                        if let Some(name) = enemy.remove_from_play(target_base.id) {
+                            enemy.discard_pile.push(name);
+                        }
+                    }
+                }
+            }
             PlayerAction::EndTurn => todo!(),
         }
 
@@ -877,7 +996,6 @@ enum PlayerAction {
     PlayCard(usize), // In play always
     BuyCard(usize),
     Card(usize, CardAction),
-    DestroyTargetBase(usize),
     SpendCombat(CombatTarget),
     EndTurn,
 }
@@ -946,7 +1064,10 @@ struct UserCLI {}
 
 impl Agent for UserCLI {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
+        let player = &game.players[actor];
+        let enemy = &game.players[(actor + 1) % 2];
         loop {
+            clear_console();
             println!("{game}");
             println!("what do you do?");
 
@@ -958,33 +1079,92 @@ impl Agent for UserCLI {
             // PlayCard(_) play index
             // PlayerAction::BuyCard(_) buy index
             // PlayerAction::Card(_, card_action) index {card action}
-            // PlayerAction::DestroyTargetBase(_) destroybase index
-            // PlayerAction::SpendCombat(combat_target) target {target} deal {damage}
+            // PlayerAction::SpendCombat(combat_target) damage {target}
             // PlayerAction::EndTurn turn/end turn/any invalid input
 
-            let mut tokens = s.split_whitespace().collect::<Vec<&str>>();
+            let tokens = s.split_whitespace().collect::<Vec<&str>>();
 
-            match *tokens.iter().nth(0).unwrap_or(&"") {
-                c if (c == "play" || c == "buy" || c == "destroybase") => {
-                    let Ok(index) = tokens.iter().nth(1).unwrap_or(&"").parse::<usize>() else {
+            match tokens.get(0).copied().unwrap_or_default() {
+                c if (c == "play" || c == "buy") => {
+                    let Ok(index) = tokens.get(1).copied().unwrap_or_default().parse::<usize>()
+                    else {
                         continue;
                     };
 
                     return match c {
                         "play" => PlayCard(index),
                         "buy" => BuyCard(index),
-                        "destroybase" => DestroyTargetBase(index),
                         _ => unreachable!(),
                     };
                 }
+
                 index if index.parse::<usize>().is_ok() => {
                     let index = index.parse::<usize>().unwrap_or_default();
 
-                    match *tokens.iter().nth(1).unwrap_or(&"") {
+                    match tokens.get(0).copied().unwrap_or_default() {
                         "scrap" => return PACard(index, Scrap),
                         "engage" => return PACard(index, EngageEffect),
                         _ => {}
                     }
+                }
+
+                "damage" => match tokens.get(1).copied().unwrap_or_default() {
+                    "base" => {
+                        let Ok(index) = tokens.get(2).copied().unwrap_or_default().parse::<usize>()
+                        else {
+                            continue;
+                        };
+
+                        return SpendCombat(EnemyBase(index));
+                    }
+                    "enemy" => return SpendCombat(Enemy),
+                    _ => {}
+                },
+
+                "info" | "i" => {
+                    let Ok(index) = tokens.get(2).unwrap_or(&"").parse::<usize>() else {
+                        continue;
+                    };
+
+                    let player_bases = player
+                        .bases_in_play()
+                        .iter()
+                        .map(|b| b.name)
+                        .collect::<Vec<CardNamed>>();
+
+                    let enemy_bases = enemy
+                        .bases_in_play()
+                        .iter()
+                        .map(|b| b.name)
+                        .collect::<Vec<CardNamed>>();
+
+                    clear_console();
+                    println!(
+                        "{}",
+                        CARDS[match *tokens.get(1).unwrap_or(&"") {
+                            "hand" | "h" => {
+                                player.hand.get(index)
+                            }
+                            "bases" | "b" => {
+                                player_bases.get(index)
+                            }
+                            "shop" | "s" => {
+                                game.shop.get(index).unwrap_or(&None).as_ref()
+                            }
+                            "enemybases" | "eb" => {
+                                enemy_bases.get(index)
+                            }
+                            "enemyhand" | "eh" => {
+                                enemy.hand.get(index)
+                            }
+                            _ => {
+                                None
+                            }
+                        }
+                        .unwrap_or(&Scout)]
+                    );
+
+                    stdin().read_line(&mut String::new()).unwrap();
                 }
                 "pass" | "turn" | "end turn" => return EndTurn,
                 _ => {}
@@ -994,7 +1174,7 @@ impl Agent for UserCLI {
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
         println!(
-            "{}: {}\n yes or no? (y/n)",
+            "{}: {}\nyes or no? (y/n)",
             ctx.source_name, ctx.source_effect
         );
 
@@ -1030,6 +1210,11 @@ impl Agent for UserCLI {
     ) -> CardNamed {
         todo!()
     }
+}
+
+pub fn clear_console() {
+    print!("\x1B[2J\x1B[3J\x1B[H");
+    io::stdout().flush().unwrap();
 }
 
 fn main() {
