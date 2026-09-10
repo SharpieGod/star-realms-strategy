@@ -148,10 +148,33 @@ impl Display for CardNamed {
     }
 }
 
+impl CardNamed {
+    fn faction(&self) -> Faction {
+        CARDS[self].faction
+    }
+}
 #[derive(Serialize, Deserialize, Clone, Debug)]
 enum Amount {
-    Number(u32),
+    Number(usize),
     ShipsPlayed(Faction), // Neutral = any
+}
+
+impl Amount {
+    fn compute(&self, game: &Game) -> usize {
+        match self {
+            Amount::Number(n) => *n,
+            Amount::ShipsPlayed(faction) => {
+                let actor = game.turn_number as usize % 2;
+                let player = &game.players[actor];
+
+                player
+                    .in_play
+                    .iter()
+                    .filter_map(|c| (c.name.faction() == *faction).then_some(1))
+                    .sum()
+            }
+        }
+    }
 }
 
 impl Display for Amount {
@@ -163,7 +186,7 @@ impl Display for Amount {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 enum Faction {
     TradeFederation,
     Blob,
@@ -193,7 +216,7 @@ impl Display for Faction {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 enum Condition {
     And(Box<Condition>, Box<Condition>),
-    BaseCountAtLeast(u32),
+    BaseCountAtLeast(usize),
 }
 
 impl Display for Condition {
@@ -272,8 +295,8 @@ enum Effect {
         max_cost: Option<u32>,
     },
     Resource(Resource, u32),
-    Scrap(PileFlag, u32),
-    Discard(u32),
+    Scrap(PileFlag, usize),
+    Discard(usize),
     DestroyTargetBase,
     ScrapCardInRow,
     OpponentDiscards,
@@ -346,7 +369,7 @@ impl Display for Effect {
     }
 }
 
-fn n_cards(n: u32) -> String {
+fn n_cards(n: usize) -> String {
     format!("{n} {}", if n == 1 { "card" } else { "cards" })
 }
 
@@ -486,7 +509,7 @@ static STARTER_PERSONAL_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
     #[cfg(feature = "reset_resources")]
     let counts = vec![(Viper, 2), (Scout, 8)];
     #[cfg(not(feature = "reset_resources"))]
-    let counts = vec![(Viper, 1), (Scout, 1)];
+    let counts = vec![(CardNamed::BattleBlob, 5), (Scout, 1)];
 
     Vec::<CardNamed>::from(CardCounts(counts))
 });
@@ -534,7 +557,7 @@ impl From<CardCounts> for Vec<CardNamed> {
 /// Identifies one specific card instance in play, distinct from others of the
 /// same `CardNamed` (e.g. two Vipers), independent of its position in `in_play`.
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
-struct CardInstanceId(u32);
+struct CardInstanceId(usize);
 
 #[derive(Clone, Copy)]
 struct InPlayCard {
@@ -550,8 +573,8 @@ struct Player {
     authority: u32,
     trade: u32,
     combat: u32,
-    pending_ally_effects: Vec<(CardInstanceId, Effect)>,
-    next_instance_id: u32,
+    pending_ally_effects: Vec<(InPlayCard, Faction, Effect)>,
+    next_instance_id: usize,
 }
 
 impl Player {
@@ -562,14 +585,26 @@ impl Player {
         id
     }
 
+    fn faction_count(&self) -> HashMap<Faction, usize> {
+        let mut map = HashMap::new();
+        for i in &self.in_play {
+            *map.entry(i.name.faction()).or_default() += 1;
+        }
+
+        map
+    }
+
     /// Removes one card instance from play (scrapped, discarded, destroyed),
     /// dropping any of its still-unused pending Ally effects along with it.
     fn remove_from_play(&mut self, id: CardInstanceId) -> Option<CardNamed> {
         let pos = self.in_play.iter().position(|c| c.id == id)?;
         let card = self.in_play.remove(pos);
-        self.pending_ally_effects
-            .retain(|(source, _)| *source != id);
+        self.pending_ally_effects.retain(|source| source.0.id != id);
         Some(card.name)
+    }
+
+    fn get_card_instace(&self, id: CardInstanceId) -> Option<CardNamed> {
+        self.in_play.iter().find(|c| c.id == id).map(|c| c.name)
     }
 }
 
@@ -843,15 +878,13 @@ impl Game {
                 player.discard_pile.push(target_card); // TODO: next card from shop to top of deck
             }
             PlayerAction::Card(card_index, card_action) => {
-                let Some(target_card) = player.in_play.get(card_index) else {
+                let Some(&target_card) = player.in_play.get(card_index) else {
                     return Err(IllegalAction);
                 };
-                let target_name = target_card.name;
-                let target_id = target_card.id;
 
                 match card_action {
                     CardAction::Scrap => {
-                        let Some(Effect::ScrapAbility(inner)) = CARDS[&target_name]
+                        let Some(Effect::ScrapAbility(inner)) = CARDS[&target_card.name]
                             .effects
                             .iter()
                             .find(|e| matches!(e, Effect::ScrapAbility(_)))
@@ -859,8 +892,9 @@ impl Game {
                             return Err(IllegalAction);
                         };
 
-                        player.remove_from_play(target_id);
-                        self.resolve_effect(agents, actor, target_id, target_name, inner);
+                        player.remove_from_play(target_card.id);
+
+                        self.resolve_effect(agents, actor, target_card, inner);
                     }
                     CardAction::EngageEffect => todo!(),
                 }
@@ -924,24 +958,43 @@ impl Game {
         self.resolve_effect(
             agents,
             actor,
-            instance,
-            played_card,
+            InPlayCard {
+                id: instance,
+                name: played_card,
+            },
             &Effect::Sequence(CARDS[&played_card].effects.clone()),
         );
+
+        let player = &mut self.players[actor];
+        let mut effect_queue = Vec::new();
+        let faction_count = player.faction_count();
+
+        player
+            .pending_ally_effects
+            .retain(|(in_play_card, faction, effect)| {
+                if faction_count[faction] >= 2 {
+                    effect_queue.push((*in_play_card, effect.clone()));
+                    return false; // dont keep
+                }
+                // keep
+                true
+            });
+
+        for (in_play_card, effect) in effect_queue {
+            self.resolve_effect(agents, actor, in_play_card, &effect);
+        }
     }
 
     fn resolve_effect(
         &mut self,
         agents: &mut [Box<dyn Agent>; 2],
         actor: usize,
-        source: CardInstanceId,
-        source_name: CardNamed,
+        source: InPlayCard,
         effect: &Effect,
     ) {
         let ctx = AskContext {
             actor,
             source,
-            source_name,
             source_effect: effect,
         };
 
@@ -956,20 +1009,22 @@ impl Game {
             }
             Effect::Sequence(effects) => {
                 for e in effects {
-                    self.resolve_effect(agents, actor, source, source_name, e);
+                    self.resolve_effect(agents, actor, source, e);
                 }
             }
             Effect::If(condition, inner) => {
                 if self.evaluate_condition(actor, condition) {
-                    self.resolve_effect(agents, actor, source, source_name, inner);
+                    self.resolve_effect(agents, actor, source, inner);
                 }
             }
             // Ally abilities become available for at-will use once queued here;
             // they aren't resolved immediately like a normal effect.
-            Effect::Ally(_, inner) => {
-                self.players[actor]
-                    .pending_ally_effects
-                    .push((source, (**inner).clone()));
+            Effect::Ally(faction, inner) => {
+                self.players[actor].pending_ally_effects.push((
+                    source,
+                    *faction,
+                    (**inner).clone(),
+                ));
             }
             // Held abilities: never walked during normal play, only looked up
             // on demand (ScrapInPlay action, or the PlayShip trigger scan) —
@@ -977,7 +1032,7 @@ impl Game {
             Effect::ScrapAbility(_) | Effect::Trigger(_, _) => {}
             Effect::May(inner) => {
                 if agents[actor].ask_yes_no(self, &ctx) {
-                    self.resolve_effect(agents, actor, source, source_name, inner);
+                    self.resolve_effect(agents, actor, source, inner);
                 }
             }
             Effect::Scrap(pile, count) => {
@@ -991,7 +1046,7 @@ impl Game {
                 if pile.contains(PileFlag::DISCARD_PILE) {
                     max_count += player.discard_pile.len();
                 }
-                let new_count = (*count).min(max_count as u32);
+                let new_count = (*count).min(max_count);
 
                 if new_count == 0 {
                     return; // nothing to do
@@ -1040,17 +1095,20 @@ impl Game {
             }
             Effect::Or(effect, effect1) => {
                 if agents[actor].ask_yes_no(self, &ctx) {
-                    self.resolve_effect(agents, actor, source, source_name, effect);
+                    self.resolve_effect(agents, actor, source, effect);
                 } else {
-                    self.resolve_effect(agents, actor, source, source_name, effect1);
+                    self.resolve_effect(agents, actor, source, effect1);
                 }
             }
-            Effect::Draw(amount) => todo!("player just gains card in hand"),
+            Effect::Draw(amount) => {
+                let count = amount.compute(self);
+                self.players[actor].draw_cards(count, &mut self.rng);
+            }
             Effect::AquireShipForFree {
                 to_top_of_deck,
                 max_cost,
             } => todo!("select card from shop"),
-            Effect::Discard(_) => todo!("select card from hand"),
+            Effect::Discard(count) => todo!("select card from hand"),
             Effect::DestroyTargetBase => todo!("select enemy base in play"),
             Effect::ScrapCardInRow => todo!("select card from shop"),
             Effect::OpponentDiscards => todo!("no actions"),
@@ -1071,7 +1129,7 @@ impl Game {
                     .iter()
                     .filter(|c| CARDS[&c.name].is_base())
                     .count()
-                    >= *count as usize
+                    >= *count
             }
         }
     }
@@ -1118,8 +1176,7 @@ enum ChoiceKind {
 /// Who's being asked, and which card instance's effect is asking.
 struct AskContext<'a> {
     actor: usize,
-    source: CardInstanceId,
-    source_name: CardNamed,
+    source: InPlayCard,
     source_effect: &'a Effect,
 }
 
@@ -1158,7 +1215,7 @@ trait Agent {
         game: &Game,
         ctx: &AskContext,
         pile: PileFlag,
-        count: u32,
+        count: usize,
     ) -> Vec<(PileFlag, usize)>;
     fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
     fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
@@ -1309,7 +1366,7 @@ impl Agent for UserCLI {
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
         let out;
-        let ctx_message = format!("{}: {}", ctx.source_name, ctx.source_effect);
+        let ctx_message = format!("{}: {}", ctx.source.name, ctx.source_effect);
 
         let (prompt, is_true, is_false): (String, fn(&str) -> bool, fn(&str) -> bool) =
             match ctx.source_effect {
@@ -1364,7 +1421,7 @@ impl Agent for UserCLI {
     fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
         println!(
             "{}: {}\nwhich card from shop",
-            ctx.source_name, ctx.source_effect
+            ctx.source.name, ctx.source_effect
         );
 
         0
@@ -1388,7 +1445,7 @@ impl Agent for UserCLI {
         game: &Game,
         ctx: &AskContext,
         pile: PileFlag,
-        count: u32,
+        count: usize,
     ) -> Vec<(PileFlag, usize)> {
         clear_console();
         let mut out = Vec::new();
@@ -1415,7 +1472,7 @@ impl Agent for UserCLI {
                     .join(" ")
             );
 
-            println!("{}: {}", ctx.source_name, ctx.source_effect);
+            println!("{}: {}", ctx.source.name, ctx.source_effect);
             println!("choose card {}/{count} from {pile}", out.len());
 
             let mut s = String::new();
@@ -1474,9 +1531,9 @@ impl Agent for UserCLI {
 
         self.recent_messages.push(format!(
             "{}: {}\nselected {}",
-            ctx.source_name,
+            ctx.source.name,
             ctx.source_effect,
-            n_cards(out.len() as u32)
+            n_cards(out.len())
         ));
         out
     }
@@ -1498,7 +1555,7 @@ impl Agent for PassBot10000 {
         game: &Game,
         ctx: &AskContext,
         pile: PileFlag,
-        count: u32,
+        count: usize,
     ) -> Vec<(PileFlag, usize)> {
         todo!()
     }
