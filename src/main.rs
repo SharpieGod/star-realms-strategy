@@ -477,12 +477,25 @@ fn load_cards() -> HashMap<CardNamed, Card> {
 
 /// All cards, keyed by name, loaded once on first access.
 static CARDS: LazyLock<HashMap<CardNamed, Card>> = LazyLock::new(load_cards);
-static STARTER_PERSONAL_DECK: LazyLock<Vec<CardNamed>> =
-    LazyLock::new(|| Vec::<CardNamed>::from(CardCounts(vec![(Viper, 1), (Scout, 1)])));
+static STARTER_PERSONAL_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
+    #[cfg(feature = "reset_resources")]
+    let counts = vec![(Viper, 2), (Scout, 8)];
+    #[cfg(not(feature = "reset_resources"))]
+    let counts = vec![(Viper, 1), (Scout, 1)];
+
+    Vec::<CardNamed>::from(CardCounts(counts))
+});
+
 static STARTER_GAME_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
-    let card_counts = CardCounts::try_from(PathBuf::from("./cards/deck.ron.dev")).unwrap();
+    #[cfg(feature = "reset_resources")]
+    let path_str = "./cards/deck.ron";
+    #[cfg(not(feature = "reset_resources"))]
+    let path_str = "./cards/deck.ron.dev";
+
+    let card_counts = CardCounts::try_from(PathBuf::from(path_str)).unwrap();
     card_counts.into()
 });
+
 fn effect(name: &CardNamed) -> &'static Vec<Effect> {
     &CARDS[name].effects
 }
@@ -750,11 +763,12 @@ impl Game {
     fn game_ended(&self) -> bool {
         self.players.iter().any(|p| p.authority <= 0)
     }
+
     fn run_game(&mut self, agents: &mut [Box<dyn Agent>; 2]) {
         while !self.game_ended() {
             let actor = self.turn_number as usize % 2;
 
-            loop {
+            while !self.game_ended() {
                 let action = agents[actor].choose_action(self, actor);
                 if action == PlayerAction::EndTurn {
                     break;
@@ -854,7 +868,7 @@ impl Game {
                             // Cannot target enemy if has outpost
                             return Err(IllegalAction);
                         }
-                        enemy.authority -= player.combat;
+                        enemy.authority = enemy.authority.saturating_sub(player.combat);
                         player.combat = 0;
                     }
                     EnemyBase(base_index) => {
@@ -1149,7 +1163,9 @@ trait Agent {
         eligible: &[CardNamed],
     ) -> CardNamed;
 }
-struct UserCLI {}
+struct UserCLI {
+    recent_messages: Vec<String>,
+}
 
 impl Agent for UserCLI {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
@@ -1274,15 +1290,29 @@ impl Agent for UserCLI {
     }
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
-        println!(
-            "{}: {}\nyes or no? (y/n)",
-            ctx.source_name, ctx.source_effect
-        );
+        clear_console();
 
-        let mut s = String::new();
-        stdin().read_line(&mut s).unwrap();
+        if matches!(ctx.source_effect, Effect::Or(_, _)) {
+            println!(
+                "{}: {}\nfirst or second? (f/s)",
+                ctx.source_name, ctx.source_effect
+            );
 
-        s.trim() == "y"
+            let mut s = String::new();
+            stdin().read_line(&mut s).unwrap();
+
+            s.trim().to_lowercase() == "f"
+        } else {
+            println!(
+                "{}: {}\nyes or no? (y/n)",
+                ctx.source_name, ctx.source_effect
+            );
+
+            let mut s = String::new();
+            stdin().read_line(&mut s).unwrap();
+
+            s.trim().to_lowercase() == "y"
+        }
     }
 
     fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
@@ -1406,7 +1436,7 @@ impl Agent for PassBot10000 {
     }
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
-        todo!()
+        false
     }
 
     fn ask_cards_from_pile(
@@ -1445,7 +1475,9 @@ pub fn clear_console() {
 fn main() {
     let mut game = Game::new();
     let agent1 = PassBot10000 {};
-    let agent2 = UserCLI {};
+    let agent2 = UserCLI {
+        recent_messages: Vec::new(),
+    };
 
     game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);
     // println!("{}", &CARDS[&CardNamed::Cutter]);
