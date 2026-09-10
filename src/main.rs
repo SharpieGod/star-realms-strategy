@@ -289,15 +289,20 @@ impl Display for Effect {
         match self {
             Effect::If(condition, effect) => write!(f, "{{{condition}}}: {{{effect}}}"),
             Effect::Or(effect, effect1) => write!(f, "{{{effect}}} or {{{effect1}}}"),
-            Effect::Sequence(effects) => write!(
-                f,
-                "{}",
-                effects
-                    .iter()
-                    .map(|e| format!("{{{e}}}"))
-                    .collect::<Vec<String>>()
-                    .join(" -> ")
-            ),
+            Effect::Sequence(effects) => match effects.as_slice() {
+                [Effect::May(effect), Effect::May(effect1)] => {
+                    write!(f, "{{{effect}}} and/or {{{effect1}}}")
+                }
+                _ => write!(
+                    f,
+                    "{}",
+                    effects
+                        .iter()
+                        .map(|e| format!("{{{e}}}"))
+                        .collect::<Vec<String>>()
+                        .join(" -> ")
+                ),
+            },
             Effect::ScrapAbility(effect) => write!(f, "Scrap: {{{effect}}}"),
             Effect::Trigger(event, effect) => write!(f, "whenever {event}: {{{effect}}}"),
             Effect::Ally(faction, effect) => write!(f, "{{{faction} ally}}: {{{effect}}}"),
@@ -1033,7 +1038,13 @@ impl Game {
                     break;
                 }
             }
-            Effect::Or(effect, effect1) => todo!("yesno"),
+            Effect::Or(effect, effect1) => {
+                if agents[actor].ask_yes_no(self, &ctx) {
+                    self.resolve_effect(agents, actor, source, source_name, effect);
+                } else {
+                    self.resolve_effect(agents, actor, source, source_name, effect1);
+                }
+            }
             Effect::Draw(amount) => todo!("player just gains card in hand"),
             Effect::AquireShipForFree {
                 to_top_of_deck,
@@ -1104,11 +1115,6 @@ enum ChoiceKind {
     SelectPlayedShip { eligible: Vec<CardNamed> }, // CopyPlayedShip
 }
 
-enum GamePhase {
-    Main,
-    Drawing,
-}
-
 /// Who's being asked, and which card instance's effect is asking.
 struct AskContext<'a> {
     actor: usize,
@@ -1167,6 +1173,18 @@ struct UserCLI {
     recent_messages: Vec<String>,
 }
 
+impl UserCLI {
+    fn recent_messages(&mut self) {
+        if !self.recent_messages.is_empty() {
+            println!(
+                "\n------------\n\n{}\n\n------------",
+                self.recent_messages.join("\n\n")
+            );
+        }
+        self.recent_messages.clear();
+    }
+}
+
 impl Agent for UserCLI {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
         let player = &game.players[actor];
@@ -1174,7 +1192,7 @@ impl Agent for UserCLI {
         loop {
             clear_console();
             println!("{game}");
-            println!("what do you do?");
+            self.recent_messages();
 
             let mut s = String::new();
             stdin().read_line(&mut s).unwrap();
@@ -1290,29 +1308,57 @@ impl Agent for UserCLI {
     }
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
-        clear_console();
+        let out;
+        let ctx_message = format!("{}: {}", ctx.source_name, ctx.source_effect);
 
-        if matches!(ctx.source_effect, Effect::Or(_, _)) {
-            println!(
-                "{}: {}\nfirst or second? (f/s)",
-                ctx.source_name, ctx.source_effect
-            );
+        let (prompt, is_true, is_false): (String, fn(&str) -> bool, fn(&str) -> bool) =
+            match ctx.source_effect {
+                Effect::Or(_, _) => (
+                    format!("{ctx_message}\nfirst or second?",),
+                    |x| matches!(x, "f" | "first" | "l" | "left" | "0"),
+                    |x| matches!(x, "s" | "second" | "1" | "r" | "right"),
+                ),
+                _ => (
+                    format!("{ctx_message}\nyes or no?",),
+                    |x| matches!(x, "y" | "yes"),
+                    |x| matches!(x, "n" | "no"),
+                ),
+            };
+
+        loop {
+            clear_console();
+            println!("{prompt}");
 
             let mut s = String::new();
             stdin().read_line(&mut s).unwrap();
 
-            s.trim().to_lowercase() == "f"
-        } else {
-            println!(
-                "{}: {}\nyes or no? (y/n)",
-                ctx.source_name, ctx.source_effect
-            );
+            let x = &s.trim().to_lowercase();
 
-            let mut s = String::new();
-            stdin().read_line(&mut s).unwrap();
-
-            s.trim().to_lowercase() == "y"
+            if is_true(x) {
+                out = true;
+                break;
+            } else if is_false(x) {
+                out = false;
+                break;
+            }
         }
+
+        match ctx.source_effect {
+            Effect::Or(effect, effect1) => {
+                self.recent_messages.push(format!(
+                    "{ctx_message}\nselected {{{}}}",
+                    if out { effect } else { effect1 }
+                ));
+            }
+            _ => {
+                self.recent_messages.push(format!(
+                    "{ctx_message}\nselected {}",
+                    if out { "yes" } else { "no" }
+                ));
+            }
+        }
+
+        out
     }
 
     fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
@@ -1353,16 +1399,18 @@ impl Agent for UserCLI {
                 player
                     .hand
                     .iter()
-                    .map(|c| c.to_string())
+                    .enumerate()
+                    .map(|(i, c)| format!("{i}:{c}"))
                     .collect::<Vec<String>>()
                     .join(" ")
             );
             println!(
-                "discard pile: {}",
+                "disacrd pile: {}",
                 player
                     .discard_pile
                     .iter()
-                    .map(|c| c.to_string())
+                    .enumerate()
+                    .map(|(i, c)| format!("{i}:{c}"))
                     .collect::<Vec<String>>()
                     .join(" ")
             );
@@ -1424,6 +1472,12 @@ impl Agent for UserCLI {
             }
         }
 
+        self.recent_messages.push(format!(
+            "{}: {}\nselected {}",
+            ctx.source_name,
+            ctx.source_effect,
+            n_cards(out.len() as u32)
+        ));
         out
     }
 }

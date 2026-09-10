@@ -2,5 +2,5 @@
 // trade deck draw pile. Does not include the Explorer pile (10x Explorer) or
 // each player's starting personal deck (8x Scout, 2x Viper).
 CardCounts([
-    (TradeBot, 80)
+    (PatrolMech, 80)
 ])
