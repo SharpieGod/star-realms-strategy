@@ -152,6 +152,10 @@ impl CardNamed {
     fn faction(&self) -> Faction {
         CARDS[self].faction
     }
+
+    fn with_cost(&self) -> String {
+        format!("{self} ({})", CARDS[self].cost.to_string().b_yellow())
+    }
 }
 #[derive(Serialize, Deserialize, Clone, Debug)]
 enum Amount {
@@ -509,7 +513,7 @@ static STARTER_PERSONAL_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
     #[cfg(feature = "reset_resources")]
     let counts = vec![(Viper, 2), (Scout, 8)];
     #[cfg(not(feature = "reset_resources"))]
-    let counts = vec![(CardNamed::BattleBlob, 5), (Scout, 1)];
+    let counts = vec![(CardNamed::BlobFighter, 5), (Scout, 1)];
 
     Vec::<CardNamed>::from(CardCounts(counts))
 });
@@ -706,7 +710,7 @@ impl Display for Player {
             self.in_play
                 .iter()
                 .filter(|c| CARDS[&c.name].is_base())
-                .map(|c| CARDS[&c.name].name_only())
+                .map(|c| c.name.to_string())
                 .collect::<Vec<String>>()
                 .join(", ")
         )?;
@@ -716,7 +720,7 @@ impl Display for Player {
             self.in_play
                 .iter()
                 .filter(|c| !CARDS[&c.name].is_base())
-                .map(|c| CARDS[&c.name].name_only())
+                .map(|c| c.name.to_string())
                 .collect::<Vec<String>>()
                 .join(", ")
         )?;
@@ -725,7 +729,7 @@ impl Display for Player {
             "hand: {}",
             self.hand
                 .iter()
-                .map(|c| CARDS[c].name_only())
+                .map(|c| c.to_string())
                 .collect::<Vec<String>>()
                 .join(", ")
         )?;
@@ -734,7 +738,7 @@ impl Display for Player {
             "discard pile: {}",
             self.discard_pile
                 .iter()
-                .map(|c| CARDS[c].name_only())
+                .map(|c| c.to_string())
                 .collect::<Vec<String>>()
                 .join(", ")
         )
@@ -935,8 +939,11 @@ impl Game {
             }
 
             PlayerAction::PlayAll => {
-                while !self.players[actor].hand.is_empty() {
+                let mut n = self.players[actor].hand.len();
+
+                while n > 0 && !self.players[actor].hand.is_empty() {
                     self.play_from_hand(agents, actor, 0);
+                    n -= 1;
                 }
             }
             EndTurn => todo!(),
@@ -1231,7 +1238,7 @@ struct UserCLI {
 }
 
 impl UserCLI {
-    fn recent_messages(&mut self) {
+    fn print_recent_messages(&mut self) {
         if !self.recent_messages.is_empty() {
             println!(
                 "\n------------\n\n{}\n\n------------",
@@ -1239,6 +1246,83 @@ impl UserCLI {
             );
         }
         self.recent_messages.clear();
+    }
+
+    fn print_game_state(&self, game: &Game, actor: usize) {
+        let player = &game.players[actor];
+        println!(
+            "shop:\n{}",
+            game.shop
+                .iter()
+                .enumerate()
+                .map(|(i, c)| c
+                    .map(|c| format!("{i}:{}", c.with_cost()))
+                    .unwrap_or_default())
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
+
+        println!();
+
+        println!(
+            "authority: {}, combat: {}, trade: {}",
+            player.authority, player.combat, player.trade
+        );
+
+        println!();
+
+        println!("deck: {} cards", player.personal_deck.len());
+
+        println!();
+
+        println!(
+            "bases in play: {}",
+            player
+                .in_play
+                .iter()
+                .filter(|c| CARDS[&c.name].is_base())
+                .enumerate()
+                .map(|(i, c)| format!("{i}:{}", c.name))
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
+        println!();
+        println!(
+            "ships in play: {}",
+            player
+                .in_play
+                .iter()
+                .filter(|c| !CARDS[&c.name].is_base())
+                .enumerate()
+                .map(|(i, c)| format!("{i}:{}", c.name))
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
+        println!();
+
+        println!(
+            "discard pile: {}",
+            player
+                .discard_pile
+                .iter()
+                .enumerate()
+                .map(|(i, c)| format!("{i}:{}", c))
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
+        println!();
+        println!();
+
+        println!(
+            "hand: {}",
+            player
+                .hand
+                .iter()
+                .enumerate()
+                .map(|(i, c)| format!("{i}:{}", c))
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
     }
 }
 
@@ -1248,8 +1332,9 @@ impl Agent for UserCLI {
         let enemy = &game.players[(actor + 1) % 2];
         loop {
             clear_console();
-            println!("{game}");
-            self.recent_messages();
+            // println!("{game}");
+            self.print_game_state(game, actor);
+            self.print_recent_messages();
 
             let mut s = String::new();
             stdin().read_line(&mut s).unwrap();
