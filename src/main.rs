@@ -1,6 +1,6 @@
 use std::{
     cmp::Ordering,
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     fmt::Display,
     fs::{self, OpenOptions},
     io::{self, Write, stdin},
@@ -1091,6 +1091,26 @@ impl Game {
                         .filter_map(|(p, index)| (*p == PileFlag::DISCARD_PILE).then_some(*index))
                         .collect::<Vec<_>>();
 
+                    if hand_choices.len()
+                        != hand_choices
+                            .iter()
+                            .copied()
+                            .collect::<HashSet<usize>>()
+                            .len()
+                    {
+                        continue;
+                    }
+
+                    if discard_pile_choices.len()
+                        != discard_pile_choices
+                            .iter()
+                            .copied()
+                            .collect::<HashSet<usize>>()
+                            .len()
+                    {
+                        continue;
+                    }
+
                     player.hand = player
                         .hand
                         .iter()
@@ -1538,7 +1558,7 @@ impl Agent for UserCLI {
         count: usize,
     ) -> Vec<(PileFlag, usize)> {
         clear_console();
-        let mut out = Vec::new();
+        let mut out: Vec<(PileFlag, usize)> = Vec::new();
         let player = &game.players[ctx.actor];
 
         let mut selected_cards = Vec::new();
@@ -1597,6 +1617,12 @@ impl Agent for UserCLI {
                             "max index in hand is {}. invalid index",
                             player.hand.len() as i32 - 1
                         );
+
+                        continue;
+                    }
+
+                    if out.iter().any(|(f, i)| *f == PileFlag::HAND && *i == index) {
+                        println!("already chose this index. invalid index",);
                         continue;
                     }
 
@@ -1613,6 +1639,14 @@ impl Agent for UserCLI {
                             "max index in hand is {}. invalid index",
                             player.discard_pile.len() as i32 - 1
                         );
+                        continue;
+                    }
+
+                    if out
+                        .iter()
+                        .any(|(f, i)| *f == PileFlag::DISCARD_PILE && *i == index)
+                    {
+                        println!("already chose this index. invalid index",);
                         continue;
                     }
 
