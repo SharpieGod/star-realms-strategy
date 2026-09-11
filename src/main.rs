@@ -509,7 +509,7 @@ static STARTER_PERSONAL_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
     #[cfg(feature = "reset_resources")]
     let counts = vec![(Viper, 2), (Scout, 8)];
     #[cfg(not(feature = "reset_resources"))]
-    let counts = vec![(CardNamed::BlobFighter, 5), (Scout, 1)];
+    let counts = vec![(CardNamed::BrainWorld, 5), (Scout, 1)];
 
     Vec::<CardNamed>::from(CardCounts(counts))
 });
@@ -1495,7 +1495,10 @@ impl Agent for UserCLI {
         loop {
             clear_console();
             self.print_game_state(game, game.turn_number as usize % 2);
-            println!();
+
+            self.print_recent_messages();
+            println!("\n");
+
             println!("{prompt}");
 
             let mut s = String::new();
@@ -1566,13 +1569,20 @@ impl Agent for UserCLI {
         let mut selected_cards = Vec::new();
 
         while out.len() < count as usize {
+            self.print_recent_messages();
+            println!("\n");
+
             println!(
                 "hand: {}",
                 player
                     .hand
                     .iter()
                     .enumerate()
-                    .map(|(i, c)| format!("{i}:{c}"))
+                    .map(|(i, c)| if !out.contains(&(PileFlag::HAND, i)) {
+                        format!("{i}:{c}")
+                    } else {
+                        format!("({c})")
+                    })
                     .collect::<Vec<String>>()
                     .join(" ")
             );
@@ -1583,7 +1593,11 @@ impl Agent for UserCLI {
                     .discard_pile
                     .iter()
                     .enumerate()
-                    .map(|(i, c)| format!("{i}:{c}"))
+                    .map(|(i, c)| if !out.contains(&(PileFlag::DISCARD_PILE, i)) {
+                        format!("{i}:{c}")
+                    } else {
+                        format!("({c})")
+                    })
                     .collect::<Vec<String>>()
                     .join(" ")
             );
