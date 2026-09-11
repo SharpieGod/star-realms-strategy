@@ -403,13 +403,11 @@ impl From<CardNamed> for &Card {
 
 impl Display for Card {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let n = self.name.to_string();
-
         write!(
             f,
-            "({}) {}{}\n{}",
-            self.cost.to_string().b_yellow(),
+            "{} ({}){}\n{}",
             self.name,
+            self.cost.to_string().b_yellow(),
             match self.card_type {
                 CardType::Ship => "".to_string(),
                 CardType::Base {
@@ -437,8 +435,6 @@ impl Display for Card {
 
 impl Card {
     fn name_only(&self) -> String {
-        let n = self.name.to_string();
-
         if self.cost > 0 {
             format!("({}) {}", self.cost.to_string().b_yellow(), self.name)
         } else {
@@ -809,11 +805,21 @@ impl Game {
     }
 
     fn run_game(&mut self, agents: &mut [Box<dyn Agent>; 2]) {
-        while !self.game_ended() {
+        loop {
             let actor = self.turn_number as usize % 2;
+
+            for base in &self.players[actor].bases_in_play() {
+                self.resolve_effect(
+                    agents,
+                    actor,
+                    *base,
+                    &Effect::Sequence(effect(&base.name).clone()),
+                );
+            }
 
             while !self.game_ended() {
                 let action = agents[actor].choose_action(self, actor);
+
                 if action == PlayerAction::EndTurn {
                     break;
                 }
@@ -822,6 +828,10 @@ impl Game {
                     Ok(_) => {}
                     Err(_) => {}
                 };
+            }
+
+            if self.game_ended() {
+                break;
             }
 
             let player = &mut self.players[actor];
@@ -1158,26 +1168,9 @@ enum CombatTarget {
 }
 
 #[derive(PartialEq, Eq)]
-
-enum ChoiceValue {
-    Bool(bool),
-    Index(usize),
-    Indicies(Vec<usize>),
-}
-
-#[derive(PartialEq, Eq)]
 enum CardAction {
     Scrap,
     EngageEffect,
-}
-
-#[derive(Debug)]
-enum ChoiceKind {
-    YesNo,                                         // May, Or's branch pick
-    SelectFromPile { pile: PileFlag, count: u32 }, // Scrap, Discard (pile: Hand), OpponentDiscards (pile: Hand)
-    SelectShopCard { eligible: Vec<usize> }, // AquireShipForFree (after a YesNo), ScrapCardInRow
-    SelectEnemyBase { eligible: Vec<usize> }, // DestroyTargetBase
-    SelectPlayedShip { eligible: Vec<CardNamed> }, // CopyPlayedShip
 }
 
 /// Who's being asked, and which card instance's effect is asking.
@@ -1250,6 +1243,22 @@ impl UserCLI {
 
     fn print_game_state(&self, game: &Game, actor: usize) {
         let player = &game.players[actor];
+        let enemy = &game.players[(actor + 1) % 2];
+        println!("enemy authority: {}", enemy.authority);
+        println!(
+            "enemy bases: {}",
+            enemy
+                .in_play
+                .iter()
+                .filter(|c| CARDS[&c.name].is_base())
+                .enumerate()
+                .map(|(i, c)| format!("{i}:{}", c.name))
+                .collect::<Vec<String>>()
+                .join(", ")
+        );
+
+        println!("----------------------------------\n");
+
         println!(
             "shop:\n{}",
             game.shop
@@ -1269,11 +1278,7 @@ impl UserCLI {
             player.authority, player.combat, player.trade
         );
 
-        println!();
-
         println!("deck: {} cards", player.personal_deck.len());
-
-        println!();
 
         println!(
             "bases in play: {}",
@@ -1286,7 +1291,6 @@ impl UserCLI {
                 .collect::<Vec<String>>()
                 .join(", ")
         );
-        println!();
         println!(
             "ships in play: {}",
             player
@@ -1298,7 +1302,6 @@ impl UserCLI {
                 .collect::<Vec<String>>()
                 .join(", ")
         );
-        println!();
 
         println!(
             "discard pile: {}",
@@ -1310,7 +1313,6 @@ impl UserCLI {
                 .collect::<Vec<String>>()
                 .join(", ")
         );
-        println!();
         println!();
 
         println!(
@@ -1369,14 +1371,14 @@ impl Agent for UserCLI {
                 index if index.parse::<usize>().is_ok() => {
                     let index = index.parse::<usize>().unwrap_or_default();
 
-                    match tokens.get(0).copied().unwrap_or_default() {
+                    match tokens.get(1).copied().unwrap_or_default() {
                         "scrap" => return PACard(index, Scrap),
                         "engage" => return PACard(index, EngageEffect),
                         _ => {}
                     }
                 }
 
-                "damage" => match tokens.get(1).copied().unwrap_or_default() {
+                "damage" | "d" => match tokens.get(1).copied().unwrap_or_default() {
                     "base" => {
                         let Ok(index) = tokens.get(2).copied().unwrap_or_default().parse::<usize>()
                         else {
@@ -1434,6 +1436,7 @@ impl Agent for UserCLI {
                             "enemyhand" | "eh" => {
                                 enemy.hand.get(index)
                             }
+
                             _ => {
                                 None
                             }
@@ -1469,6 +1472,8 @@ impl Agent for UserCLI {
 
         loop {
             clear_console();
+            self.print_game_state(game, game.turn_number as usize % 2);
+            println!();
             println!("{prompt}");
 
             let mut s = String::new();
@@ -1535,6 +1540,9 @@ impl Agent for UserCLI {
         clear_console();
         let mut out = Vec::new();
         let player = &game.players[ctx.actor];
+
+        let mut selected_cards = Vec::new();
+
         while out.len() < count as usize {
             println!(
                 "hand: {}",
@@ -1546,8 +1554,9 @@ impl Agent for UserCLI {
                     .collect::<Vec<String>>()
                     .join(" ")
             );
+
             println!(
-                "disacrd pile: {}",
+                "discard pile: {}",
                 player
                     .discard_pile
                     .iter()
@@ -1577,7 +1586,7 @@ impl Agent for UserCLI {
             };
 
             match tokens.get(0).copied().unwrap_or_default() {
-                "hand" => {
+                "hand" | "h" => {
                     if !pile.contains(PileFlag::HAND) {
                         println!("invalid pile. only allowed {pile}");
                         continue;
@@ -1592,8 +1601,9 @@ impl Agent for UserCLI {
                     }
 
                     out.push((PileFlag::HAND, index));
+                    selected_cards.push(player.hand.get(index));
                 }
-                "discardpile" => {
+                "discardpile" | "pile" | "dp" | "d" => {
                     if !pile.contains(PileFlag::DISCARD_PILE) {
                         println!("invalid pile. only allowed {pile}");
                         continue;
@@ -1606,6 +1616,7 @@ impl Agent for UserCLI {
                         continue;
                     }
 
+                    selected_cards.push(player.discard_pile.get(index));
                     out.push((PileFlag::DISCARD_PILE, index))
                 }
                 _ => {
@@ -1618,8 +1629,13 @@ impl Agent for UserCLI {
             "{}: {}\nselected {}",
             ctx.source.name,
             ctx.source_effect,
-            n_cards(out.len())
+            selected_cards
+                .iter()
+                .map(|c| c.map(|c| c.to_string()).unwrap_or_default())
+                .collect::<Vec<String>>()
+                .join(", ")
         ));
+
         out
     }
 }
@@ -1671,6 +1687,11 @@ pub fn clear_console() {
 fn main() {
     let mut game = Game::new();
     let agent1 = PassBot10000 {};
+
+    // let agent1 = UserCLI {
+    //     recent_messages: Vec::new(),
+    // };
+
     let agent2 = UserCLI {
         recent_messages: Vec::new(),
     };
