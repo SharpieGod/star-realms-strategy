@@ -775,13 +775,15 @@ impl Game {
         let turn_number = rng.random_range(0..=1);
         let mut deck = STARTER_GAME_DECK.clone();
         deck.shuffle(&mut rng);
+        let mut deck_iter = deck.into_iter();
 
-        let shop = deck
-            .iter()
-            .copied()
-            .take(5)
-            .map(|c| Some(c))
-            .collect::<Vec<Option<CardNamed>>>();
+        let shop = [
+            deck_iter.next(),
+            deck_iter.next(),
+            deck_iter.next(),
+            deck_iter.next(),
+            deck_iter.next(),
+        ];
 
         if turn_number == 0 {
             player1.draw_cards(3, &mut rng);
@@ -795,8 +797,8 @@ impl Game {
             players: [player1, player2],
             turn_number,
             rng,
-            deck,
-            shop: *shop.as_array().unwrap(),
+            deck: deck_iter.collect(),
+            shop,
         }
     }
 
@@ -1266,7 +1268,7 @@ impl UserCLI {
                 .enumerate()
                 .map(|(i, c)| c
                     .map(|c| format!("{i}:{}", c.with_cost()))
-                    .unwrap_or_default())
+                    .unwrap_or_else(|| " - ".to_string()))
                 .collect::<Vec<String>>()
                 .join(", ")
         );
