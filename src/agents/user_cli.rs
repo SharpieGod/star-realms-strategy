@@ -1,9 +1,9 @@
 use std::io::stdin;
 
-use crate::actions::CardAction::{EngageEffect, Scrap};
-use crate::actions::CombatTarget::{Enemy, EnemyBase};
-use crate::actions::PlayerAction::{self, BuyCard, Card as PACard, EndTurn, PlayCard, SpendCombat};
 use crate::actions::AskContext;
+
+use crate::actions::CombatTarget::{Enemy, EnemyBase};
+use crate::actions::PlayerAction::{self, BuyCard, EndTurn, PlayCard, SpendCombat};
 use crate::agent::Agent;
 use crate::cards::CARDS;
 use crate::cards::CardNamed::{self, Scout};
@@ -153,13 +153,37 @@ impl Agent for UserCLI {
                     };
                 }
 
-                index if index.parse::<usize>().is_ok() => {
-                    let index = index.parse::<usize>().unwrap_or_default();
+                "scrap"
+                    if tokens
+                        .get(2)
+                        .copied()
+                        .unwrap_or_default()
+                        .parse::<usize>()
+                        .is_ok() =>
+                {
+                    let index = tokens
+                        .get(2)
+                        .copied()
+                        .unwrap_or_default()
+                        .parse::<usize>()
+                        .unwrap();
 
                     match tokens.get(1).copied().unwrap_or_default() {
-                        "scrap" => return PACard(index, Scrap),
-                        "engage" => return PACard(index, EngageEffect),
-                        _ => {}
+                        "base" => {
+                            return PlayerAction::Scrap {
+                                is_base: true,
+                                index,
+                            };
+                        }
+                        "ship" => {
+                            return PlayerAction::Scrap {
+                                is_base: false,
+                                index,
+                            };
+                        }
+                        _ => {
+                            continue;
+                        }
                     }
                 }
 
@@ -297,12 +321,39 @@ impl Agent for UserCLI {
     }
 
     fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
-        println!(
-            "{}: {}\nwhich card from shop",
-            ctx.source.name, ctx.source_effect
-        );
+        clear_console();
+        loop {
+            self.print_game_state(game, game.players.len() % 2);
+            self.print_recent_messages();
 
-        0
+            println!(
+                "{}: {}\nwhich card from shop\neligible: {}",
+                ctx.source.name,
+                ctx.source_effect,
+                eligible
+                    .iter()
+                    .map(|i| i.to_string())
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            );
+
+            let mut s = String::new();
+            stdin().read_line(&mut s).unwrap();
+
+            clear_console();
+
+            let Ok(index) = s.trim().parse::<usize>() else {
+                println!("not valid index");
+                continue;
+            };
+
+            if !eligible.contains(&index) {
+                println!("not valid index");
+                continue;
+            }
+
+            return index;
+        }
     }
 
     fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
@@ -335,38 +386,42 @@ impl Agent for UserCLI {
             self.print_recent_messages();
             println!("\n");
 
-            println!(
-                "hand: {}",
-                player
-                    .hand
-                    .iter()
-                    .enumerate()
-                    .map(|(i, c)| if !out.contains(&(PileFlag::HAND, i)) {
-                        format!("{i}:{c}")
-                    } else {
-                        format!("({c})")
-                    })
-                    .collect::<Vec<String>>()
-                    .join(" ")
-            );
+            if pile.contains(PileFlag::HAND) {
+                println!(
+                    "hand: {}",
+                    player
+                        .hand
+                        .iter()
+                        .enumerate()
+                        .map(|(i, c)| if !out.contains(&(PileFlag::HAND, i)) {
+                            format!("{i}:{c}")
+                        } else {
+                            format!("({c})")
+                        })
+                        .collect::<Vec<String>>()
+                        .join(" ")
+                );
+            }
 
-            println!(
-                "discard pile: {}",
-                player
-                    .discard_pile
-                    .iter()
-                    .enumerate()
-                    .map(|(i, c)| if !out.contains(&(PileFlag::DISCARD_PILE, i)) {
-                        format!("{i}:{c}")
-                    } else {
-                        format!("({c})")
-                    })
-                    .collect::<Vec<String>>()
-                    .join(" ")
-            );
+            if pile.contains(PileFlag::DISCARD_PILE) {
+                println!(
+                    "discard pile: {}",
+                    player
+                        .discard_pile
+                        .iter()
+                        .enumerate()
+                        .map(|(i, c)| if !out.contains(&(PileFlag::DISCARD_PILE, i)) {
+                            format!("{i}:{c}")
+                        } else {
+                            format!("({c})")
+                        })
+                        .collect::<Vec<String>>()
+                        .join(" ")
+                );
+            }
 
             println!("{}: {}", ctx.source.name, ctx.source_effect);
-            println!("choose card {}/{count} from {pile}", out.len());
+            println!("choose card {}/{count} from {pile}", out.len() + 1);
 
             let mut s = String::new();
 
@@ -375,6 +430,7 @@ impl Agent for UserCLI {
             let tokens = s.split_whitespace().collect::<Vec<&str>>();
 
             clear_console();
+
             let Ok(index) = tokens.get(1).copied().unwrap_or_default().parse::<usize>() else {
                 println!(
                     "invalid usize {:?}",

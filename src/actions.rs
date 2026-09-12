@@ -6,7 +6,7 @@ pub enum PlayerAction {
     PlayCard(usize),
     PlayAll,
     BuyCard(usize),
-    Card(usize, CardAction),
+    Scrap { is_base: bool, index: usize },
     SpendCombat(CombatTarget),
     EndTurn,
 }
@@ -15,12 +15,6 @@ pub enum PlayerAction {
 pub enum CombatTarget {
     Enemy,
     EnemyBase(usize),
-}
-
-#[derive(PartialEq, Eq)]
-pub enum CardAction {
-    Scrap,
-    EngageEffect,
 }
 
 /// Who's being asked, and which card instance's effect is asking.

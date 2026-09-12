@@ -2,7 +2,6 @@ use std::{collections::HashSet, fmt::Display};
 
 use rand::{RngExt, rngs::ThreadRng, seq::SliceRandom};
 
-use crate::actions::CardAction;
 use crate::actions::CombatTarget::{Enemy, EnemyBase};
 use crate::actions::PlayerAction::{EndTurn, PlayCard};
 use crate::actions::{AskContext, PlayerAction};
@@ -175,27 +174,27 @@ impl Game {
 
                 player.discard_pile.push(target_card); // TODO: next card from shop to top of deck
             }
-            PlayerAction::Card(card_index, card_action) => {
-                let Some(&target_card) = player.in_play.get(card_index) else {
+            PlayerAction::Scrap { is_base, index } => {
+                let Some(&target_card) = if is_base {
+                    player.bases_in_play()
+                } else {
+                    player.ships_in_play()
+                }
+                .get(index) else {
                     return Err(IllegalAction);
                 };
 
-                match card_action {
-                    CardAction::Scrap => {
-                        let Some(Effect::ScrapAbility(inner)) = CARDS[&target_card.name]
-                            .effects
-                            .iter()
-                            .find(|e| matches!(e, Effect::ScrapAbility(_)))
-                        else {
-                            return Err(IllegalAction);
-                        };
+                let Some(Effect::ScrapAbility(inner)) = CARDS[&target_card.name]
+                    .effects
+                    .iter()
+                    .find(|e| matches!(e, Effect::ScrapAbility(_)))
+                else {
+                    return Err(IllegalAction);
+                };
 
-                        player.remove_from_play(target_card.id);
+                player.remove_from_play(target_card.id);
 
-                        self.resolve_effect(agents, actor, target_card, inner);
-                    }
-                    CardAction::EngageEffect => todo!(),
-                }
+                self.resolve_effect(agents, actor, target_card, inner);
             }
             PlayerAction::SpendCombat(combat_target) => {
                 let enemy_has_outposts = !enemy.outposts_in_play().is_empty();
@@ -430,12 +429,63 @@ impl Game {
             Effect::AquireShipForFree {
                 to_top_of_deck,
                 max_cost,
-            } => todo!("select card from shop"),
-            Effect::Discard(count) => todo!("select card from hand"),
+            } => {
+                let eligible = self
+                    .shop
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, c)| {
+                        c.is_some_and(|c| max_cost.is_none_or(|cost| CARDS[&c].cost <= cost))
+                            .then_some(i)
+                    })
+                    .collect::<Vec<usize>>();
+
+                loop {
+                    let target_ship = agents[actor].ask_shop_card(self, &ctx, &eligible);
+                }
+            }
+            Effect::Discard(count) => {
+                todo!("select card from my hand")
+            }
             Effect::DestroyTargetBase => todo!("select enemy base in play"),
             Effect::ScrapCardInRow => todo!("select card from shop"),
-            Effect::OpponentDiscards => todo!("no actions"),
-            Effect::CopyPlayedShip => todo!("chose played shi"),
+            Effect::OpponentDiscards => {
+                let opponent_index = (actor + 1) % 2;
+                let opponent = &self.players[opponent_index];
+
+                if opponent.hand.len() == 0 {
+                    return;
+                }
+
+                loop {
+                    let target_cards =
+                        agents[opponent_index].ask_cards_from_pile(self, &ctx, PileFlag::HAND, 1);
+
+                    if target_cards.len() != 1 {
+                        continue;
+                    }
+
+                    let Some(target_card) = target_cards.get(0) else {
+                        continue;
+                    };
+
+                    if target_card.0 != PileFlag::HAND {
+                        continue;
+                    }
+
+                    let opponent = &mut self.players[opponent_index];
+
+                    if target_card.1 >= opponent.hand.len() {
+                        continue;
+                    }
+
+                    let card = opponent.hand.remove(target_card.1);
+                    opponent.discard_pile.push(card);
+
+                    break;
+                }
+            }
+            Effect::CopyPlayedShip => todo!("chose played ship"),
             Effect::NextAcquiredShipToTopOfDeck => todo!("no action"),
         }
     }
