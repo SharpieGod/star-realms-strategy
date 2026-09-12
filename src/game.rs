@@ -240,7 +240,7 @@ impl Game {
                     n -= 1;
                 }
             }
-            EndTurn => todo!(),
+            EndTurn => unreachable!(),
         }
 
         Ok(())
@@ -256,15 +256,17 @@ impl Game {
         let played_card = player.hand.remove(hand_index);
         let instance = player.play_card(played_card);
 
-        self.resolve_effect(
-            agents,
-            actor,
-            InPlayCard {
-                id: instance,
-                name: played_card,
-            },
-            &Effect::Sequence(CARDS[&played_card].effects.clone()),
-        );
+        for e in effect(&played_card) {
+            self.resolve_effect(
+                agents,
+                actor,
+                InPlayCard {
+                    id: instance,
+                    name: played_card,
+                },
+                e,
+            );
+        }
 
         let player = &mut self.players[actor];
         let mut effect_queue = Vec::new();
