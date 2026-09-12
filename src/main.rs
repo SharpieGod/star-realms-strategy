@@ -13,11 +13,11 @@ use game::Game;
 
 fn main() {
     let mut game = Game::new();
-    let agent1 = PassBot10000 {};
+    // let agent1 = PassBot10000 {};
 
-    // let agent1 = UserCLI {
-    //     recent_messages: Vec::new(),
-    // };
+    let agent1 = UserCLI {
+        recent_messages: Vec::new(),
+    };
 
     let agent2 = UserCLI {
         recent_messages: Vec::new(),

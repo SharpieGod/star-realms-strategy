@@ -457,9 +457,19 @@ impl Game {
                     return;
                 }
 
+                let opponent_ctx = AskContext {
+                    actor: opponent_index,
+                    source: ctx.source,
+                    source_effect: ctx.source_effect,
+                };
+
                 loop {
-                    let target_cards =
-                        agents[opponent_index].ask_cards_from_pile(self, &ctx, PileFlag::HAND, 1);
+                    let target_cards = agents[opponent_index].ask_cards_from_pile(
+                        self,
+                        &opponent_ctx,
+                        PileFlag::HAND,
+                        1,
+                    );
 
                     if target_cards.len() != 1 {
                         continue;

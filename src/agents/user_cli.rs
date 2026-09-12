@@ -117,6 +117,7 @@ impl Agent for UserCLI {
     fn choose_action(&mut self, game: &Game, actor: usize) -> PlayerAction {
         let player = &game.players[actor];
         let enemy = &game.players[(actor + 1) % 2];
+
         loop {
             clear_console();
             // println!("{game}");
@@ -421,7 +422,7 @@ impl Agent for UserCLI {
             }
 
             println!("{}: {}", ctx.source.name, ctx.source_effect);
-            println!("choose card {}/{count} from {pile}", out.len() + 1);
+            println!("choose card {}/{count} from {pile}\n", out.len() + 1);
 
             let mut s = String::new();
 
@@ -430,67 +431,103 @@ impl Agent for UserCLI {
             let tokens = s.split_whitespace().collect::<Vec<&str>>();
 
             clear_console();
+            if pile == PileFlag::HAND.union(PileFlag::DISCARD_PILE) {
+                let Ok(index) = tokens.get(1).copied().unwrap_or_default().parse::<usize>() else {
+                    println!(
+                        "invalid usize {:?}",
+                        tokens.get(1).copied().unwrap_or_default()
+                    );
 
-            let Ok(index) = tokens.get(1).copied().unwrap_or_default().parse::<usize>() else {
-                println!(
-                    "invalid usize {:?}",
-                    tokens.get(1).copied().unwrap_or_default()
-                );
+                    continue;
+                };
 
-                continue;
-            };
+                match tokens.get(0).copied().unwrap_or_default() {
+                    "hand" | "h" => {
+                        if !pile.contains(PileFlag::HAND) {
+                            println!("invalid pile. only allowed {pile}");
+                            continue;
+                        }
 
-            match tokens.get(0).copied().unwrap_or_default() {
-                "hand" | "h" => {
-                    if !pile.contains(PileFlag::HAND) {
-                        println!("invalid pile. only allowed {pile}");
-                        continue;
+                        if index >= player.hand.len() {
+                            println!(
+                                "max index in hand is {}. invalid index",
+                                player.hand.len() as i32 - 1
+                            );
+
+                            continue;
+                        }
+
+                        if out.iter().any(|(f, i)| *f == PileFlag::HAND && *i == index) {
+                            println!("already chose this index. invalid index",);
+                            continue;
+                        }
+
+                        out.push((PileFlag::HAND, index));
+                        selected_cards.push(player.hand.get(index));
                     }
+                    "discardpile" | "pile" | "dp" | "d" => {
+                        if !pile.contains(PileFlag::DISCARD_PILE) {
+                            println!("invalid pile. only allowed {pile}");
+                            continue;
+                        }
+                        if index >= player.discard_pile.len() {
+                            println!(
+                                "max index in hand is {}. invalid index",
+                                player.discard_pile.len() as i32 - 1
+                            );
+                            continue;
+                        }
 
-                    if index >= player.hand.len() {
-                        println!(
-                            "max index in hand is {}. invalid index",
-                            player.hand.len() as i32 - 1
-                        );
+                        if out
+                            .iter()
+                            .any(|(f, i)| *f == PileFlag::DISCARD_PILE && *i == index)
+                        {
+                            println!("already chose this index. invalid index",);
+                            continue;
+                        }
 
-                        continue;
+                        selected_cards.push(player.discard_pile.get(index));
+                        out.push((PileFlag::DISCARD_PILE, index))
                     }
-
-                    if out.iter().any(|(f, i)| *f == PileFlag::HAND && *i == index) {
-                        println!("already chose this index. invalid index",);
-                        continue;
+                    _ => {
+                        println!("invalid pile selector. (hand|discardpile)")
                     }
-
-                    out.push((PileFlag::HAND, index));
-                    selected_cards.push(player.hand.get(index));
                 }
-                "discardpile" | "pile" | "dp" | "d" => {
-                    if !pile.contains(PileFlag::DISCARD_PILE) {
-                        println!("invalid pile. only allowed {pile}");
-                        continue;
-                    }
-                    if index >= player.discard_pile.len() {
-                        println!(
-                            "max index in hand is {}. invalid index",
-                            player.discard_pile.len() as i32 - 1
-                        );
-                        continue;
-                    }
+            } else {
+                let Ok(index) = tokens.get(0).copied().unwrap_or_default().parse::<usize>() else {
+                    println!(
+                        "invalid usize {:?}",
+                        tokens.get(0).copied().unwrap_or_default()
+                    );
 
-                    if out
-                        .iter()
-                        .any(|(f, i)| *f == PileFlag::DISCARD_PILE && *i == index)
-                    {
-                        println!("already chose this index. invalid index",);
-                        continue;
-                    }
+                    continue;
+                };
 
-                    selected_cards.push(player.discard_pile.get(index));
-                    out.push((PileFlag::DISCARD_PILE, index))
+                let player_pile = if pile == PileFlag::HAND {
+                    &player.hand
+                } else {
+                    &player.discard_pile
+                };
+
+                let max_len = if pile == PileFlag::HAND {
+                    player.hand.len()
+                } else {
+                    player.discard_pile.len()
+                };
+
+                if index >= max_len {
+                    println!("max index is {}. invalid index", max_len - 1);
+                    continue;
                 }
-                _ => {
-                    println!("invalid pile selector. (hand|discardpile)")
+
+                if out.iter().any(|(f, i)| *f == pile && *i == index) {
+                    println!("already chose this index. invalid index",);
+                    continue;
                 }
+
+                selected_cards.push(player_pile.get(index));
+
+                out.push((pile, index));
             }
         }
 
