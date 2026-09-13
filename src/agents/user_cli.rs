@@ -358,11 +358,45 @@ impl Agent for UserCLI {
     }
 
     fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
-        todo!()
+        clear_console();
+        loop {
+            self.print_game_state(game, game.players.len() % 2);
+            self.print_recent_messages();
+
+            println!(
+                "{}: {}\nwhich enemy base\neligible: {}",
+                ctx.source.name,
+                ctx.source_ability,
+                eligible
+                    .iter()
+                    .map(|i| i.to_string())
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            );
+
+            let mut s = String::new();
+            stdin().read_line(&mut s).unwrap();
+
+            clear_console();
+
+            let Ok(index) = s.trim().parse::<usize>() else {
+                println!("not valid index");
+                continue;
+            };
+
+            if !eligible.contains(&index) {
+                println!("not valid index");
+                continue;
+            }
+
+            return index;
+        }
     }
 
     fn ask_played_ship(&mut self, game: &Game, ctx: &AskContext) -> usize {
-        todo!()
+        clear_console();
+
+        0
     }
 
     fn ask_cards_from_pile(

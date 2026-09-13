@@ -9,7 +9,7 @@ use crate::actions::CombatTarget::{Enemy, EnemyBase};
 use crate::actions::PlayerAction::{EndTurn, PlayCard};
 use crate::actions::{AskContext, PlayerAction};
 use crate::agent::Agent;
-use crate::cards::{CARDS, CardNamed, STARTER_GAME_DECK, ability};
+use crate::cards::{CARDS, CardNamed, CardType, STARTER_GAME_DECK, ability};
 use crate::player::{InPlayCard, Player};
 
 pub struct Game {
@@ -18,6 +18,7 @@ pub struct Game {
     pub rng: ThreadRng,
     pub deck: Vec<CardNamed>,
     pub shop: [Option<CardNamed>; 5],
+    pub next_aquired_ship_to_top_of_deck: bool,
 }
 
 pub struct IllegalAction;
@@ -80,6 +81,7 @@ impl Game {
             rng,
             deck: deck_iter.collect(),
             shop,
+            next_aquired_ship_to_top_of_deck: false,
         }
     }
 
@@ -128,7 +130,6 @@ impl Game {
 
             // all in hand get discarded
             player.discard_pile.extend(player.hand.drain(..));
-
             player.draw_cards(5, &mut self.rng);
 
             #[cfg(feature = "reset_resources")]
@@ -137,6 +138,7 @@ impl Game {
                 player.trade = 0;
             }
 
+            self.next_aquired_ship_to_top_of_deck = false;
             self.turn_number += 1;
         }
     }
@@ -163,6 +165,7 @@ impl Game {
                 let Some(target_card) = self.shop[card_index] else {
                     return Err(IllegalAction);
                 };
+
                 let target_cost = CARDS[&target_card].cost;
 
                 if target_cost > player.trade {
@@ -172,7 +175,11 @@ impl Game {
                 player.trade -= target_cost;
                 self.shop[card_index] = self.deck.pop(); // Draw new card, if no card its None anyways
 
-                player.discard_pile.push(target_card); // TODO: next card from shop to top of deck
+                if !self.next_aquired_ship_to_top_of_deck {
+                    player.discard_pile.push(target_card);
+                } else {
+                    player.personal_deck.push(target_card);
+                }
             }
             PlayerAction::Scrap { is_base, index } => {
                 let Some(&target_card) = if is_base {
@@ -486,8 +493,71 @@ impl Game {
                     break;
                 }
             }
-            Ability::DestroyTargetBase => todo!("select enemy base in play"),
-            Ability::ScrapCardInRow => todo!("select card from shop"),
+            Ability::DestroyTargetBase => {
+                let enemy = &self.players[(actor + 1) % 2];
+
+                let eligible = enemy
+                    .bases_in_play()
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, in_play)| {
+                        let has_outposts = !enemy.outposts_in_play().is_empty();
+
+                        let eligible = has_outposts
+                            && matches!(
+                                CARDS[&in_play.name].card_type,
+                                CardType::Base {
+                                    defense: _,
+                                    is_outpost: true
+                                }
+                            )
+                            || !has_outposts;
+
+                        eligible.then_some(i)
+                    })
+                    .collect::<Vec<usize>>();
+
+                if eligible.is_empty() {
+                    return; // nothing to destroy
+                }
+
+                loop {
+                    let selected_base_index = agents[actor].ask_enemy_base(self, &ctx, &eligible);
+
+                    if !eligible.contains(&selected_base_index) {
+                        continue;
+                    }
+
+                    let enemy = &mut self.players[(actor + 1) % 2];
+
+                    let selected_base = enemy.bases_in_play()[selected_base_index];
+
+                    enemy.remove_from_play(selected_base.id);
+                    enemy.discard_pile.push(selected_base.name);
+
+                    break;
+                }
+            }
+            Ability::ScrapCardInRow => {
+                let eligible = self
+                    .shop
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, c)| c.is_some().then_some(i))
+                    .collect::<Vec<usize>>();
+
+                loop {
+                    let selected_card = agents[actor].ask_shop_card(self, &ctx, &eligible);
+
+                    if !eligible.contains(&selected_card) {
+                        continue;
+                    }
+
+                    self.shop[selected_card] = self.deck.pop(); // Draw new card, None is valid value.
+
+                    break;
+                }
+            }
             Ability::OpponentDiscards => {
                 let opponent_index = (actor + 1) % 2;
                 let opponent = &self.players[opponent_index];
@@ -535,7 +605,9 @@ impl Game {
                 }
             }
             Ability::CopyPlayedShip => todo!("chose played ship"),
-            Ability::NextAcquiredShipToTopOfDeck => todo!("no action"),
+            Ability::NextAcquiredShipToTopOfDeck => {
+                self.next_aquired_ship_to_top_of_deck = true;
+            }
         }
     }
 
