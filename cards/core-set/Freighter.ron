@@ -3,7 +3,7 @@
     faction: TradeFederation,
     card_type: Ship,
     cost: 4,
-    effects: [
+    abilities: [
         Resource(Trade, 4),
         Ally(TradeFederation, May(NextAcquiredShipToTopOfDeck)),
     ],

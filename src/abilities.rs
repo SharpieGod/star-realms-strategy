@@ -103,20 +103,20 @@ impl Display for Event {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub enum Effect {
+pub enum Ability {
     // Logical Statements and conditions
-    If(Condition, Box<Effect>),
-    Or(Box<Effect>, Box<Effect>),
-    Sequence(Vec<Effect>),
+    If(Condition, Box<Ability>),
+    Or(Box<Ability>, Box<Ability>),
+    Sequence(Vec<Ability>),
     /// "Scrap this: ...". Available at will while the card sits in play.
-    ScrapAbility(Box<Effect>),
+    ScrapAbility(Box<Ability>),
     /// "Whenever <event>, ...". Fires reactively while the card is in play.
-    Trigger(Event, Box<Effect>),
+    Trigger(Event, Box<Ability>),
     /// Ally ability: usable at will during your main phase, once you have another
     /// card of this faction in play. Usable once per play of this card.
-    Ally(Faction, Box<Effect>),
+    Ally(Faction, Box<Ability>),
     Draw(Amount),
-    May(Box<Effect>),
+    May(Box<Ability>),
 
     // Actual Actions
     AquireShipForFree {
@@ -136,29 +136,29 @@ pub enum Effect {
     NextAcquiredShipToTopOfDeck,
 }
 
-impl Display for Effect {
+impl Display for Ability {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Effect::If(condition, effect) => write!(f, "{{{condition}}}: {{{effect}}}"),
-            Effect::Or(effect, effect1) => write!(f, "{{{effect}}} or {{{effect1}}}"),
-            Effect::Sequence(effects) => match effects.as_slice() {
-                [Effect::May(effect), Effect::May(effect1)] => {
-                    write!(f, "{{{effect}}} and/or {{{effect1}}}")
+            Ability::If(condition, ability) => write!(f, "{{{condition}}}: {{{ability}}}"),
+            Ability::Or(ability, ability1) => write!(f, "{{{ability}}} or {{{ability1}}}"),
+            Ability::Sequence(abilities) => match abilities.as_slice() {
+                [Ability::May(ability), Ability::May(ability1)] => {
+                    write!(f, "{{{ability}}} and/or {{{ability1}}}")
                 }
                 _ => write!(
                     f,
                     "{}",
-                    effects
+                    abilities
                         .iter()
                         .map(|e| format!("{{{e}}}"))
                         .collect::<Vec<String>>()
                         .join(" -> ")
                 ),
             },
-            Effect::ScrapAbility(effect) => write!(f, "Scrap: {{{effect}}}"),
-            Effect::Trigger(event, effect) => write!(f, "whenever {event}: {{{effect}}}"),
-            Effect::Ally(faction, effect) => write!(f, "{{{faction} ally}}: {{{effect}}}"),
-            Effect::Draw(amount) => write!(
+            Ability::ScrapAbility(ability) => write!(f, "Scrap: {{{ability}}}"),
+            Ability::Trigger(event, ability) => write!(f, "whenever {event}: {{{ability}}}"),
+            Ability::Ally(faction, ability) => write!(f, "{{{faction} ally}}: {{{ability}}}"),
+            Ability::Draw(amount) => write!(
                 f,
                 "Draw {}",
                 match amount {
@@ -166,8 +166,8 @@ impl Display for Effect {
                     Amount::ShipsPlayed(_) => amount.to_string(),
                 }
             ),
-            Effect::May(effect) => write!(f, "may {{{effect}}}"),
-            Effect::AquireShipForFree {
+            Ability::May(ability) => write!(f, "may {{{ability}}}"),
+            Ability::AquireShipForFree {
                 to_top_of_deck,
                 max_cost,
             } => write!(
@@ -184,16 +184,16 @@ impl Display for Effect {
                     "".to_string()
                 }
             ),
-            Effect::Resource(resource_type, count) => write!(f, "Gain {count} {resource_type}"),
-            Effect::Scrap(pile, count) => {
+            Ability::Resource(resource_type, count) => write!(f, "Gain {count} {resource_type}"),
+            Ability::Scrap(pile, count) => {
                 write!(f, "scrap {} in {pile}", n_cards(*count))
             }
-            Effect::Discard(count) => write!(f, "Discard {}", n_cards(*count)),
-            Effect::DestroyTargetBase => write!(f, "destroy target base"),
-            Effect::ScrapCardInRow => write!(f, "scrap card in trade row"),
-            Effect::OpponentDiscards => write!(f, "opponent discards a card"),
-            Effect::CopyPlayedShip => write!(f, "copy played ship"),
-            Effect::NextAcquiredShipToTopOfDeck => write!(f, "next aquired ship on top of deck"),
+            Ability::Discard(count) => write!(f, "Discard {}", n_cards(*count)),
+            Ability::DestroyTargetBase => write!(f, "destroy target base"),
+            Ability::ScrapCardInRow => write!(f, "scrap card in trade row"),
+            Ability::OpponentDiscards => write!(f, "opponent discards a card"),
+            Ability::CopyPlayedShip => write!(f, "copy played ship"),
+            Ability::NextAcquiredShipToTopOfDeck => write!(f, "next aquired ship on top of deck"),
         }
     }
 }

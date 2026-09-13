@@ -3,5 +3,5 @@
     faction: MachineCult,
     card_type: Ship,
     cost: 4,
-    effects: [CopyPlayedShip],
+    abilities: [CopyPlayedShip],
 )

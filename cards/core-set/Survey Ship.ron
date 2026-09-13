@@ -3,7 +3,7 @@
     faction: StarEmpire,
     card_type: Ship,
     cost: 3,
-    effects: [
+    abilities: [
         Resource(Trade, 1),
         Draw(Number(1)),
         ScrapAbility(OpponentDiscards),

@@ -3,7 +3,7 @@
     faction: MachineCult,
     card_type: Base(defense: 6, is_outpost: true),
     cost: 7,
-    effects: [
+    abilities: [
         Draw(Number(1)),
         Scrap("HAND", 1),
     ],

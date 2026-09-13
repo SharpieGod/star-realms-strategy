@@ -3,7 +3,7 @@
     faction: Blob,
     card_type: Ship,
     cost: 6,
-    effects: [
+    abilities: [
         Resource(Combat, 8),
         Ally(Blob, Draw(Number(1))),
         ScrapAbility(Resource(Combat, 4)),

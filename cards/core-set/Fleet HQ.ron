@@ -3,5 +3,5 @@
     faction: StarEmpire,
     card_type: Base(defense: 8, is_outpost: false),
     cost: 8,
-    effects: [Trigger(PlayShip(Unaligned), Resource(Combat, 1))],
+    abilities: [Trigger(PlayShip(Unaligned), Resource(Combat, 1))],
 )

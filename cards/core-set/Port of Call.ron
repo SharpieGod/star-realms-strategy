@@ -3,7 +3,7 @@
     faction: TradeFederation,
     card_type: Base(defense: 6, is_outpost: true),
     cost: 6,
-    effects: [
+    abilities: [
         Resource(Trade, 3),
         ScrapAbility(Sequence([
             Draw(Number(1)),

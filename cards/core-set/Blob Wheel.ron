@@ -3,7 +3,7 @@
     faction: Blob,
     card_type: Base(defense: 5, is_outpost: false),
     cost: 3,
-    effects: [
+    abilities: [
         Resource(Combat, 1),
         ScrapAbility(Resource(Trade, 3)),
     ],

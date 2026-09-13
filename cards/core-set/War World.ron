@@ -3,7 +3,7 @@
     faction: StarEmpire,
     card_type: Base(defense: 4, is_outpost: true),
     cost: 5,
-    effects: [
+    abilities: [
         Resource(Combat, 3),
         Ally(StarEmpire, Resource(Combat, 4)),
     ],

@@ -2,12 +2,12 @@ use std::io::stdin;
 
 use crate::actions::AskContext;
 
+use crate::abilities::{Ability, PileFlag};
 use crate::actions::CombatTarget::{Enemy, EnemyBase};
 use crate::actions::PlayerAction::{self, BuyCard, EndTurn, PlayCard, SpendCombat};
 use crate::agent::Agent;
 use crate::cards::CARDS;
 use crate::cards::CardNamed::{self, Scout};
-use crate::effects::{Effect, PileFlag};
 use crate::game::Game;
 use crate::util::clear_console;
 
@@ -264,11 +264,11 @@ impl Agent for UserCLI {
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
         let out;
-        let ctx_message = format!("{}: {}", ctx.source.name, ctx.source_effect);
+        let ctx_message = format!("{}: {}", ctx.source.name, ctx.source_ability);
 
         let (prompt, is_true, is_false): (String, fn(&str) -> bool, fn(&str) -> bool) =
-            match ctx.source_effect {
-                Effect::Or(_, _) => (
+            match ctx.source_ability {
+                Ability::Or(_, _) => (
                     format!("{ctx_message}\nfirst or second?",),
                     |x| matches!(x, "f" | "first" | "l" | "left" | "0"),
                     |x| matches!(x, "s" | "second" | "1" | "r" | "right"),
@@ -303,11 +303,11 @@ impl Agent for UserCLI {
             }
         }
 
-        match ctx.source_effect {
-            Effect::Or(effect, effect1) => {
+        match ctx.source_ability {
+            Ability::Or(ability, ability1) => {
                 self.recent_messages.push(format!(
                     "{ctx_message}\nselected {{{}}}",
-                    if out { effect } else { effect1 }
+                    if out { ability } else { ability1 }
                 ));
             }
             _ => {
@@ -330,7 +330,7 @@ impl Agent for UserCLI {
             println!(
                 "{}: {}\nwhich card from shop\neligible: {}",
                 ctx.source.name,
-                ctx.source_effect,
+                ctx.source_ability,
                 eligible
                     .iter()
                     .map(|i| i.to_string())
@@ -416,7 +416,7 @@ impl Agent for UserCLI {
                 );
             }
 
-            println!("{}: {}", ctx.source.name, ctx.source_effect);
+            println!("{}: {}", ctx.source.name, ctx.source_ability);
             println!("choose card {}/{count} from {pile}\n", out.len() + 1);
 
             let mut s = String::new();
@@ -529,7 +529,7 @@ impl Agent for UserCLI {
         self.recent_messages.push(format!(
             "{}: {}\nselected {}",
             ctx.source.name,
-            ctx.source_effect,
+            ctx.source_ability,
             selected_cards
                 .iter()
                 .map(|c| c.map(|c| c.to_string()).unwrap_or_default())

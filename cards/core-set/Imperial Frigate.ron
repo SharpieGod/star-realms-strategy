@@ -3,7 +3,7 @@
     faction: StarEmpire,
     card_type: Ship,
     cost: 3,
-    effects: [
+    abilities: [
         Resource(Combat, 4),
         OpponentDiscards,
         Ally(StarEmpire, Resource(Combat, 2)),

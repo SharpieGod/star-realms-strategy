@@ -3,7 +3,7 @@
     faction: MachineCult,
     card_type: Base(defense: 6, is_outpost: true),
     cost: 8,
-    effects: [May(Or(Sequence([
+    abilities: [May(Or(Sequence([
         Scrap("HAND | DISCARD_PILE", 1),
         Draw(Number(1)),
     ]), Sequence([

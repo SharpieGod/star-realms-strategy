@@ -2,14 +2,14 @@ use std::{collections::HashSet, fmt::Display};
 
 use rand::{RngExt, rngs::ThreadRng, seq::SliceRandom};
 
+use crate::abilities::Ability;
+use crate::abilities::Resource::{Authority, Combat, Trade};
+use crate::abilities::{Condition, PileFlag};
 use crate::actions::CombatTarget::{Enemy, EnemyBase};
 use crate::actions::PlayerAction::{EndTurn, PlayCard};
 use crate::actions::{AskContext, PlayerAction};
 use crate::agent::Agent;
-use crate::cards::{CARDS, CardNamed, STARTER_GAME_DECK, effect};
-use crate::effects::Effect;
-use crate::effects::Resource::{Authority, Combat, Trade};
-use crate::effects::{Condition, PileFlag};
+use crate::cards::{CARDS, CardNamed, STARTER_GAME_DECK, ability};
 use crate::player::{InPlayCard, Player};
 
 pub struct Game {
@@ -92,11 +92,11 @@ impl Game {
             let actor = self.turn_number as usize % 2;
 
             for base in &self.players[actor].bases_in_play() {
-                self.resolve_effect(
+                self.resolve_ability(
                     agents,
                     actor,
                     *base,
-                    &Effect::Sequence(effect(&base.name).clone()),
+                    &Ability::Sequence(ability(&base.name).clone()),
                 );
             }
 
@@ -184,17 +184,17 @@ impl Game {
                     return Err(IllegalAction);
                 };
 
-                let Some(Effect::ScrapAbility(inner)) = CARDS[&target_card.name]
-                    .effects
+                let Some(Ability::ScrapAbility(inner)) = CARDS[&target_card.name]
+                    .abilities
                     .iter()
-                    .find(|e| matches!(e, Effect::ScrapAbility(_)))
+                    .find(|e| matches!(e, Ability::ScrapAbility(_)))
                 else {
                     return Err(IllegalAction);
                 };
 
                 player.remove_from_play(target_card.id);
 
-                self.resolve_effect(agents, actor, target_card, inner);
+                self.resolve_ability(agents, actor, target_card, inner);
             }
             PlayerAction::SpendCombat(combat_target) => {
                 let enemy_has_outposts = !enemy.outposts_in_play().is_empty();
@@ -214,7 +214,7 @@ impl Game {
 
                         let target_base_card = &CARDS[&target_base.name];
 
-                        if enemy_has_outposts && target_base_card.is_outpost() {
+                        if enemy_has_outposts && !target_base_card.is_outpost() {
                             // Cannot attack non-outpost bases if has outpost
                             return Err(IllegalAction);
                         }
@@ -255,8 +255,8 @@ impl Game {
         let played_card = player.hand.remove(hand_index);
         let instance = player.play_card(played_card);
 
-        for e in effect(&played_card) {
-            self.resolve_effect(
+        for e in ability(&played_card) {
+            self.resolve_ability(
                 agents,
                 actor,
                 InPlayCard {
@@ -268,40 +268,40 @@ impl Game {
         }
 
         let player = &mut self.players[actor];
-        let mut effect_queue = Vec::new();
+        let mut ability_queue = Vec::new();
         let faction_count = player.faction_count();
 
         player
-            .pending_ally_effects
-            .retain(|(in_play_card, faction, effect)| {
+            .pending_ally_abilities
+            .retain(|(in_play_card, faction, ability)| {
                 if faction_count[faction] >= 2 {
-                    effect_queue.push((*in_play_card, effect.clone()));
+                    ability_queue.push((*in_play_card, ability.clone()));
                     return false; // dont keep
                 }
                 // keep
                 true
             });
 
-        for (in_play_card, effect) in effect_queue {
-            self.resolve_effect(agents, actor, in_play_card, &effect);
+        for (in_play_card, ability) in ability_queue {
+            self.resolve_ability(agents, actor, in_play_card, &ability);
         }
     }
 
-    fn resolve_effect(
+    fn resolve_ability(
         &mut self,
         agents: &mut [Box<dyn Agent>; 2],
         actor: usize,
         source: InPlayCard,
-        effect: &Effect,
+        ability: &Ability,
     ) {
         let ctx = AskContext {
             actor,
             source,
-            source_effect: effect,
+            source_ability: ability,
         };
 
-        match effect {
-            Effect::Resource(resource, count) => {
+        match ability {
+            Ability::Resource(resource, count) => {
                 let player = &mut self.players[actor];
                 match resource {
                     Authority => player.authority += count,
@@ -309,20 +309,20 @@ impl Game {
                     Trade => player.trade += count,
                 }
             }
-            Effect::Sequence(effects) => {
-                for e in effects {
-                    self.resolve_effect(agents, actor, source, e);
+            Ability::Sequence(abilities) => {
+                for e in abilities {
+                    self.resolve_ability(agents, actor, source, e);
                 }
             }
-            Effect::If(condition, inner) => {
+            Ability::If(condition, inner) => {
                 if self.evaluate_condition(actor, condition) {
-                    self.resolve_effect(agents, actor, source, inner);
+                    self.resolve_ability(agents, actor, source, inner);
                 }
             }
             // Ally abilities become available for at-will use once queued here;
-            // they aren't resolved immediately like a normal effect.
-            Effect::Ally(faction, inner) => {
-                self.players[actor].pending_ally_effects.push((
+            // they aren't resolved immediately like a normal ability.
+            Ability::Ally(faction, inner) => {
+                self.players[actor].pending_ally_abilities.push((
                     source,
                     *faction,
                     (**inner).clone(),
@@ -331,13 +331,13 @@ impl Game {
             // Held abilities: never walked during normal play, only looked up
             // on demand (ScrapInPlay action, or the PlayShip trigger scan) —
             // so they're intentional no-ops here.
-            Effect::ScrapAbility(_) | Effect::Trigger(_, _) => {}
-            Effect::May(inner) => {
+            Ability::ScrapAbility(_) | Ability::Trigger(_, _) => {}
+            Ability::May(inner) => {
                 if agents[actor].ask_yes_no(self, &ctx) {
-                    self.resolve_effect(agents, actor, source, inner);
+                    self.resolve_ability(agents, actor, source, inner);
                 }
             }
-            Effect::Scrap(pile, count) => {
+            Ability::Scrap(pile, count) => {
                 let player = &mut self.players[actor];
                 let mut max_count = 0;
 
@@ -415,18 +415,18 @@ impl Game {
                     break;
                 }
             }
-            Effect::Or(effect, effect1) => {
+            Ability::Or(ability, ability1) => {
                 if agents[actor].ask_yes_no(self, &ctx) {
-                    self.resolve_effect(agents, actor, source, effect);
+                    self.resolve_ability(agents, actor, source, ability);
                 } else {
-                    self.resolve_effect(agents, actor, source, effect1);
+                    self.resolve_ability(agents, actor, source, ability1);
                 }
             }
-            Effect::Draw(amount) => {
+            Ability::Draw(amount) => {
                 let count = amount.compute(self);
                 self.players[actor].draw_cards(count, &mut self.rng);
             }
-            Effect::AquireShipForFree {
+            Ability::AquireShipForFree {
                 to_top_of_deck,
                 max_cost,
             } => {
@@ -444,12 +444,16 @@ impl Game {
                     let target_ship = agents[actor].ask_shop_card(self, &ctx, &eligible);
                 }
             }
-            Effect::Discard(count) => {
-                todo!("select card from my hand")
+            Ability::Discard(count) => {
+                let player = &mut self.players[actor];
+
+                loop {
+                    agents[actor].ask_cards_from_pile(self, &ctx, PileFlag::HAND, *count);
+                }
             }
-            Effect::DestroyTargetBase => todo!("select enemy base in play"),
-            Effect::ScrapCardInRow => todo!("select card from shop"),
-            Effect::OpponentDiscards => {
+            Ability::DestroyTargetBase => todo!("select enemy base in play"),
+            Ability::ScrapCardInRow => todo!("select card from shop"),
+            Ability::OpponentDiscards => {
                 let opponent_index = (actor + 1) % 2;
                 let opponent = &self.players[opponent_index];
 
@@ -460,7 +464,7 @@ impl Game {
                 let opponent_ctx = AskContext {
                     actor: opponent_index,
                     source: ctx.source,
-                    source_effect: ctx.source_effect,
+                    source_ability: ctx.source_ability,
                 };
 
                 loop {
@@ -495,8 +499,8 @@ impl Game {
                     break;
                 }
             }
-            Effect::CopyPlayedShip => todo!("chose played ship"),
-            Effect::NextAcquiredShipToTopOfDeck => todo!("no action"),
+            Ability::CopyPlayedShip => todo!("chose played ship"),
+            Ability::NextAcquiredShipToTopOfDeck => todo!("no action"),
         }
     }
 

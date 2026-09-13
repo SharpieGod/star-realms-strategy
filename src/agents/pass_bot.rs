@@ -1,7 +1,7 @@
+use crate::abilities::PileFlag;
 use crate::actions::{AskContext, PlayerAction};
 use crate::agent::Agent;
 use crate::cards::CardNamed;
-use crate::effects::PileFlag;
 use crate::game::Game;
 
 pub struct PassBot10000 {}

@@ -3,7 +3,7 @@
     faction: MachineCult,
     card_type: Ship,
     cost: 3,
-    effects: [
+    abilities: [
         Resource(Trade, 2),
         May(Scrap("HAND | DISCARD_PILE", 1)),
         Ally(MachineCult, Resource(Combat, 2)),

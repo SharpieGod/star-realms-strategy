@@ -2,8 +2,8 @@ use std::{collections::HashMap, fmt::Display};
 
 use rand::{rngs::ThreadRng, seq::SliceRandom};
 
+use crate::abilities::Ability;
 use crate::cards::{CARDS, CardNamed, CardType, STARTER_PERSONAL_DECK};
-use crate::effects::Effect;
 use crate::faction::Faction;
 
 /// Identifies one specific card instance in play, distinct from others of the
@@ -25,7 +25,7 @@ pub struct Player {
     pub authority: u32,
     pub trade: u32,
     pub combat: u32,
-    pub pending_ally_effects: Vec<(InPlayCard, Faction, Effect)>,
+    pub pending_ally_abilities: Vec<(InPlayCard, Faction, Ability)>,
     pub next_instance_id: usize,
 }
 
@@ -47,20 +47,19 @@ impl Player {
     }
 
     /// Removes one card instance from play (scrapped, discarded, destroyed),
-    /// dropping any of its still-unused pending Ally effects along with it.
+    /// dropping any of its still-unused pending Ally abilities along with it.
     pub fn remove_from_play(&mut self, id: CardInstanceId) -> Option<CardNamed> {
         let pos = self.in_play.iter().position(|c| c.id == id)?;
         let card = self.in_play.remove(pos);
-        self.pending_ally_effects.retain(|source| source.0.id != id);
+        self.pending_ally_abilities
+            .retain(|source| source.0.id != id);
         Some(card.name)
     }
 
     pub fn get_card_instace(&self, id: CardInstanceId) -> Option<CardNamed> {
         self.in_play.iter().find(|c| c.id == id).map(|c| c.name)
     }
-}
 
-impl Player {
     pub fn draw_cards(&mut self, mut n: usize, rng: &mut ThreadRng) {
         while n > 0 && !(self.personal_deck.is_empty() && self.discard_pile.is_empty()) {
             while n > 0
@@ -128,7 +127,7 @@ impl Default for Player {
             authority: 50,
             trade,
             combat,
-            pending_ally_effects: Default::default(),
+            pending_ally_abilities: Default::default(),
             next_instance_id: 0,
         }
     }

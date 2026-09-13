@@ -1,6 +1,6 @@
+use crate::abilities::PileFlag;
 use crate::actions::{AskContext, PlayerAction};
 use crate::cards::CardNamed;
-use crate::effects::PileFlag;
 use crate::game::Game;
 
 pub trait Agent {

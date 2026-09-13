@@ -3,7 +3,7 @@
     faction: TradeFederation,
     card_type: Ship,
     cost: 3,
-    effects: [
+    abilities: [
         Resource(Authority, 3),
         Resource(Trade, 2),
         If(BaseCountAtLeast(2), Draw(Number(2))),

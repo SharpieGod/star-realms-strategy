@@ -3,7 +3,7 @@ use std::{collections::HashMap, fmt::Display, fs, path::PathBuf, sync::LazyLock}
 use colorize::AnsiColor;
 use serde::{Deserialize, Serialize};
 
-use crate::effects::Effect;
+use crate::abilities::Ability;
 use crate::faction::Faction::{self, Unaligned};
 
 #[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Hash, Debug)]
@@ -149,7 +149,7 @@ pub struct Card {
     pub faction: Faction,
     pub card_type: CardType,
     pub cost: u32,
-    pub effects: Vec<Effect>,
+    pub abilities: Vec<Ability>,
     /// Mech World: counts as an ally for every faction while in play.
     #[serde(default)]
     pub is_all_faction_ally: bool,
@@ -178,10 +178,10 @@ impl Display for Card {
                     if is_outpost { " outpost" } else { "" }
                 ),
             },
-            if self.effects.is_empty() {
-                "no effects".to_string()
+            if self.abilities.is_empty() {
+                "no abilities".to_string()
             } else {
-                self.effects
+                self.abilities
                     .iter()
                     .map(|e| format!("\t{e}"))
                     .collect::<Vec<String>>()
@@ -284,8 +284,8 @@ pub static STARTER_GAME_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
     card_counts.into()
 });
 
-pub fn effect(name: &CardNamed) -> &'static Vec<Effect> {
-    &CARDS[name].effects
+pub fn ability(name: &CardNamed) -> &'static Vec<Ability> {
+    &CARDS[name].abilities
 }
 
 /// A deck manifest: card name paired with how many copies it contains.

@@ -3,7 +3,7 @@
     faction: Blob,
     card_type: Ship,
     cost: 7,
-    effects: [
+    abilities: [
         Resource(Combat, 6),
         Draw(Number(1)),
         Ally(Blob, Draw(Number(1))),

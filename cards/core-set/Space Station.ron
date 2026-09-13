@@ -3,7 +3,7 @@
     faction: StarEmpire,
     card_type: Base(defense: 4, is_outpost: true),
     cost: 4,
-    effects: [
+    abilities: [
         Resource(Combat, 2),
         Ally(StarEmpire, Resource(Combat, 2)),
         ScrapAbility(Resource(Trade, 4)),

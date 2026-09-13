@@ -3,7 +3,7 @@
     faction: TradeFederation,
     card_type: Base(defense: 5, is_outpost: true),
     cost: 5,
-    effects: [
+    abilities: [
         Or(Resource(Authority, 3), Resource(Combat, 2)),
         Ally(TradeFederation, Resource(Combat, 2)),
     ],

@@ -3,7 +3,7 @@
     faction: TradeFederation,
     card_type: Base(defense: 6, is_outpost: false),
     cost: 7,
-    effects: [
+    abilities: [
         Resource(Trade, 2),
         May(NextAcquiredShipToTopOfDeck),
         Ally(TradeFederation, Draw(Number(1))),

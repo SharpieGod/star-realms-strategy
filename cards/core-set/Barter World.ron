@@ -3,7 +3,7 @@
     faction: TradeFederation,
     card_type: Base(defense: 4, is_outpost: false),
     cost: 4,
-    effects: [
+    abilities: [
         Or(Resource(Authority, 2), Resource(Trade, 2)),
         ScrapAbility(Resource(Combat, 5)),
     ],

@@ -3,7 +3,7 @@
     faction: Blob,
     card_type: Ship,
     cost: 4,
-    effects: [
+    abilities: [
         Resource(Combat, 6),
         Ally(Blob, Sequence([May(DestroyTargetBase), May(ScrapCardInRow)])),
     ],

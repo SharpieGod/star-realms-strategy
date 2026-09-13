@@ -3,7 +3,7 @@
     faction: Unaligned,
     card_type: Ship,
     cost: 2,
-    effects: [
+    abilities: [
         Resource(Trade, 2),
         ScrapAbility(Resource(Combat, 2)),
     ],

@@ -3,7 +3,7 @@
     faction: TradeFederation,
     card_type: Ship,
     cost: 5,
-    effects: [
+    abilities: [
         Resource(Authority, 4),
         Resource(Combat, 4),
         Ally(TradeFederation, Draw(Number(1))),

@@ -3,7 +3,7 @@
     faction: Blob,
     card_type: Base(defense: 5, is_outpost: false),
     cost: 5,
-    effects: [
+    abilities: [
         Resource(Combat, 3),
         Ally(Blob, Draw(Number(1))),
     ],

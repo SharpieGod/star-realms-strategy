@@ -3,5 +3,5 @@
     faction: Unaligned,
     card_type: Ship,
     cost: 0,
-    effects: [Resource(Trade, 1)],
+    abilities: [Resource(Trade, 1)],
 )

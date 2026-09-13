@@ -1,4 +1,4 @@
-use crate::effects::Effect;
+use crate::abilities::Ability;
 use crate::player::InPlayCard;
 
 #[derive(PartialEq, Eq)]
@@ -17,9 +17,9 @@ pub enum CombatTarget {
     EnemyBase(usize),
 }
 
-/// Who's being asked, and which card instance's effect is asking.
+/// Who's being asked, and which card instance's ability is asking.
 pub struct AskContext<'a> {
     pub actor: usize,
     pub source: InPlayCard,
-    pub source_effect: &'a Effect,
+    pub source_ability: &'a Ability,
 }
