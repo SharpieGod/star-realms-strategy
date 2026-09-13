@@ -361,12 +361,7 @@ impl Agent for UserCLI {
         todo!()
     }
 
-    fn ask_played_ship(
-        &mut self,
-        game: &Game,
-        ctx: &AskContext,
-        eligible: &[CardNamed],
-    ) -> CardNamed {
+    fn ask_played_ship(&mut self, game: &Game, ctx: &AskContext) -> usize {
         todo!()
     }
 
