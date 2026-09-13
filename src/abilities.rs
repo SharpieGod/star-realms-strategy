@@ -206,7 +206,7 @@ bitflags! {
     // `transparent` forwards to the inner flags type, whose Serialize/Deserialize
     // (from bitflags' `serde` feature, Cargo.toml) read/write names like
     // "HAND | DISCARD_PILE" in .ron instead of the raw bits.
-    #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone, Copy)]
+    #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone, Copy, Hash)]
     #[serde(transparent)]
     pub struct PileFlag: u8 {
         const HAND = 0b01;

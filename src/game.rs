@@ -445,10 +445,45 @@ impl Game {
                 }
             }
             Ability::Discard(count) => {
-                let player = &mut self.players[actor];
-
                 loop {
-                    agents[actor].ask_cards_from_pile(self, &ctx, PileFlag::HAND, *count);
+                    let cards =
+                        agents[actor].ask_cards_from_pile(self, &ctx, PileFlag::HAND, *count);
+
+                    let player = &mut self.players[actor];
+
+                    if cards
+                        .iter()
+                        .any(|&(pile, index)| pile != PileFlag::HAND || index >= player.hand.len())
+                    {
+                        continue; // not valid pile or invalid index
+                    }
+
+                    if cards.len() != cards.iter().copied().collect::<HashSet<_>>().len() {
+                        continue; // duplicate items
+                    }
+
+                    let mut discarded = Vec::new();
+
+                    player.hand = player
+                        .hand
+                        .iter()
+                        .copied()
+                        .enumerate()
+                        .filter_map(|(i, c)| {
+                            let contains = cards.contains(&(PileFlag::HAND, i));
+
+                            if contains {
+                                discarded.push(c);
+                                None
+                            } else {
+                                Some(c)
+                            }
+                        })
+                        .collect();
+
+                    player.discard_pile.append(&mut discarded);
+
+                    break;
                 }
             }
             Ability::DestroyTargetBase => todo!("select enemy base in play"),
