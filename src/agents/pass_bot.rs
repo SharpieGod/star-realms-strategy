@@ -48,7 +48,7 @@ impl Agent for PassBot10000 {
         eligible[0]
     }
 
-    fn ask_played_ship(&mut self, game: &Game, ctx: &AskContext) -> usize {
-        0
+    fn ask_played_ship(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
+        eligible[0]
     }
 }

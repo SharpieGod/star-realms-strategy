@@ -397,10 +397,40 @@ impl Agent for UserCLI {
         }
     }
 
-    fn ask_played_ship(&mut self, game: &Game, ctx: &AskContext) -> usize {
+    fn ask_played_ship(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
         clear_console();
+        loop {
+            self.print_game_state(game, ctx.actor);
+            self.print_recent_messages();
 
-        0
+            println!(
+                "{}: {}\nwhich player card\neligible: {}",
+                ctx.source.1,
+                ctx.source_ability,
+                eligible
+                    .iter()
+                    .map(|i| i.to_string())
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            );
+
+            let mut s = String::new();
+            stdin().read_line(&mut s).unwrap();
+
+            clear_console();
+
+            let Ok(index) = s.trim().parse::<usize>() else {
+                println!("not valid index");
+                continue;
+            };
+
+            if !eligible.contains(&index) {
+                println!("not valid index");
+                continue;
+            }
+
+            return index;
+        }
     }
 
     fn ask_cards_from_pile(

@@ -15,5 +15,5 @@ pub trait Agent {
     ) -> Vec<(PileFlag, usize)>;
     fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
     fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
-    fn ask_played_ship(&mut self, game: &Game, ctx: &AskContext) -> usize;
+    fn ask_played_ship(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize;
 }

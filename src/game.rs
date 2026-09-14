@@ -632,8 +632,12 @@ impl Game {
                     .filter_map(|(i, c)| (c.id != source).then_some(i))
                     .collect::<Vec<usize>>();
 
+                if eligible.is_empty() {
+                    return; // nonthing to do lol
+                }
+
                 loop {
-                    let selected_ship_index = agents[actor].ask_played_ship(self, &ctx);
+                    let selected_ship_index = agents[actor].ask_played_ship(self, &ctx, &eligible);
 
                     if !eligible.contains(&selected_ship_index) {
                         continue;
