@@ -6,7 +6,7 @@ use crate::abilities::Ability;
 use crate::abilities::Resource::{Authority, Combat, Trade};
 use crate::abilities::{Condition, PileFlag};
 use crate::actions::CombatTarget::{Enemy, EnemyBase};
-use crate::actions::PlayerAction::{EndTurn, PlayCard};
+use crate::actions::PlayerAction::{BuyCard, EndTurn, PlayCard, SpendCombat};
 use crate::actions::{AskContext, PlayerAction};
 use crate::agent::Agent;
 use crate::cards::{CARDS, CardNamed, CardType, STARTER_GAME_DECK, ability};
@@ -85,6 +85,51 @@ impl Game {
         }
     }
 
+    pub fn legal_moves(&self, actor: usize) -> Vec<PlayerAction> {
+        let mut out = Vec::new();
+        let player = &self.players[actor];
+        let enemy = &self.players[(actor + 1) % 2];
+
+        if !player.hand.is_empty() {
+            out.push(PlayerAction::PlayAll);
+
+            out.extend(
+                player
+                    .hand
+                    .iter()
+                    .copied()
+                    .enumerate()
+                    .map(|(i, _)| PlayCard(i))
+                    .collect::<Vec<PlayerAction>>(),
+            );
+        }
+
+        out.extend(self.shop.iter().enumerate().filter_map(|(i, c)| {
+            c.is_some_and(|c| CARDS[&c].cost <= player.trade)
+                .then_some(BuyCard(i))
+        }));
+
+        let enemy_has_outposts = !enemy.outposts_in_play().is_empty();
+
+        if !enemy_has_outposts {
+            out.push(SpendCombat(Enemy));
+        }
+
+        out.extend(
+            enemy
+                .bases_in_play()
+                .iter()
+                .enumerate()
+                .filter_map(|(i, b)| {
+                    (enemy_has_outposts && CARDS[&b.name].is_outpost() || !enemy_has_outposts)
+                        .then_some(SpendCombat(EnemyBase(i)))
+                }),
+        );
+
+        out.push(EndTurn);
+
+        out
+    }
     pub fn game_ended(&self) -> bool {
         self.players.iter().any(|p| p.authority <= 0)
     }

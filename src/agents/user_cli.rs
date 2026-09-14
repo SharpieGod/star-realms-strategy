@@ -15,9 +15,16 @@ use crate::util::clear_console;
 
 pub struct UserCLI {
     pub recent_messages: Vec<String>,
+    pub name: String,
 }
 
 impl UserCLI {
+    pub fn new(name: String) -> Self {
+        Self {
+            name,
+            recent_messages: Vec::new(),
+        }
+    }
     fn print_recent_messages(&mut self) {
         if !self.recent_messages.is_empty() {
             println!(
