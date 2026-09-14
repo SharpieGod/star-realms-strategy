@@ -9,7 +9,7 @@ use crate::faction::Faction;
 /// Identifies one specific card instance in play, distinct from others of the
 /// same `CardNamed` (e.g. two Vipers), independent of its position in `in_play`.
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
-pub struct CardInstanceId(pub usize);
+pub struct CardInstanceId(pub usize, pub CardNamed);
 
 #[derive(Clone, Copy)]
 pub struct InPlayCard {
@@ -26,14 +26,14 @@ pub struct Player {
     pub authority: u32,
     pub trade: u32,
     pub combat: u32,
-    pub pending_ally_abilities: Vec<(InPlayCard, Faction, Ability)>,
+    pub pending_ally_abilities: Vec<(CardInstanceId, Faction, Ability)>,
     pub next_instance_id: usize,
     pub faction_count: [usize; 5],
 }
 
 impl Player {
     pub fn play_card(&mut self, name: CardNamed) -> CardInstanceId {
-        let id = CardInstanceId(self.next_instance_id);
+        let id = CardInstanceId(self.next_instance_id, name);
         self.next_instance_id += 1;
         self.in_play.push(InPlayCard {
             id,
@@ -50,8 +50,7 @@ impl Player {
     pub fn remove_from_play(&mut self, id: CardInstanceId) -> Option<CardNamed> {
         let pos = self.in_play.iter().position(|c| c.id == id)?;
         let card = self.in_play.remove(pos);
-        self.pending_ally_abilities
-            .retain(|source| source.0.id != id);
+        self.pending_ally_abilities.retain(|source| source.0 != id);
 
         self.faction_count[card.name.faction() as usize] -= 1;
 
@@ -62,8 +61,8 @@ impl Player {
         Some(card.name)
     }
 
-    pub fn get_card_instace(&self, id: CardInstanceId) -> Option<CardNamed> {
-        self.in_play.iter().find(|c| c.id == id).map(|c| c.name)
+    pub fn get_card_instance(&self, id: CardInstanceId) -> Option<&InPlayCard> {
+        self.in_play.iter().find(|c| c.id == id)
     }
 
     pub fn draw_cards(&mut self, mut n: usize, rng: &mut ThreadRng) {
@@ -82,7 +81,7 @@ impl Player {
         }
     }
 
-    pub fn outposts_in_play(&self) -> Vec<InPlayCard> {
+    pub fn outposts_in_play(&self) -> Vec<&InPlayCard> {
         self.bases_in_play()
             .into_iter()
             .filter(|b| {
@@ -97,18 +96,16 @@ impl Player {
             .collect()
     }
 
-    pub fn bases_in_play(&self) -> Vec<InPlayCard> {
+    pub fn bases_in_play(&self) -> Vec<&InPlayCard> {
         self.in_play
             .iter()
-            .copied()
             .filter(|c| CARDS[&c.name].is_base())
             .collect()
     }
 
-    pub fn ships_in_play(&self) -> Vec<InPlayCard> {
+    pub fn ships_in_play(&self) -> Vec<&InPlayCard> {
         self.in_play
             .iter()
-            .copied()
             .filter(|c| !CARDS[&c.name].is_base())
             .collect()
     }

@@ -29,6 +29,8 @@ impl UserCLI {
     fn print_game_state(&self, game: &Game, actor: usize) {
         let player = &game.players[actor];
         let enemy = &game.players[(actor + 1) % 2];
+
+        println!("You are player {}\n", actor + 1);
         println!("enemy authority: {}", enemy.authority);
         println!(
             "enemy bases: {}",
@@ -264,7 +266,7 @@ impl Agent for UserCLI {
 
     fn ask_yes_no(&mut self, game: &Game, ctx: &AskContext) -> bool {
         let out;
-        let ctx_message = format!("{}: {}", ctx.source.name, ctx.source_ability);
+        let ctx_message = format!("{}: {}", ctx.source.1, ctx.source_ability);
 
         let (prompt, is_true, is_false): (String, fn(&str) -> bool, fn(&str) -> bool) =
             match ctx.source_ability {
@@ -323,13 +325,14 @@ impl Agent for UserCLI {
 
     fn ask_shop_card(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
         clear_console();
+
         loop {
             self.print_game_state(game, game.players.len() % 2);
             self.print_recent_messages();
 
             println!(
                 "{}: {}\nwhich card from shop\neligible: {}",
-                ctx.source.name,
+                ctx.source.1,
                 ctx.source_ability,
                 eligible
                     .iter()
@@ -359,13 +362,14 @@ impl Agent for UserCLI {
 
     fn ask_enemy_base(&mut self, game: &Game, ctx: &AskContext, eligible: &[usize]) -> usize {
         clear_console();
+
         loop {
-            self.print_game_state(game, game.players.len() % 2);
+            self.print_game_state(game, ctx.actor);
             self.print_recent_messages();
 
             println!(
                 "{}: {}\nwhich enemy base\neligible: {}",
-                ctx.source.name,
+                ctx.source.1,
                 ctx.source_ability,
                 eligible
                     .iter()
@@ -450,7 +454,7 @@ impl Agent for UserCLI {
                 );
             }
 
-            println!("{}: {}", ctx.source.name, ctx.source_ability);
+            println!("{}: {}", ctx.source.1, ctx.source_ability);
             println!("choose card {}/{count} from {pile}\n", out.len() + 1);
 
             let mut s = String::new();
@@ -562,7 +566,7 @@ impl Agent for UserCLI {
 
         self.recent_messages.push(format!(
             "{}: {}\nselected {}",
-            ctx.source.name,
+            ctx.source.1,
             ctx.source_ability,
             selected_cards
                 .iter()

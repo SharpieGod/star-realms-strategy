@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug star-realms",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=star-realms",
+                    "--no-default-features"
+                ]
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "terminal": "integrated"
+        }
+    ]
+}
