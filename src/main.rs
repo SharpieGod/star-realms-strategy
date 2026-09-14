@@ -8,7 +8,7 @@ mod game;
 mod player;
 mod util;
 
-use agents::{PassBot10000, UserCLI};
+use agents::{BasicBot, PassBot10000, UserCLI};
 use game::Game;
 
 fn main() {

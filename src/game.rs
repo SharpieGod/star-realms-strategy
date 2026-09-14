@@ -247,6 +247,10 @@ impl Game {
                         if let Some(name) = enemy.remove_from_play(target_base.id) {
                             enemy.discard_pile.push(name);
                         }
+
+                        player.combat = player
+                            .combat
+                            .saturating_sub(target_base_card.get_base_defense().unwrap())
                     }
                 }
             }

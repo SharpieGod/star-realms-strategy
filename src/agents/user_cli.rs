@@ -1,5 +1,7 @@
 use std::io::stdin;
 
+use colorize::AnsiColor;
+
 use crate::actions::AskContext;
 
 use crate::abilities::{Ability, PileFlag};
@@ -30,8 +32,12 @@ impl UserCLI {
         let player = &game.players[actor];
         let enemy = &game.players[(actor + 1) % 2];
 
+        let authority = "authority".green();
+        let trade = "trade".b_yellow();
+        let combat = "combat".red();
+
         println!("You are player {}\n", actor + 1);
-        println!("enemy authority: {}", enemy.authority);
+        println!("enemy {authority}: {}", enemy.authority);
         println!(
             "enemy bases: {}",
             enemy
@@ -61,7 +67,7 @@ impl UserCLI {
         println!();
 
         println!(
-            "authority: {}, combat: {}, trade: {}",
+            "{authority}: {}, {combat}: {}, {trade}: {}",
             player.authority, player.combat, player.trade
         );
 
@@ -404,7 +410,7 @@ impl Agent for UserCLI {
             self.print_recent_messages();
 
             println!(
-                "{}: {}\nwhich player card\neligible: {}",
+                "{}: {}\nwhich played ship\neligible: {}",
                 ctx.source.1,
                 ctx.source_ability,
                 eligible

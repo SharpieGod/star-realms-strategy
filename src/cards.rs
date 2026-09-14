@@ -270,9 +270,9 @@ pub static STARTER_PERSONAL_DECK: LazyLock<Vec<CardNamed>> = LazyLock::new(|| {
     let counts = vec![(CardNamed::Viper, 2), (CardNamed::Scout, 8)];
     #[cfg(not(feature = "reset_resources"))]
     let counts = vec![
-        (CardNamed::Battlecruiser, 1),
-        (CardNamed::BlobWheel, 1),
+        (CardNamed::StealthNeedle, 3),
         (CardNamed::Scout, 3),
+        (CardNamed::BlobWheel, 1),
     ];
 
     Vec::<CardNamed>::from(CardCounts(counts))
