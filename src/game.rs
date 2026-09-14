@@ -2,7 +2,7 @@ use std::{collections::HashSet, fmt::Display};
 
 use rand::{RngExt, rngs::ThreadRng, seq::SliceRandom};
 
-use crate::abilities::Ability;
+use crate::abilities::Ability::{self, Scrap};
 use crate::abilities::Resource::{Authority, Combat, Trade};
 use crate::abilities::{Condition, PileFlag};
 use crate::actions::CombatTarget::{Enemy, EnemyBase};
@@ -17,7 +17,7 @@ pub struct Game {
     pub turn_number: u32,
     pub rng: ThreadRng,
     pub deck: Vec<CardNamed>,
-    pub shop: [Option<CardNamed>; 5],
+    pub shop: [Option<CardNamed>; 6],
     pub next_aquired_ship_to_top_of_deck: bool,
 }
 
@@ -65,6 +65,7 @@ impl Game {
             deck_iter.next(),
             deck_iter.next(),
             deck_iter.next(),
+            Some(CardNamed::Explorer),
         ];
 
         if turn_number == 0 {
@@ -127,6 +128,32 @@ impl Game {
         );
 
         out.push(EndTurn);
+
+        out.extend(
+            enemy
+                .ships_in_play()
+                .iter()
+                .enumerate()
+                .filter_map(|(i, s)| {
+                    s.name.has_scrap_ability().then_some(PlayerAction::Scrap {
+                        is_base: false,
+                        index: i,
+                    })
+                }),
+        );
+
+        out.extend(
+            enemy
+                .bases_in_play()
+                .iter()
+                .enumerate()
+                .filter_map(|(i, s)| {
+                    s.name.has_scrap_ability().then_some(PlayerAction::Scrap {
+                        is_base: true,
+                        index: i,
+                    })
+                }),
+        );
 
         out
     }
@@ -226,7 +253,10 @@ impl Game {
                 }
 
                 player.trade -= target_cost;
-                self.shop[card_index] = self.deck.pop(); // Draw new card, if no card its None anyways
+                if target_card != CardNamed::Explorer {
+                    // Don't replace explorer when buying it
+                    self.shop[card_index] = self.deck.pop(); // Draw new card, if no card its None anyways
+                }
 
                 if !self.next_aquired_ship_to_top_of_deck {
                     player.discard_pile.push(target_card);

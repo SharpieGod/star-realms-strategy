@@ -135,6 +135,13 @@ impl CardNamed {
     pub fn with_cost(&self) -> String {
         format!("{self} ({})", CARDS[self].cost.to_string().b_yellow())
     }
+
+    pub fn has_scrap_ability(&self) -> bool {
+        CARDS[self]
+            .abilities
+            .iter()
+            .any(|a| matches!(a, Ability::ScrapAbility(_)))
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

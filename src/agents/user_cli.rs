@@ -43,7 +43,7 @@ impl UserCLI {
         let trade = "trade".b_yellow();
         let combat = "combat".red();
 
-        println!("You are player {}\n", actor + 1);
+        println!("You are {} (player {})\n", self.name, actor + 1);
         println!("enemy {authority}: {}", enemy.authority);
         println!(
             "enemy bases: {}",
@@ -460,6 +460,7 @@ impl Agent for UserCLI {
         let mut selected_cards = Vec::new();
 
         while out.len() < count as usize {
+            self.print_game_state(game, ctx.actor);
             self.print_recent_messages();
             println!("\n");
 
