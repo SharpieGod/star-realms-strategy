@@ -15,6 +15,7 @@ pub struct CardInstanceId(pub usize);
 pub struct InPlayCard {
     pub id: CardInstanceId,
     pub name: CardNamed,
+    pub copied_card: Option<CardNamed>,
 }
 
 pub struct Player {
@@ -27,23 +28,21 @@ pub struct Player {
     pub combat: u32,
     pub pending_ally_abilities: Vec<(InPlayCard, Faction, Ability)>,
     pub next_instance_id: usize,
+    pub faction_count: [usize; 5],
 }
 
 impl Player {
     pub fn play_card(&mut self, name: CardNamed) -> CardInstanceId {
         let id = CardInstanceId(self.next_instance_id);
         self.next_instance_id += 1;
-        self.in_play.push(InPlayCard { id, name });
+        self.in_play.push(InPlayCard {
+            id,
+            name,
+            copied_card: None,
+        });
+        self.faction_count[name.faction() as usize] += 1;
+
         id
-    }
-
-    pub fn faction_count(&self) -> HashMap<Faction, usize> {
-        let mut map = HashMap::new();
-        for i in &self.in_play {
-            *map.entry(i.name.faction()).or_default() += 1;
-        }
-
-        map
     }
 
     /// Removes one card instance from play (scrapped, discarded, destroyed),
@@ -53,6 +52,13 @@ impl Player {
         let card = self.in_play.remove(pos);
         self.pending_ally_abilities
             .retain(|source| source.0.id != id);
+
+        self.faction_count[card.name.faction() as usize] -= 1;
+
+        if let Some(copied) = card.copied_card {
+            self.faction_count[copied.faction() as usize] -= 1;
+        }
+
         Some(card.name)
     }
 
@@ -129,6 +135,7 @@ impl Default for Player {
             combat,
             pending_ally_abilities: Default::default(),
             next_instance_id: 0,
+            faction_count: [0; 5],
         }
     }
 }

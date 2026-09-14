@@ -191,6 +191,8 @@ impl Game {
                     return Err(IllegalAction);
                 };
 
+                let name = target_card.copied_card.unwrap_or(target_card.name);
+
                 let Some(Ability::ScrapAbility(inner)) = CARDS[&target_card.name]
                     .abilities
                     .iter()
@@ -262,26 +264,25 @@ impl Game {
         let played_card = player.hand.remove(hand_index);
         let instance = player.play_card(played_card);
 
-        for e in ability(&played_card) {
-            self.resolve_ability(
-                agents,
-                actor,
-                InPlayCard {
-                    id: instance,
-                    name: played_card,
-                },
-                e,
-            );
-        }
+        self.resolve_card_abilities(
+            agents,
+            actor,
+            InPlayCard {
+                id: instance,
+                name: played_card,
+                copied_card: None,
+            },
+            played_card,
+        );
 
         let player = &mut self.players[actor];
         let mut ability_queue = Vec::new();
-        let faction_count = player.faction_count();
+        let faction_count = player.faction_count;
 
         player
             .pending_ally_abilities
             .retain(|(in_play_card, faction, ability)| {
-                if faction_count[faction] >= 2 {
+                if faction_count[*faction as usize] >= 2 {
                     ability_queue.push((*in_play_card, ability.clone()));
                     return false; // dont keep
                 }
@@ -291,6 +292,18 @@ impl Game {
 
         for (in_play_card, ability) in ability_queue {
             self.resolve_ability(agents, actor, in_play_card, &ability);
+        }
+    }
+
+    fn resolve_card_abilities(
+        &mut self,
+        agents: &mut [Box<dyn Agent>; 2],
+        actor: usize,
+        source: InPlayCard,
+        card: CardNamed,
+    ) {
+        for a in ability(&card) {
+            self.resolve_ability(agents, actor, source, a);
         }
     }
 
@@ -604,7 +617,43 @@ impl Game {
                     break;
                 }
             }
-            Ability::CopyPlayedShip => todo!("chose played ship"),
+            Ability::CopyPlayedShip => loop {
+                let selected_ship_index = agents[actor].ask_played_ship(self, &ctx);
+
+                let Some(&selected_ship) =
+                    self.players[actor].ships_in_play().get(selected_ship_index)
+                else {
+                    continue;
+                };
+
+                if selected_ship.id == source.id {
+                    continue;
+                }
+
+                let player = &mut self.players[actor];
+
+                player.in_play = player
+                    .in_play
+                    .iter()
+                    .copied()
+                    .map(|c| {
+                        if c.id == source.id {
+                            InPlayCard {
+                                id: c.id,
+                                name: c.name,
+                                copied_card: Some(selected_ship.name),
+                            }
+                        } else {
+                            c
+                        }
+                    })
+                    .collect();
+
+                player.faction_count[selected_ship.name.faction() as usize] += 1;
+                self.resolve_card_abilities(agents, actor, source, selected_ship.name);
+
+                break;
+            },
             Ability::NextAcquiredShipToTopOfDeck => {
                 self.next_aquired_ship_to_top_of_deck = true;
             }
