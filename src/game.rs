@@ -550,6 +550,24 @@ impl Game {
 
                 loop {
                     let target_ship = agents[actor].ask_shop_card(self, &ctx, &eligible);
+
+                    if !eligible.contains(&target_ship) {
+                        continue;
+                    }
+
+                    let bought_card = self.shop[target_ship].unwrap();
+
+                    if *to_top_of_deck {
+                        self.players[actor].personal_deck.push(bought_card);
+                    } else {
+                        self.players[actor].discard_pile.push(bought_card);
+                    }
+
+                    if bought_card != CardNamed::Explorer {
+                        self.shop[actor] = self.deck.pop();
+                    }
+
+                    break;
                 }
             }
             Ability::Discard(count) => {
@@ -750,7 +768,10 @@ impl Game {
                         .collect();
 
                     player.faction_count[selected_ship.name.faction() as usize] += 1;
-                    self.resolve_card_abilities(agents, actor, source, selected_ship.name);
+
+                    if selected_ship.name != CardNamed::StealthNeedle {
+                        self.resolve_card_abilities(agents, actor, source, selected_ship.name);
+                    }
 
                     break;
                 }

@@ -17,7 +17,7 @@ impl Agent for BasicBot {
         game: &crate::game::Game,
         actor: usize,
     ) -> crate::actions::PlayerAction {
-        dbg!(game.legal_moves(actor)[0]);
+        // dbg!(game.legal_moves(actor)[0]);
         game.legal_moves(actor)[0]
     }
 

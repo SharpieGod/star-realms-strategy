@@ -8,26 +8,49 @@ mod game;
 mod player;
 mod util;
 
-use std::io::stdin;
+use std::{io::stdin, time::Instant};
 
 use agents::{BasicBot, PassBot10000, UserCLI};
 use game::Game;
 
+use crate::agent::Agent;
+
 fn main() {
-    let mut game = Game::new();
-    let agent1 = BasicBot {};
+    // let mut cli = UserCLI::new("Ethan".to_string());
+    // let mut basic = BasicBot {};
 
-    let mut name = String::new();
+    // let mut game = Game::new();
 
-    // println!("Enter name 1: ");
-    // stdin().read_line(&mut name).unwrap();
-    // let agent1_cli = UserCLI::new(name.clone());
+    // game.run_game(&mut [Box::new(cli), Box::new(basic)]);
 
-    println!("Enter name 2: ");
-    stdin().read_line(&mut name).unwrap();
-    let agent2 = UserCLI::new(name);
+    let start = Instant::now();
 
-    game.run_game(&mut [Box::new(agent1), Box::new(agent2)]);
-    // game.run_game(&mut [Box::new(agent1_cli), Box::new(agent2)]);
-    // println!("{}", &CARDS[&CardNamed::Cutter]);
+    let mut player_wins = [0, 0];
+
+    for i in 0..100000 {
+        println!("{:.2} games/s", i as f32 / start.elapsed().as_secs_f32());
+        let mut game = Game::new();
+        let agent1 = BasicBot {};
+        let agent2 = BasicBot {};
+        let mut agents: [Box<dyn Agent>; 2] = [Box::new(agent1), Box::new(agent2)];
+        let player_who_went_first = game.turn_number as usize % 2;
+
+        game.run_game(&mut agents);
+
+        if game.players[player_who_went_first].authority != 0 {
+            player_wins[0] += 1;
+        } else {
+            player_wins[1] += 1;
+        }
+
+        drop(agents)
+    }
+
+    let sum = player_wins[0] + player_wins[1];
+
+    println!(
+        "going first {:.3}%\ngoing second {:.3}%",
+        player_wins[0] as f32 / sum as f32 * 100.0,
+        player_wins[1] as f32 / sum as f32 * 100.0
+    );
 }
