@@ -43,7 +43,7 @@ impl UserCLI {
         let trade = "trade".b_yellow();
         let combat = "combat".red();
 
-        println!("You are {} (player {})\n", self.name, actor + 1);
+        println!("You are {} (player {})\n", self.name.trim(), actor + 1);
         println!("enemy {authority}: {}", enemy.authority);
         println!(
             "enemy bases: {}",
@@ -156,20 +156,20 @@ impl Agent for UserCLI {
                 "play" if tokens.get(1).copied().unwrap_or_default() == "all" => {
                     return PlayerAction::PlayAll;
                 }
-                c if (c == "play" || c == "buy") => {
+                "play" | "buy" | "p" | "b" => {
                     let Ok(index) = tokens.get(1).copied().unwrap_or_default().parse::<usize>()
                     else {
                         continue;
                     };
 
-                    return match c {
-                        "play" => PlayCard(index),
-                        "buy" => BuyCard(index),
+                    return match tokens.get(0).copied().unwrap_or_default() {
+                        "play" | "p" => PlayCard(index),
+                        "buy" | "b" => BuyCard(index),
                         _ => unreachable!(),
                     };
                 }
 
-                "scrap"
+                "scrap" | "s"
                     if tokens
                         .get(2)
                         .copied()

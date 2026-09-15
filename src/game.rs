@@ -112,7 +112,7 @@ impl Game {
 
         let enemy_has_outposts = !enemy.outposts_in_play().is_empty();
 
-        if !enemy_has_outposts {
+        if !enemy_has_outposts && player.combat > 0 {
             out.push(SpendCombat(Enemy));
         }
 
@@ -122,7 +122,9 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter_map(|(i, b)| {
-                    (enemy_has_outposts && CARDS[&b.name].is_outpost() || !enemy_has_outposts)
+                    (CARDS[&b.name].get_base_defense().unwrap() <= player.combat
+                        && (enemy_has_outposts && CARDS[&b.name].is_outpost()
+                            || !enemy_has_outposts))
                         .then_some(SpendCombat(EnemyBase(i)))
                 }),
         );

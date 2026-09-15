@@ -1,7 +1,7 @@
 use crate::abilities::Ability;
 use crate::player::{CardInstanceId, InPlayCard};
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum PlayerAction {
     PlayCard(usize),
     PlayAll,
@@ -11,7 +11,7 @@ pub enum PlayerAction {
     EndTurn,
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum CombatTarget {
     Enemy,
     EnemyBase(usize),
