@@ -124,9 +124,9 @@ impl Default for Player {
 
         Self {
             personal_deck: deck,
-            hand: Default::default(),
-            in_play: Default::default(),
-            discard_pile: Default::default(),
+            hand: Vec::with_capacity(10),
+            in_play: Vec::with_capacity(16),
+            discard_pile: Vec::with_capacity(32),
             authority: 50,
             trade,
             combat,
